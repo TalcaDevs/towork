@@ -1,36 +1,51 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Backoffice - Solicitudes</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backoffice - Towork</title>
+    <link rel="stylesheet" href="/static/css/global.css">
 </head>
 <body>
-    <div class="container mt-5">
-        <h2>Panel de Administración</h2>
-        
-        <h3>Solicitudes Pendientes</h3>
-        <ul>
-            {% for solicitud in pendientes %}
-                <li>{{ solicitud.usuario.username }} - {{ solicitud.descripcion }} 
-                    <a href="{% url 'aprobar_solicitud' solicitud.id %}" class="btn btn-success">Aprobar</a>
-                    <a href="{% url 'rechazar_solicitud' solicitud.id %}" class="btn btn-danger">Rechazar</a>
-                </li>
-            {% endfor %}
-        </ul>
 
-        <h3>Usuarios Aprobados</h3>
-        <ul>
-            {% for usuario in aprobados %}
-                <li>{{ usuario.usuario.username }}</li>
-            {% endfor %}
-        </ul>
+    
+    <div class="sidebar">
+        <h1>Towork</h1>
+        <div class="stats">
+            <div class="solicitudes"><span>Solicitudes</span> <span>{{ pendientes|length }}</span></div>
+            <div class="aprobados"><span>Aprobados</span> <span>{{ aprobados|length }}</span></div>
+            <div class="rechazados"><span>Rechazados</span> <span>{{ rechazados|length }}</span></div>
+        </div>
+    </div>
 
-        <h3>Usuarios Rechazados</h3>
-        <ul>
-            {% for usuario in rechazados %}
-                <li>{{ usuario.usuario.username }}</li>
-            {% endfor %}
-        </ul>
+    <div class="content">
+
+        <div class="navbar">
+            <nav style="width: 100%; background: #3f3f3f; padding: 10px; display: flex; justify-content: flex-end;">
+            <button style="padding: 10px; border: none; border-radius: 50%; background: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <img src="/static/images/icon.png" alt="Salir" style="width: 20px; height: 20px;">
+            </button>
+            </nav>
+        </div>
+        <div class="components">
+            <div class="search-filter">
+                <input type="text" placeholder="Buscar">
+                <input type="text" placeholder="Filtrar">
+            </div>
+            <div class="card-container">
+                {% for solicitud in pendientes %}
+                <div class="card">
+                    <img src="{{ solicitud.usuario.foto_perfil }}" alt="Perfil">
+                    <div>
+                        <strong>{{ solicitud.usuario.first_name }} {{ solicitud.usuario.last_name }}</strong>
+                        <p>{{ solicitud.descripcion }}</p>
+                    </div>
+                    <button>Ver detalles</button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 </body>
 </html>
