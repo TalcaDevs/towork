@@ -9,10 +9,11 @@ from projects.models import Proyecto
 from certifications.models import Certificacion
 from skills.models import Skill, UserSkill
 from languages.models import Language, UserLanguage
-from .serializers import UserSerializer
+from .serializers import UserSerializer, SolicitudSerializer
 from django.contrib.auth.hashers import make_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
+from .models import Solicitud
 
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
@@ -166,11 +167,22 @@ def guardar_perfil_completo(request):
             user_language.nivel = idioma["nivel"]  # Si ya existe, actualiza el nivel
             user_language.save()
 
-    return Response({"message": "Perfil guardado correctamente"}, status=status.HTTP_201_CREATED)
+    solicitud, created = Solicitud.objects.get_or_create(
+        usuario=user,
+        estado="pendiente",
+        defaults={"descripcion": "Solicitud de revisión de perfil completa."}
+    )
+
+    if not created:
+        solicitud.descripcion = "Solicitud de revisión de perfil actualizada."
+        solicitud.estado = "pendiente"
+        solicitud.save()
+
+    return Response({"message": "Perfil guardado correctamente, solicitud en estado 'pendiente'."}, status=status.HTTP_201_CREATED)
 
 
 @api_view(['GET'])
-@permission_classes([permissions.IsAuthenticated])
+@permission_classes([permissions.IsAdminUser])
 def obtener_usuarios(request):
     """
     Obtiene la lista de usuarios con toda su información (educación, experiencia, skills, etc.).
@@ -179,3 +191,21 @@ def obtener_usuarios(request):
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAdminUser])
+def listar_solicitudes(request):
+    """
+    Lista todas las solicitudes de usuarios, permitiendo filtrar por estado.
+    Parámetros opcionales:
+        - estado: pendiente, aceptada, rechazada
+    """
+    estado = request.GET.get('estado')  # Obtiene el estado de la URL (si se proporciona)
+
+    if estado:
+        solicitudes = Solicitud.objects.filter(estado=estado)
+    else:
+        solicitudes = Solicitud.objects.all()
+
+    serializer = SolicitudSerializer(solicitudes, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
