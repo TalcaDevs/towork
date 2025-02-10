@@ -9,6 +9,69 @@ from projects.models import Proyecto
 from certifications.models import Certificacion
 from skills.models import Skill, UserSkill
 from languages.models import Language, UserLanguage
+from .serializers import UserSerializer
+from django.contrib.auth.hashers import make_password
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate
+
+@api_view(['POST'])
+@permission_classes([permissions.AllowAny])
+def registro_usuario(request):
+    """
+    Endpoint para registrar nuevos usuarios con nombre, apellido, email y contraseña.
+    """
+    first_name = request.data.get("first_name")
+    last_name = request.data.get("last_name")
+    email = request.data.get("email")
+    password = request.data.get("password")
+
+    if not first_name or not last_name or not email or not password:
+        return Response({"error": "Todos los campos son obligatorios"}, status=status.HTTP_400_BAD_REQUEST)
+
+    if CustomUser.objects.filter(email=email).exists():
+        return Response({"error": "El correo ya está registrado"}, status=status.HTTP_400_BAD_REQUEST)
+
+    user = CustomUser.objects.create(
+        first_name=first_name,
+        last_name=last_name,
+        email=email,
+        username=email,  # Usamos el email como username
+        password=make_password(password)  # Encriptamos la contraseña
+    )
+
+    # Generamos tokens JWT para el usuario registrado
+    refresh = RefreshToken.for_user(user)
+
+    return Response({
+        "message": "Usuario registrado exitosamente",
+        "access": str(refresh.access_token),
+        "refresh": str(refresh)
+    }, status=status.HTTP_201_CREATED)
+
+@api_view(['POST'])
+@permission_classes([permissions.AllowAny])
+def login_usuario(request):
+    """
+    Endpoint para iniciar sesión con email y contraseña y obtener tokens JWT.
+    """
+    email = request.data.get("email")
+    password = request.data.get("password")
+
+    if not email or not password:
+        return Response({"error": "Email y contraseña son obligatorios"}, status=status.HTTP_400_BAD_REQUEST)
+
+    user = authenticate(request, username=email, password=password)
+
+    if user is not None:
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            "message": "Inicio de sesión exitoso",
+            "access": str(refresh.access_token),
+            "refresh": str(refresh)
+        }, status=status.HTTP_200_OK)
+    else:
+        return Response({"error": "Credenciales inválidas"}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
@@ -31,6 +94,7 @@ def guardar_perfil_completo(request):
     user.save()
 
     # 2️⃣ Guardar Educación
+    Educacion.objects.filter(usuario=user).delete()
     educacion_data = request.data.get("educacion", [])
     for edu in educacion_data:
         Educacion.objects.create(
@@ -42,6 +106,7 @@ def guardar_perfil_completo(request):
         )
 
     # 3️⃣ Guardar Experiencia Laboral
+    ExperienciaLaboral.objects.filter(usuario=user).delete()
     experiencia_data = request.data.get("experiencia", [])
     for exp in experiencia_data:
         ExperienciaLaboral.objects.create(
@@ -54,6 +119,7 @@ def guardar_perfil_completo(request):
         )
 
     # 4️⃣ Guardar Certificaciones
+    Certificacion.objects.filter(usuario=user).delete()
     certificaciones_data = request.data.get("certificaciones", [])
     for cert in certificaciones_data:
         Certificacion.objects.create(
@@ -65,6 +131,7 @@ def guardar_perfil_completo(request):
         )
 
     # 5️⃣ Guardar Proyectos
+    Proyecto.objects.filter(usuario=user).delete()
     proyectos_data = request.data.get("proyectos", [])
     for proy in proyectos_data:
         Proyecto.objects.create(
@@ -77,15 +144,38 @@ def guardar_perfil_completo(request):
         )
 
     # 6️⃣ Guardar Skills
+    # 6️⃣ Guardar Skills sin duplicados
+    UserSkill.objects.filter(usuario=user).delete()
     skills_data = request.data.get("skills", [])
     for skill_name in skills_data:
-        skill, created = Skill.objects.get_or_create(nombre=skill_name)
-        UserSkill.objects.create(usuario=user, skill=skill)
+        skill, _ = Skill.objects.get_or_create(nombre=skill_name)
+        user_skill, created = UserSkill.objects.get_or_create(usuario=user, skill=skill)
+
 
     # 7️⃣ Guardar Idiomas
+    UserLanguage.objects.filter(usuario=user).delete()
     idiomas_data = request.data.get("idiomas", [])
     for idioma in idiomas_data:
-        language, created = Language.objects.get_or_create(nombre=idioma["nombre"])
-        UserLanguage.objects.create(usuario=user, language=language, nivel=idioma["nivel"])
+        language, _ = Language.objects.get_or_create(nombre=idioma["nombre"])
+        user_language, created = UserLanguage.objects.get_or_create(
+            usuario=user,
+            language=language,
+            defaults={"nivel": idioma["nivel"]}  # Solo se guarda si no existe
+        )
+        if not created:
+            user_language.nivel = idioma["nivel"]  # Si ya existe, actualiza el nivel
+            user_language.save()
 
     return Response({"message": "Perfil guardado correctamente"}, status=status.HTTP_201_CREATED)
+
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def obtener_usuarios(request):
+    """
+    Obtiene la lista de usuarios con toda su información (educación, experiencia, skills, etc.).
+    """
+    users = CustomUser.objects.all()
+    serializer = UserSerializer(users, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
