@@ -43,24 +43,23 @@ def user_list(request):
 
 @api_view(['PATCH'])
 @permission_classes([permissions.IsAdminUser])  # Solo administradores pueden cambiar el estado
-def change_user_status(request, user_id):
+def change_request_status(request, user_id):
     """
-    Endpoint para cambiar el estado de un usuario (pendiente, aprobado, rechazado).
+    Endpoint para cambiar el estado de la solicitud de un usuario (pendiente, aceptada, rechazada).
     """
     try:
-        usuario = CustomUser.objects.get(id=user_id)
+        solicitud = Solicitud.objects.get(usuario__id=user_id)
         nuevo_estado = request.data.get("estado")
 
-        if nuevo_estado not in ["pendiente", "aprobado", "rechazado"]:
+        if nuevo_estado not in ["pendiente", "aceptada", "rechazada"]:
             return Response({"error": "Estado inválido"}, status=status.HTTP_400_BAD_REQUEST)
 
-        usuario.estado = nuevo_estado
-        usuario.save()
+        solicitud.estado = nuevo_estado
+        solicitud.save()
 
-        return Response({"message": "Estado actualizado correctamente"}, status=status.HTTP_200_OK)
+        return Response({"message": "Estado de solicitud actualizado correctamente"}, status=status.HTTP_200_OK)
 
-    except CustomUser.DoesNotExist:
-        return Response({"error": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
-
+    except Solicitud.DoesNotExist:
+        return Response({"error": "Solicitud no encontrada para este usuario"}, status=status.HTTP_404_NOT_FOUND)
 
 
