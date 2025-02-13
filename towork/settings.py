@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
+    'corsheaders',
     'api',
     'backoffice',
     'users',
@@ -55,6 +56,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -67,6 +69,8 @@ AUTH_USER_MODEL = 'users.CustomUser'
 LOGIN_URL = "/backoffice/login/"
 LOGIN_REDIRECT_URL = "/backoffice/"
 LOGOUT_REDIRECT_URL = "/backoffice/login/"
+CORS_ALLOW_ALL_ORIGINS = True
+
 
 from datetime import timedelta
 

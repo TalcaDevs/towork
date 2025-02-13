@@ -180,6 +180,16 @@ def guardar_perfil_completo(request):
 
     return Response({"message": "Perfil guardado correctamente, solicitud en estado 'pendiente'."}, status=status.HTTP_201_CREATED)
 
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def obtener_perfil_completo(request):
+    """
+    Obtiene toda la información del usuario autenticado (perfil, educación, experiencia, etc.).
+    """
+    user = request.user
+    serializer = UserSerializer(user)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 @api_view(['GET'])
 @permission_classes([permissions.IsAdminUser])
