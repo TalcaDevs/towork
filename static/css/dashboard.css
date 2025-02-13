@@ -1,0 +1,40 @@
+/* Estilos específicos para dashboard.html */
+.content {
+    flex-grow: 1;
+    background: #e2e2e2;
+}
+.card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.card {
+    display: none; /* Ocultar todas las tarjetas por defecto */
+    align-items: center;
+    background: #bdbdbd;
+    padding: 10px;
+    border-radius: 10px;
+}
+.card.pendientes {
+    display: flex; /* Mostrar solo las tarjetas pendientes */
+}
+.card.aprobados {
+    display: flex; /* Mostrar solo las tarjetas aprobadas */
+}
+.card.rechazados {
+    display: flex; /* Mostrar solo las tarjetas rechazadas */
+}
+.card img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.card button {
+    margin-left: auto;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background: white;
+    cursor: pointer;
+}

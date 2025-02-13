@@ -1,0 +1,33 @@
+/* Estilos específicos para pending.html */
+.search-filter {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+.search-filter input {
+    padding: 10px;
+    width: 45%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.card.pendientes {
+    display: flex; /* Mostrar solo las tarjetas pendientes */
+    align-items: center;
+    background: #bdbdbd;
+    padding: 10px;
+    border-radius: 10px;
+}
+.card img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.card button {
+    margin-left: auto;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background: white;
+    cursor: pointer;
+}

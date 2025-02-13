@@ -24,14 +24,16 @@ def custom_login(request):
 
 @login_required
 def dashboard(request):
+    estado = request.GET.get('estado', 'pendientes')
     solicitudes_pendientes = Solicitud.objects.filter(estado='pendiente')
-    solicitudes_aprobadas = Solicitud.objects.filter(estado='aprobado')
-    solicitudes_rechazadas = Solicitud.objects.filter(estado='rechazado')
+    solicitudes_aprobadas = Solicitud.objects.filter(estado='aceptada')
+    solicitudes_rechazadas = Solicitud.objects.filter(estado='rechazada')
 
     return render(request, 'backoffice/dashboard.html', {
         'pendientes': solicitudes_pendientes,
         'aprobados': solicitudes_aprobadas,
         'rechazados': solicitudes_rechazadas,
+        'estado': estado,
     })
 
 @api_view(['GET'])
