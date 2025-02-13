@@ -6,44 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Backoffice - Towork</title>
     <link rel="stylesheet" href="/static/css/global.css">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
 </head>
 <body>
-
-    
-    <div class="sidebar">
-        <h1>Towork</h1>
-        <div class="stats">
-            <div class="solicitudes"><span>Solicitudes</span> <span>{{ pendientes|length }}</span></div>
-            <div class="aprobados"><span>Aprobados</span> <span>{{ aprobados|length }}</span></div>
-            <div class="rechazados"><span>Rechazados</span> <span>{{ rechazados|length }}</span></div>
+    <div class="container">
+        <div class="sidebar-container" style="width: 20%;">
+            {% include 'backoffice/sidebar.html' %}
         </div>
-    </div>
-
-    <div class="content">
-
-        <div class="navbar">
-            <nav style="width: 100%; background: #3f3f3f; padding: 10px; display: flex; justify-content: flex-end;">
-            <button style="padding: 10px; border: none; border-radius: 50%; background: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center;">
-                <img src="/static/images/icon.png" alt="Salir" style="width: 20px; height: 20px;">
-            </button>
-            </nav>
-        </div>
-        <div class="components">
-            <div class="search-filter">
-                <input type="text" placeholder="Buscar">
-                <input type="text" placeholder="Filtrar">
-            </div>
-            <div class="card-container">
-                {% for solicitud in pendientes %}
-                <div class="card">
-                    <img src="{{ solicitud.usuario.foto_perfil }}" alt="Perfil">
-                    <div>
-                        <strong>{{ solicitud.usuario.first_name }} {{ solicitud.usuario.last_name }}</strong>
-                        <p>{{ solicitud.descripcion }}</p>
-                    </div>
-                    <button>Ver detalles</button>
+        <div class="main-content" style="width: 80%;">
+            {% include 'backoffice/navbar.html' with usuario=usuario %}
+            <div class="components">
+                <div class="card-container">
+                    {% if estado == 'pendientes' %}
+                        {% include 'backoffice/pending.html' %}
+                    {% elif estado == 'aprobados' %}
+                        {% include 'backoffice/approved.html' %}
+                    {% elif estado == 'rechazados' %}
+                        {% include 'backoffice/rejected.html' %}
+                    {% endif %}
                 </div>
-                {% endfor %}
             </div>
         </div>
     </div>

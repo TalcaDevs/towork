@@ -1,0 +1,17 @@
+{% load static %}
+<link rel="stylesheet" href="/static/css/rejected.css">
+{% for solicitud in rechazados %}
+<div class="search-filter">
+    <input type="text" placeholder="Buscar">
+    <input type="text" placeholder="Filtrar">
+</div>
+
+<div class="card rechazados">
+    <img src="{{ solicitud.usuario.foto_perfil|default_if_none:'/static/images/default_profile.png' }}" alt="Perfil">
+    <div>
+        <strong>{{ solicitud.usuario.first_name }} {{ solicitud.usuario.last_name }}</strong>
+        <p>{{ solicitud.descripcion }}</p>
+    </div>
+    <button>Ver detalles</button>
+</div>
+{% endfor %}
