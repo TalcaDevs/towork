@@ -16,7 +16,7 @@
     background: #bdbdbd;
     padding: 10px;
     border-radius: 10px;
-    position: relative; /* Añadir posición relativa */
+    position: relative;
 }
 .card img {
     width: 50px;
@@ -33,8 +33,8 @@
     color: white;
     text-decoration: none;
     cursor: pointer;
-    position: absolute; /* Posicionar absolutamente */
-    right: 10px; /* Alinear a la derecha */
+    position: absolute;
+    right: 10px;
 }
 .card .detalle-link:hover {
     background: #0056b3;

@@ -32,6 +32,6 @@
     color: white;
     text-decoration: none;
     cursor: pointer;
-    position: absolute; /* Posicionar absolutamente */
-    right: 35px !important; /* Alinear a la derecha */
+    position: absolute;
+    right: 35px !important;
 }

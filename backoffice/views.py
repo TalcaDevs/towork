@@ -69,8 +69,9 @@ def change_request_status(request, user_id):
     except Solicitud.DoesNotExist:
         return Response({"error": "Solicitud no encontrada para este usuario"}, status=status.HTTP_404_NOT_FOUND)
 
-
-def user_detail(request, user_id):  # Cambiado a 'user_id'
+@api_view(['GET'])
+@permission_classes([permissions.IsAdminUser])
+def user_detail(request, user_id):
     solicitud = Solicitud.objects.get(usuario__id=user_id)
     serializer = SolicitudSerializer(solicitud)
     return render(request, 'backoffice/detail.html', {'solicitud': serializer.data})
