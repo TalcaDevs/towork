@@ -27,3 +27,7 @@ class SolicitudViewSet(viewsets.ModelViewSet):
         solicitud.estado = "rechazado"
         solicitud.save()
         return Response({"message": "Usuario rechazado correctamente"})
+
+def detail(request, pk):
+    person = get_object_or_404(Solicitud.usuario, pk=pk)
+    return render(request, 'person_detail.html', {'usuaio': usuario})

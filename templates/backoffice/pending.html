@@ -1,16 +1,20 @@
 {% load static %}
-<link rel="stylesheet" href="/static/css/pending.css">
+<link rel="stylesheet" href="{% static 'css/pending.css' %}">
 {% for solicitud in pendientes %}
 <div class="search-filter">
     <input type="text" placeholder="Buscar">
     <input type="text" placeholder="Filtrar">
 </div>
 <div class="card pendientes">
-    <img src="{{ solicitud.usuario.foto_perfil|default_if_none:'/static/images/default_profile.png' }}" alt="Perfil">
+    {% if solicitud.usuario.foto_perfil %}
+        <img src="{{ solicitud.usuario.foto_perfil }}" alt="Perfil">
+    {% else %}
+        <img src="{% static 'images/default_profile.png' %}" alt="Perfil">
+    {% endif %}
     <div>
         <strong>{{ solicitud.usuario.first_name }} {{ solicitud.usuario.last_name }}</strong>
         <p>{{ solicitud.descripcion }}</p>
     </div>
-    <button>Ver detalles</button>
+    <button class="detalle-link" onclick="location.href='?estado=card_detail&user_id={{ solicitud.usuario.pk }}'">Ver detalle</button>
 </div>
 {% endfor %}

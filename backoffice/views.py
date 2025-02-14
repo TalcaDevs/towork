@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from users.models import Solicitud
 from users.models import CustomUser
-from users.serializers import UserSerializer
+from users.serializers import UserSerializer, SolicitudSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import permissions
 from rest_framework.response import Response
@@ -25,6 +25,10 @@ def custom_login(request):
 @login_required
 def dashboard(request):
     estado = request.GET.get('estado', 'pendientes')
+    user_id = request.GET.get('user_id')
+    solicitud = None
+    if estado == 'card_detail' and user_id:
+        solicitud = Solicitud.objects.get(usuario__id=user_id)
     solicitudes_pendientes = Solicitud.objects.filter(estado='pendiente')
     solicitudes_aprobadas = Solicitud.objects.filter(estado='aceptada')
     solicitudes_rechazadas = Solicitud.objects.filter(estado='rechazada')
@@ -33,6 +37,7 @@ def dashboard(request):
         'pendientes': solicitudes_pendientes,
         'aprobados': solicitudes_aprobadas,
         'rechazados': solicitudes_rechazadas,
+        'solicitud': solicitud,
         'estado': estado,
     })
 
@@ -65,3 +70,7 @@ def change_request_status(request, user_id):
         return Response({"error": "Solicitud no encontrada para este usuario"}, status=status.HTTP_404_NOT_FOUND)
 
 
+def user_detail(request, user_id):  # Cambiado a 'user_id'
+    solicitud = Solicitud.objects.get(usuario__id=user_id)
+    serializer = SolicitudSerializer(solicitud)
+    return render(request, 'backoffice/detail.html', {'solicitud': serializer.data})
