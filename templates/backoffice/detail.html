@@ -1,0 +1,17 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/detail.css' %}">
+<div class="detail-container">
+    <div class="detail-card">
+        <div class="detail-info">
+            <p><strong>Nombre:</strong> {{ solicitud.usuario.first_name }} {{ solicitud.usuario.last_name }}</p>
+            <p><strong>Email:</strong> {{ solicitud.usuario.email }}</p>
+            <p><strong>Teléfono:</strong> {{ solicitud.usuario.telefono }}</p>
+            <p><strong>Ubicación:</strong> {{ solicitud.usuario.ubicacion }}</p>
+            <p><strong>LinkedIn:</strong> <a href="{{ solicitud.usuario.linkedin }}" target="_blank">{{ solicitud.usuario.linkedin }}</a></p>
+            <p><strong>Portafolio:</strong> <a href="{{ solicitud.usuario.id_portafolio_web }}" target="_blank">{{ solicitud.usuario.id_portafolio_web }}</a></p>
+            <button onclick="history.back()">Volver</button>
+        </div>
+        <img src="{{ solicitud.usuario.foto_perfil|default:'/static/images/default_profile.png' }}" alt="Perfil">
+    </div>
+</div>
+ñ

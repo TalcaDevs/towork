@@ -9,20 +9,20 @@
     gap: 10px;
 }
 .card {
-    display: none; /* Ocultar todas las tarjetas por defecto */
+    display: none;
     align-items: center;
     background: #bdbdbd;
     padding: 10px;
     border-radius: 10px;
 }
 .card.pendientes {
-    display: flex; /* Mostrar solo las tarjetas pendientes */
+    display: flex;
 }
 .card.aprobados {
-    display: flex; /* Mostrar solo las tarjetas aprobadas */
+    display: flex;
 }
 .card.rechazados {
-    display: flex; /* Mostrar solo las tarjetas rechazadas */
+    display: flex;
 }
 .card img {
     width: 50px;

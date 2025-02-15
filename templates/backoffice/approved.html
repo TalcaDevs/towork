@@ -6,11 +6,15 @@
     <input type="text" placeholder="Filtrar">
 </div>
 <div class="card aprobados">
-    <img src="{{ solicitud.usuario.foto_perfil|default_if_none:'' }}" alt="Perfil" onerror="this.onerror=null;this.src='{% static 'images/default_profile.png' %}';">
+    {% if solicitud.usuario.foto_perfil %}
+        <img src="{{ solicitud.usuario.foto_perfil }}" alt="Perfil">
+    {% else %}
+        <img src="{% static 'images/default_profile.png' %}" alt="Perfil">
+    {% endif %}
     <div>
         <strong>{{ solicitud.usuario.first_name }} {{ solicitud.usuario.last_name }}</strong>
         <p>{{ solicitud.descripcion }}</p>
     </div>
-    <button>Ver detalles</button>
+    <button class="detalle-link" onclick="location.href='?estado=card_detail&user_id={{ solicitud.usuario.pk }}'">Ver detalle</button>
 </div>
 {% endfor %}

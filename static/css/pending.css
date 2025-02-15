@@ -11,7 +11,7 @@
     border-radius: 5px;
 }
 .card.pendientes {
-    display: flex; /* Mostrar solo las tarjetas pendientes */
+    display: flex;
     align-items: center;
     background: #bdbdbd;
     padding: 10px;
@@ -23,11 +23,16 @@
     border-radius: 50%;
     margin-right: 10px;
 }
-.card button {
+
+.card .detalle-link {
     margin-left: auto;
     padding: 5px 10px;
     border: none;
     border-radius: 5px;
-    background: white;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
     cursor: pointer;
+    position: absolute;
+    right: 30px;
 }
