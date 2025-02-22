@@ -1,23 +1,27 @@
-/* Estilos globales */
+@import url('variables.css');
+
 body {
-    font-family: Arial, sans-serif;
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-family-primary);
+    font-size: var(--font-size-medium);
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 .sidebar {
-    background: #ffffff;
-    color: rgb(255, 255, 255);
+    background: var(--color-background);
+    color: #e0e0e0;
     padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 95vh;
+    height: 919px;
 }
 .sidebar h1 {
-    font-size: 40px;
-    font-family: hk-grotesk, sans-serif;
-    color: #3f3f3f;
+    font-size: var(--font-size-xlarge);
+    font-family: var(--font-family-primary);
+    color: var(--color-text);
 }
 .sidebar h1.centered {
     text-align: center;
@@ -41,6 +45,7 @@ body {
     user-select: none;
     -webkit-tap-highlight-color: transparent;
     position: relative;
+    background: var(--color-secondary-background);
 }
 .stats a.full-link {
     position: absolute;
@@ -59,6 +64,7 @@ body {
     right: 10px;
     top: 50%;
     transform: translateY(-50%);
+    font-size: var(--font-size-small);
 }
 .stats div:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -68,9 +74,9 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     outline: none;
 }
-.stats .solicitudes { background: #1b89da; }
-.stats .aprobados { background: #338484; }
-.stats .rechazados { background: #ff5757; }
+.stats .pending { background: var(--color-primary); }
+.stats .approved { background: var(--color-primary); }
+.stats .rejected { background: var(--color-primary); }
 .stats a {
     color: white;
     text-decoration: none;
@@ -90,7 +96,7 @@ body {
     margin: 0 auto;
     background: none;
     color: white;
-    font-size: 16px;
+    font-size: var(--font-size-small);
 }
 .stats button .count {
     background: rgba(0, 0, 0, 0.2);
@@ -108,7 +114,7 @@ body {
 }
 .content {
     flex-grow: 1;
-    background: #e2e2e2;
+    background: var(--color-secondary-background);
 }
 .search-filter {
     display: flex;
@@ -118,8 +124,10 @@ body {
 .search-filter input {
     padding: 10px;
     width: 45%;
-    border: 1px solid #ccc;
+    border: 1px solid var(--color-secondary-background);
     border-radius: 5px;
+    background-color: var(--color-background);
+    color: var(--color-text);
 }
 .card-container {
     display: flex;
@@ -129,19 +137,11 @@ body {
 .card {
     display: none;
     align-items: center;
-    background: #bdbdbd;
+    background: var(--color-secondary-background);
     padding: 10px;
     border-radius: 10px;
 }
-.card.pendientes {
-    display: flex;
-}
-.card.aprobados {
-    display: flex;
-}
-.card.rechazados {
-    display: flex;
-}
+
 .card img {
     width: 50px;
     height: 50px;
@@ -153,18 +153,18 @@ body {
     padding: 5px 10px;
     border: none;
     border-radius: 5px;
-    background: white;
+    background: var(--color-primary);
     cursor: pointer;
 }
 .navbar {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    background-color: #ffffff;
+    background-color: var(--color-secondary-background);
 }
 .navbar nav {
     width: 100%;
-    background: #e2e2e2;
+    background: var(--color-secondary-background);
     padding: 10px;
     display: flex;
     justify-content: space-between;
@@ -174,7 +174,7 @@ body {
     padding: 10px;
     border: none;
     border-radius: 50%;
-    background: #ffffff;
+    background: var(--color-background);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -190,8 +190,7 @@ body {
 .components {
     padding: 20px;
     flex-grow: 1;
-    background: #e2e2e2;
-    overflow-y: auto;
+    background: var(--color-secondary-background);
 }
 .container {
     display: flex;

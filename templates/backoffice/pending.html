@@ -1,11 +1,7 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/pending.css' %}">
 {% for solicitud in pendientes %}
-<div class="search-filter">
-    <input type="text" placeholder="Buscar">
-    <input type="text" placeholder="Filtrar">
-</div>
-<div class="card pendientes">
+<div class="card pending">
     {% if solicitud.usuario.foto_perfil %}
         <img src="{{ solicitud.usuario.foto_perfil }}" alt="Perfil">
     {% else %}
@@ -15,6 +11,6 @@
         <strong>{{ solicitud.usuario.first_name }} {{ solicitud.usuario.last_name }}</strong>
         <p>{{ solicitud.descripcion }}</p>
     </div>
-    <button class="detalle-link" onclick="location.href='?estado=card_detail&user_id={{ solicitud.usuario.pk }}'">Ver detalle</button>
+    <button class="detail-link" onclick="location.href='?estado=card_detail&user_id={{ solicitud.usuario.pk }}'">Ver detalle</button>
 </div>
 {% endfor %}

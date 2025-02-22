@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from users.models import Solicitud
 from users.models import CustomUser
 from users.serializers import UserSerializer, SolicitudSerializer
@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework import status
+from users.models import SolicitudLog
 
 def custom_login(request):
     if request.method == "POST":
@@ -27,7 +28,7 @@ def dashboard(request):
     estado = request.GET.get('estado', 'pendientes')
     user_id = request.GET.get('user_id')
     solicitud = None
-    if estado == 'card_detail' and user_id:
+    if estado in ['card_detail', 'update_status'] and user_id:
         solicitud = Solicitud.objects.get(usuario__id=user_id)
     solicitudes_pendientes = Solicitud.objects.filter(estado='pendiente')
     solicitudes_aprobadas = Solicitud.objects.filter(estado='aceptada')
@@ -40,6 +41,28 @@ def dashboard(request):
         'solicitud': solicitud,
         'estado': estado,
     })
+
+@login_required
+def update_status(request, user_id):
+    if request.method == 'POST':
+        nuevo_estado = request.POST.get('estado')
+        solicitud = Solicitud.objects.get(usuario__id=user_id)
+        estado_anterior = solicitud.estado
+        solicitud.estado = nuevo_estado
+        solicitud.save()
+
+        # Registrar el cambio en SolicitudLog
+        SolicitudLog.objects.create(
+            solicitud=solicitud,
+            usuario=request.user,
+            estado_anterior=estado_anterior,
+            nuevo_estado=nuevo_estado
+        )
+
+        return redirect('dashboard')
+    else:
+        solicitud = Solicitud.objects.get(usuario__id=user_id)
+        return render(request, 'backoffice/update_status.html', {'solicitud': solicitud})
 
 @api_view(['GET'])
 @permission_classes([permissions.IsAdminUser])

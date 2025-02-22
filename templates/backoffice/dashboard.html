@@ -16,8 +16,10 @@
         </div>
         <div class="main-content" style="width: 100%;">
             {% include 'backoffice/navbar.html' with usuario=usuario %}
+            
             <div class="components">
-                <div class="card-container">
+                {% include 'backoffice/filter.html' %}
+                <div class="card-container" id="card-container">
                     {% if estado == 'pendientes' %}
                         {% include 'backoffice/pending.html' %}
                     {% elif estado == 'aprobados' %}
@@ -26,10 +28,10 @@
                         {% include 'backoffice/rejected.html' %}
                     {% elif estado == 'card_detail' %}
                         {% include 'backoffice/detail.html' with solicitud=solicitud %}
+                    {% elif estado == 'update_status' %}
+                        {% include 'backoffice/update_status.html' with solicitud=solicitud %}
                     {% endif %}
-
                 </div>
-                
             </div>
         </div>
     </div>

@@ -1,22 +1,40 @@
-/* Estilos específicos para pending.html */
+@import url('variables.css');
+
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-family-primary);
+    font-size: var(--font-size-medium);
+}
+
 .search-filter {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
+    
+
 }
+
 .search-filter input {
     padding: 10px;
     width: 45%;
-    border: 1px solid #ccc;
+    border: 1px solid var(--color-secondary-background);
     border-radius: 5px;
+    background-color: var(--color-background);
+    color: var(--color-text);
 }
-.card.pendientes {
+
+.card.pending {
     display: flex;
     align-items: center;
-    background: #bdbdbd;
+    background: var(--color-secondary-background);
     padding: 10px;
     border-radius: 10px;
+    height: 64px;
+    background-color: var(--color-background);
 }
+
 .card img {
     width: 50px;
     height: 50px;
@@ -24,15 +42,20 @@
     margin-right: 10px;
 }
 
-.card .detalle-link {
+.card .detail-link {
     margin-left: auto;
     padding: 5px 10px;
     border: none;
     border-radius: 5px;
-    background: #007bff;
+    background: var(--color-primary);
     color: white;
     text-decoration: none;
     cursor: pointer;
     position: absolute;
     right: 30px;
+}
+
+.card .detaile-link:hover {
+    background: var(--color-hover);
+    color: var(--color-hover-text);
 }
