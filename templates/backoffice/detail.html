@@ -19,8 +19,8 @@
                 <button onclick="showSection('projects')">Proyectos</button>
             </div>
             <div class="action-buttons">
-                <button class="btn-update" onclick="showPopup()">Actualizar Estado</button>
-                <button class="btn-back" onclick="window.history.back()">Volver</button>
+                <button onclick="showPopup()">Actualizar Estado</button>
+                <button onclick="window.history.back()">Volver</button>
             </div>
         </div>
     </div>
@@ -101,48 +101,4 @@
     </div>
 </div>
 
-<script>
-function showSection(sectionId) {
-    const sections = document.querySelectorAll('.detail-content');
-    sections.forEach(section => {
-        section.style.display = 'none';
-    });
-    document.getElementById(sectionId).style.display = 'block';
-}
-
-function showPopup() {
-    document.getElementById('popup').style.display = 'block';
-    document.body.style.overflow = 'hidden';
-}
-
-function hidePopup() {
-    document.getElementById('popup').style.display = 'none';
-    document.body.style.overflow = 'auto';
-}
-</script>
-<style>
-.action-buttons {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.btn-update, .btn-back {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.btn-update {
-    background-color: #4CAF50;
-    color: white;
-}
-
-.btn-back {
-    background-color: #f44336;
-    color: white;
-}
-</style>
+<script src="{% static 'js/detail.js' %}"></script>

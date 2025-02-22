@@ -1,6 +1,5 @@
 @import url('variables.css');
 
-/* Estilos específicos para dashboard.html */
 body {
     background-color: var(--color-background);
     color: var(--color-text);
@@ -25,12 +24,6 @@ body {
     background: var(--color-secondary-background);
     padding: 10px;
     border-radius: 10px;
-}
-
-.card.pendientes,
-.card.aprobados,
-.card.rechazados {
-    display: flex;
 }
 
 .card img {

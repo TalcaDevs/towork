@@ -79,6 +79,29 @@ body {
     color: var(--color-hover-text);
 }
 
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.action-buttons button {
+    background-color: var(--color-primary);
+    color: var(--color-text);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 35px;
+    cursor: pointer;
+    width: 48%;
+    text-align: center;
+}
+
+.action-buttons button:hover {
+    background-color: var(--color-hover);
+    color: var(--color-hover-text);
+}
+
 .detail-section {
     flex: 1;
     overflow-y: auto;
@@ -156,3 +179,5 @@ body {
 .detail-info > *:not(:last-child) {
     margin-bottom: 20px;
 }
+
+

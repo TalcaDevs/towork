@@ -1,6 +1,6 @@
 @import url('variables.css');
 
-/* Estilos específicos para pending.html */
+
 body {
     background-color: var(--color-background);
     color: var(--color-text);
@@ -25,7 +25,7 @@ body {
     color: var(--color-text);
 }
 
-.card.pendientes {
+.card.pending {
     display: flex;
     align-items: center;
     background: var(--color-secondary-background);
@@ -42,7 +42,7 @@ body {
     margin-right: 10px;
 }
 
-.card .detalle-link {
+.card .detail-link {
     margin-left: auto;
     padding: 5px 10px;
     border: none;
@@ -55,7 +55,7 @@ body {
     right: 30px;
 }
 
-.card .detalle-link:hover {
+.card .detaile-link:hover {
     background: var(--color-hover);
     color: var(--color-hover-text);
 }

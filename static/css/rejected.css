@@ -1,6 +1,6 @@
 @import url('variables.css');
 
-/* Estilos específicos para rejected.html */
+
 body {
     background-color: var(--color-background);
     color: var(--color-text);
@@ -23,7 +23,7 @@ body {
     color: var(--color-text);
 }
 
-.card.rechazados {
+.card.rejected {
     display: flex;
     align-items: center;
     background: var(--color-background);
@@ -39,7 +39,7 @@ body {
     margin-right: 10px;
 }
 
-.card .detalle-link {
+.card .detail-link {
     margin-left: auto;
     padding: 5px 10px;
     border: none;
@@ -52,7 +52,7 @@ body {
     right: 35px !important;
 }
 
-.card .detalle-link:hover {
+.card .detail-link:hover {
     background: var(--color-hover);
     color: var(--color-hover-text);
 }

@@ -1,6 +1,5 @@
 @import url('variables.css');
 
-/* Estilos específicos para approved.html */
 body {
     background-color: var(--color-background);
     color: var(--color-text);
@@ -20,7 +19,7 @@ body {
     background-color: var(--color-background);
     color: var(--color-text);
 }
-.card.aprobados {
+.card.approved {
     display: flex;
     align-items: center;
     background: var(--color-background);
@@ -35,7 +34,7 @@ body {
     border-radius: 50%;
     margin-right: 10px;
 }
-.card .detalle-link {
+.card .detail-link {
     margin-left: auto;
     padding: 5px 10px;
     border: none;
@@ -47,7 +46,7 @@ body {
     position: absolute;
     right: 10px;
 }
-.card .detalle-link:hover {
+.card .detail-link:hover {
     background: var(--color-hover);
     color: var(--color-hover-text);
 }

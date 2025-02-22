@@ -1,6 +1,5 @@
 @import url('variables.css');
 
-/* Estilos globales */
 body {
     background-color: var(--color-background);
     color: var(--color-text);
@@ -75,9 +74,9 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     outline: none;
 }
-.stats .solicitudes { background: var(--color-primary); }
-.stats .aprobados { background: var(--color-primary); }
-.stats .rechazados { background: var(--color-primary); }
+.stats .pending { background: var(--color-primary); }
+.stats .approved { background: var(--color-primary); }
+.stats .rejected { background: var(--color-primary); }
 .stats a {
     color: white;
     text-decoration: none;
@@ -142,15 +141,7 @@ body {
     padding: 10px;
     border-radius: 10px;
 }
-.card.pendientes {
-    display: flex;
-}
-.card.aprobados {
-    display: flex;
-}
-.card.rechazados {
-    display: flex;
-}
+
 .card img {
     width: 50px;
     height: 50px;
