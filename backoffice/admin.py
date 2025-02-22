@@ -1,3 +1,5 @@
 from django.contrib import admin
+from users.models import SolicitudLog
 
-# Register your models here.
+# Registrar el modelo SolicitudLog
+admin.site.register(SolicitudLog)

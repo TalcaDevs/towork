@@ -1,0 +1,18 @@
+:root {
+    --color-background: #222831;
+    --color-secondary-background: #31363F;
+    --color-primary: #76ABAE;
+    --color-text: #EEEEEE;
+    --color-hover: #EEEEEE;
+    --color-hover-text: #222831;
+
+    /* Variables de fuentes */
+    --font-family-primary: 'Arial', sans-serif;
+    --font-size-xxsmall: 10px;
+    --font-size-small: 15px;
+    --font-size-medium: 15px;
+    --font-size-large: 25px;
+    --font-size-xlarge: 40px;
+    --font-size-xxlarge: 60px;
+    --font-size-xxxlarge: 70px;
+}

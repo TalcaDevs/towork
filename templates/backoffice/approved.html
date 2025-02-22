@@ -1,10 +1,6 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/approved.css' %}">
 {% for solicitud in aprobados %}
-<div class="search-filter">
-    <input type="text" placeholder="Buscar">
-    <input type="text" placeholder="Filtrar">
-</div>
 <div class="card aprobados">
     {% if solicitud.usuario.foto_perfil %}
         <img src="{{ solicitud.usuario.foto_perfil }}" alt="Perfil">

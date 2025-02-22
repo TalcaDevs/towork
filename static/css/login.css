@@ -1,4 +1,12 @@
+@import url('variables.css');
+
 /* Estilos específicos para login.html */
+body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-family-primary);
+    font-size: var(--font-size-medium);
+}
 .container {
     margin-top: 50px;
 }
@@ -7,8 +15,10 @@
 }
 .form-label {
     font-weight: bold;
+    color: var(--color-text);
+    font-size: var(--font-size-medium);
 }
 .btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
 }

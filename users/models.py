@@ -38,3 +38,13 @@ class Solicitud(models.Model):
 
     def __str__(self):
         return f'{self.usuario.username} - {self.estado}'
+
+class SolicitudLog(models.Model):
+    solicitud = models.ForeignKey(Solicitud, on_delete=models.CASCADE, related_name='logs')
+    usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    estado_anterior = models.CharField(max_length=20)
+    nuevo_estado = models.CharField(max_length=20)
+    fecha_cambio = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.usuario.username} cambió {self.solicitud} de {self.estado_anterior} a {self.nuevo_estado} el {self.fecha_cambio}'

@@ -1,10 +1,6 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/pending.css' %}">
 {% for solicitud in pendientes %}
-<div class="search-filter">
-    <input type="text" placeholder="Buscar">
-    <input type="text" placeholder="Filtrar">
-</div>
 <div class="card pendientes">
     {% if solicitud.usuario.foto_perfil %}
         <img src="{{ solicitud.usuario.foto_perfil }}" alt="Perfil">

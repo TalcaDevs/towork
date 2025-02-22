@@ -1,10 +1,6 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/rejected.css' %}">
 {% for solicitud in rechazados %}
-<div class="search-filter">
-    <input type="text" placeholder="Buscar">
-    <input type="text" placeholder="Filtrar">
-</div>
 
 <div class="card rechazados">
     {% if solicitud.usuario.foto_perfil %}

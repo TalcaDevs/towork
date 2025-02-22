@@ -1,17 +1,148 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/detail.css' %}">
+<link rel="stylesheet" href="{% static 'css/popup.css' %}">
 <div class="detail-container">
-    <div class="detail-card">
-        <div class="detail-info">
-            <p><strong>Nombre:</strong> {{ solicitud.usuario.first_name }} {{ solicitud.usuario.last_name }}</p>
-            <p><strong>Email:</strong> {{ solicitud.usuario.email }}</p>
-            <p><strong>Teléfono:</strong> {{ solicitud.usuario.telefono }}</p>
-            <p><strong>Ubicación:</strong> {{ solicitud.usuario.ubicacion }}</p>
-            <p><strong>LinkedIn:</strong> <a href="{{ solicitud.usuario.linkedin }}" target="_blank">{{ solicitud.usuario.linkedin }}</a></p>
-            <p><strong>Portafolio:</strong> <a href="{{ solicitud.usuario.id_portafolio_web }}" target="_blank">{{ solicitud.usuario.id_portafolio_web }}</a></p>
-            <button onclick="history.back()">Volver</button>
+    <div class="internal-sidebar-section">
+        <div class="internal-sidebar">
+            <div class="profile-header">
+                <img src="{{ solicitud.usuario.foto_perfil|default:'/static/images/default_profile.png' }}" alt="Perfil">
+                <div class="profile-info">
+                    <h1>{{ solicitud.usuario.first_name }} {{ solicitud.usuario.last_name }}</h1>
+                    <p>{{ solicitud.usuario.email }}</p>
+                </div>
+            </div>
+            <div class="internal-sidebar-menu">
+                <button onclick="showSection('contact-info')">Información de Contacto</button>
+                <button onclick="showSection('education')">Educación</button>
+                <button onclick="showSection('certifications')">Certificaciones</button>
+                <button onclick="showSection('experience')">Experiencia Laboral</button>
+                <button onclick="showSection('projects')">Proyectos</button>
+            </div>
+            <div class="action-buttons">
+                <button class="btn-update" onclick="showPopup()">Actualizar Estado</button>
+                <button class="btn-back" onclick="window.history.back()">Volver</button>
+            </div>
         </div>
-        <img src="{{ solicitud.usuario.foto_perfil|default:'/static/images/default_profile.png' }}" alt="Perfil">
+    </div>
+    <div class="detail-section">
+        <div class="detail-card">
+            <div id="contact-info" class="detail-content">
+                <h2>Información de Contacto</h2>
+                <p><strong>Email:</strong> {{ solicitud.usuario.email }}</p>
+                <p><strong>Teléfono:</strong> {{ solicitud.usuario.telefono }}</p>
+                <p><strong>Ubicación:</strong> {{ solicitud.usuario.ubicacion }}</p>
+                <p><strong>LinkedIn:</strong> <a href="{{ solicitud.usuario.linkedin }}" target="_blank">{{ solicitud.usuario.linkedin }}</a></p>
+                <p><strong>Portafolio:</strong> <a href="{{ solicitud.usuario.id_portafolio_web }}" target="_blank">{{ solicitud.usuario.id_portafolio_web }}</a></p>
+            </div>
+            <div id="education" class="detail-content" style="display: none;">
+                <h2>Educación</h2>
+                {% for educacion in solicitud.usuario.educacion.all %}
+                    <div class="education-item">
+                        <h3>{{ educacion.titulo }}</h3>
+                        <p>{{ educacion.institucion }}</p>
+                        <p>{{ educacion.fecha_inicio }} - {{ educacion.fecha_fin }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+            <div id="certifications" class="detail-content" style="display: none;">
+                <h2>Certificaciones</h2>
+                {% for certificacion in solicitud.usuario.certificaciones.all %}
+                    <div class="certification-item">
+                        <h3>{{ certificacion.nombre }}</h3>
+                        <p>{{ certificacion.institucion }}</p>
+                        <p>{{ certificacion.fecha_obtencion }}</p>
+                        <p><a href="{{ certificacion.url_certificado }}" target="_blank">Ver Certificado</a></p>
+                    </div>
+                {% endfor %}
+            </div>
+            <div id="experience" class="detail-content" style="display: none;">
+                <h2>Experiencia Laboral</h2>
+                {% for experiencia in solicitud.usuario.experiencia_laboral.all %}
+                    <div class="experience-item">
+                        <h3>{{ experiencia.puesto }}</h3>
+                        <p>{{ experiencia.empresa }}</p>
+                        <p>{{ experiencia.fecha_inicio }} - {{ experiencia.fecha_fin|default:"Actualidad" }}</p>
+                        <p>{{ experiencia.descripcion }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+            <div id="projects" class="detail-content" style="display: none;">
+                <h2>Proyectos</h2>
+                {% for proyecto in solicitud.usuario.proyectos.all %}
+                    <div class="project-item">
+                        <h3>{{ proyecto.titulo }}</h3>
+                        <p>{{ proyecto.descripcion }}</p>
+                        <p><strong>Herramientas Usadas:</strong> {{ proyecto.herramientas_usadas }}</p>
+                        <p><a href="{{ proyecto.url_proyecto }}" target="_blank">Ver Proyecto</a></p>
+                        {% if proyecto.imagen_proyecto %}
+                            <img src="{{ proyecto.imagen_proyecto }}" alt="Imagen del Proyecto" style="max-width: 100%;">
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 </div>
-ñ
+
+<div id="popup" class="popup">
+    <div class="popup-content">
+        <span class="close" onclick="hidePopup()">&times;</span>
+        <h2>Actualizar Estado de Solicitud</h2>
+        <form method="post" action="{% url 'update_status' solicitud.usuario.id %}">
+            {% csrf_token %}
+            <label for="estado">Nuevo Estado:</label>
+            <select name="estado" id="estado">
+                <option value="pendiente">Pendiente</option>
+                <option value="aceptada">Aceptada</option>
+                <option value="rechazada">Rechazada</option>
+            </select>
+            <button type="submit">Actualizar</button>
+        </form>
+    </div>
+</div>
+
+<script>
+function showSection(sectionId) {
+    const sections = document.querySelectorAll('.detail-content');
+    sections.forEach(section => {
+        section.style.display = 'none';
+    });
+    document.getElementById(sectionId).style.display = 'block';
+}
+
+function showPopup() {
+    document.getElementById('popup').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function hidePopup() {
+    document.getElementById('popup').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+</script>
+<style>
+.action-buttons {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn-update, .btn-back {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-update {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-back {
+    background-color: #f44336;
+    color: white;
+}
+</style>
