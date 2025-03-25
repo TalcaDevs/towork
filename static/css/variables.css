@@ -1,12 +1,13 @@
+
 :root {
-    --color-background: #222831;
-    --color-secondary-background: #31363F;
-    --color-primary: #76ABAE;
+    --color-background: #171717;
+    --color-secondary-background: #111111;
+    --color-primary: #222222;
     --color-text: #EEEEEE;
     --color-hover: #EEEEEE;
     --color-hover-text: #222831;
 
-    --font-family-primary: 'Arial', sans-serif;
+    --font-family-primary: "Roboto", sans-serif;
     --font-size-xxsmall: 10px;
     --font-size-small: 15px;
     --font-size-medium: 15px;
@@ -14,4 +15,5 @@
     --font-size-xlarge: 40px;
     --font-size-xxlarge: 60px;
     --font-size-xxxlarge: 70px;
+    --o-border-cards: 15px ;
 }

@@ -9,7 +9,10 @@
     {% endif %}
     <div>
         <strong>{{ solicitud.usuario.first_name }} {{ solicitud.usuario.last_name }}</strong>
-        <p>{{ solicitud.descripcion }}</p>
+                {% for educacion in solicitud.usuario.educacion.all %}
+                    <p>{{ educacion.titulo }}</p>
+                        
+                {% endfor %}
     </div>
     <button class="detail-link" onclick="location.href='?estado=card_detail&user_id={{ solicitud.usuario.pk }}'">Ver detalle</button>
 </div>
