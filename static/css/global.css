@@ -1,5 +1,5 @@
 @import url('variables.css');
-
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wdth,wght@0,75..100,100..900;1,75..100,100..900&display=swap');
 body {
     background-color: var(--color-background);
     color: var(--color-text);
@@ -33,12 +33,13 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    font-family: var(--font-family-primary);
 }
 .stats div {
     display: flex;
     justify-content: space-between;
     padding: 0;
-    border-radius: 5px;
+    border-radius: var(--o-border-cards);
     margin-bottom: 10px;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
@@ -65,18 +66,17 @@ body {
     top: 50%;
     transform: translateY(-50%);
     font-size: var(--font-size-small);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
 }
 .stats div:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 .stats div:active {
-    transform: scale(0.98);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    outline: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
 }
-.stats .pending { background: var(--color-primary); }
-.stats .approved { background: var(--color-primary); }
-.stats .rejected { background: var(--color-primary); }
+
 .stats a {
     color: white;
     text-decoration: none;
@@ -86,7 +86,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    border-radius: 25px;
+    border-radius: var(--o-border-cards);
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
     user-select: none;
@@ -97,12 +97,22 @@ body {
     background: none;
     color: white;
     font-size: var(--font-size-small);
+    font-family: var(--font-family-primary);
 }
 .stats button .count {
     background: rgba(0, 0, 0, 0.2);
     padding: 5px 10px;
-    border-radius: 50%;
+    border-radius: var(--o-border-cards);
     margin-left: 10px;
+}
+.stats .pending .count {
+    background: #ff8049;
+}
+.stats .approved .count {
+    background: #378b74;
+}
+.stats .rejected .count {
+    background: rgba(255, 0, 0, 0.2);
 }
 .stats button:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -125,7 +135,7 @@ body {
     padding: 10px;
     width: 45%;
     border: 1px solid var(--color-secondary-background);
-    border-radius: 5px;
+    border-radius: var(--o-border-cards);
     background-color: var(--color-background);
     color: var(--color-text);
 }
@@ -139,7 +149,7 @@ body {
     align-items: center;
     background: var(--color-secondary-background);
     padding: 10px;
-    border-radius: 10px;
+    border-radius: var(--o-border-cards);
 }
 
 .card img {
@@ -152,7 +162,7 @@ body {
     margin-left: auto;
     padding: 5px 10px;
     border: none;
-    border-radius: 5px;
+    border-radius: var(--o-border-cards);
     background: var(--color-primary);
     cursor: pointer;
 }

@@ -15,7 +15,7 @@ body {
     padding: 10px;
     width: 45%;
     border: 1px solid var(--color-secondary-background);
-    border-radius: 5px;
+    border-radius: var(--o-border-cards);
     background-color: var(--color-background);
     color: var(--color-text);
 }
@@ -24,7 +24,7 @@ body {
     align-items: center;
     background: var(--color-background);
     padding: 10px;
-    border-radius: 10px;
+    border-radius: var(--o-border-cards);
     position: relative;
     height: 64px;
 }
@@ -38,7 +38,7 @@ body {
     margin-left: auto;
     padding: 5px 10px;
     border: none;
-    border-radius: 5px;
+    border-radius: var(--o-border-cards);
     background: var(--color-primary);
     color: white;
     text-decoration: none;
@@ -49,4 +49,14 @@ body {
 .card .detail-link:hover {
     background: var(--color-hover);
     color: var(--color-hover-text);
+}
+
+.user-name {
+    font-family: var(--font-family-primary);
+    font-weight: bold;
+}
+
+.education-title {
+    font-family: var(--font-family-primary);
+    font-weight: normal;
 }

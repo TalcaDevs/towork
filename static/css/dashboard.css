@@ -23,7 +23,7 @@ body {
     align-items: center;
     background: var(--color-secondary-background);
     padding: 10px;
-    border-radius: 10px;
+    border-radius: var(--o-border-cards);
 }
 
 .card img {
@@ -37,7 +37,7 @@ body {
     margin-left: auto;
     padding: 5px 10px;
     border: none;
-    border-radius: 5px;
+    border-radius: var(--o-border-cards);
     background: var(--color-primary);
     cursor: pointer;
 }

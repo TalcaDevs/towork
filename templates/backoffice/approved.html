@@ -8,8 +8,10 @@
         <img src="{% static 'images/default_profile.png' %}" alt="Perfil">
     {% endif %}
     <div>
-        <strong>{{ solicitud.usuario.first_name }} {{ solicitud.usuario.last_name }}</strong>
-        <p>{{ solicitud.descripcion }}</p>
+        <strong class="user-name">{{ solicitud.usuario.first_name }} {{ solicitud.usuario.last_name }}</strong>
+        {% for educacion in solicitud.usuario.educacion.all %}
+            <p class="education-title">{{ educacion.titulo }}</p>
+        {% endfor %}
     </div>
     <button class="detail-link" onclick="location.href='?estado=card_detail&user_id={{ solicitud.usuario.pk }}'">Ver detalle</button>
 </div>
