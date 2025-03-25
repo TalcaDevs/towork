@@ -157,15 +157,21 @@ def guardar_perfil_completo(request):
     UserLanguage.objects.filter(usuario=user).delete()
     idiomas_data = request.data.get("idiomas", [])
     for idioma in idiomas_data:
-        language, _ = Language.objects.get_or_create(nombre=idioma["nombre"])
-        user_language, created = UserLanguage.objects.get_or_create(
-            usuario=user,
-            language=language,
-            defaults={"nivel": idioma["nivel"]}  # Solo se guarda si no existe
-        )
-        if not created:
-            user_language.nivel = idioma["nivel"]  # Si ya existe, actualiza el nivel
-            user_language.save()
+        nombre_idioma = idioma.get("language", {}).get("nombre")
+        if not nombre_idioma:
+            continue  # Evita errores si no hay nombre
+
+    language, _ = Language.objects.get_or_create(nombre=nombre_idioma)
+    
+    user_language, created = UserLanguage.objects.get_or_create(
+        usuario=user,
+        language=language,
+        defaults={"nivel": idioma["nivel"]}  # Solo se guarda si no existe
+    )
+    if not created:
+        user_language.nivel = idioma["nivel"]  # Si ya existe, actualiza el nivel
+        user_language.save()
+
 
     solicitud, created = Solicitud.objects.get_or_create(
         usuario=user,
