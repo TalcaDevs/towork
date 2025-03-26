@@ -14,7 +14,37 @@ from django.contrib.auth.hashers import make_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from .models import Solicitud
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
 
+@extend_schema(
+    tags=['authentication'],
+    operation_id='signup',
+    summary='Registrar nuevo usuario',
+    description='Endpoint para registrar nuevos usuarios con nombre, apellido, email y contraseña.',
+    request={
+        'application/json': {
+            'type': 'object',
+            'properties': {
+                'first_name': {'type': 'string', 'example': 'Juan'},
+                'last_name': {'type': 'string', 'example': 'Pérez'},
+                'email': {'type': 'string', 'format': 'email', 'example': 'usuario@ejemplo.com'},
+                'password': {'type': 'string', 'format': 'password', 'example': '********'}
+            },
+            'required': ['first_name', 'last_name', 'email', 'password']
+        }
+    },
+    responses={
+        201: OpenApiResponse(description='Usuario registrado exitosamente',
+                          examples={
+                              'application/json': {
+                                  'message': 'Usuario registrado exitosamente',
+                                  'access': 'eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...',
+                                  'refresh': 'eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...'
+                              }
+                          }),
+        400: OpenApiResponse(description='Error en los datos proporcionados')
+    }
+)
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def registro_usuario(request):
@@ -49,6 +79,33 @@ def registro_usuario(request):
         "refresh": str(refresh)
     }, status=status.HTTP_201_CREATED)
 
+@extend_schema(
+    tags=['authentication'],
+    operation_id='signin',
+    summary='Iniciar sesión de usuario',
+    description='Endpoint para iniciar sesión con email y contraseña y obtener tokens JWT.',
+    request={
+        'application/json': {
+            'type': 'object',
+            'properties': {
+                'email': {'type': 'string', 'format': 'email', 'example': 'usuario@ejemplo.com'},
+                'password': {'type': 'string', 'format': 'password', 'example': '********'}
+            },
+            'required': ['email', 'password']
+        }
+    },
+    responses={
+        200: OpenApiResponse(description='Inicio de sesión exitoso', 
+                          examples={
+                              'application/json': {
+                                  'message': 'Inicio de sesión exitoso',
+                                  'access': 'eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...',
+                                  'refresh': 'eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...'
+                              }
+                          }),
+        401: OpenApiResponse(description='Credenciales inválidas')
+    }
+)
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def login_usuario(request):
@@ -73,7 +130,98 @@ def login_usuario(request):
     else:
         return Response({"error": "Credenciales inválidas"}, status=status.HTTP_401_UNAUTHORIZED)
 
-
+@extend_schema(
+    tags=['users'],
+    operation_id='save-profile',
+    summary='Guardar perfil completo del usuario',
+    description='Recibe toda la información del usuario (perfil, educación, experiencia, etc.) y la guarda en la base de datos.',
+    responses={
+        201: OpenApiResponse(description='Perfil guardado correctamente, solicitud en estado pendiente',
+                         examples={
+                             'application/json': {
+                                 'message': 'Perfil guardado correctamente, solicitud en estado pendiente.'
+                             }
+                         }),
+        400: OpenApiResponse(description='Error en los datos proporcionados')
+    },
+    request={
+        'application/json': {
+            'type': 'object',
+            'properties': {
+                'first_name': {'type': 'string', 'example': 'Juan'},
+                'last_name': {'type': 'string', 'example': 'Pérez'},
+                'foto_perfil': {'type': 'string', 'format': 'uri', 'example': 'https://ejemplo.com/foto.jpg'},
+                'descripcion': {'type': 'string', 'example': 'Desarrollador con 5 años de experiencia'},
+                'telefono': {'type': 'string', 'example': '+123456789'},
+                'ubicacion': {'type': 'string', 'example': 'Ciudad de México'},
+                'linkedin': {'type': 'string', 'format': 'uri', 'example': 'https://linkedin.com/in/juanperez'},
+                'id_portafolio_web': {'type': 'string', 'format': 'uri', 'example': 'https://portafolio.dev/juanperez'},
+                'educacion': {
+                    'type': 'array',
+                    'items': {
+                        'type': 'object',
+                        'properties': {
+                            'institucion': {'type': 'string', 'example': 'Universidad Ejemplo'},
+                            'titulo': {'type': 'string', 'example': 'Ingeniería en Sistemas'},
+                            'fecha_inicio': {'type': 'string', 'format': 'date', 'example': '2015-09-01'},
+                            'fecha_fin': {'type': 'string', 'format': 'date', 'example': '2020-06-30'}
+                        },
+                        'required': ['institucion', 'titulo', 'fecha_inicio']
+                    }
+                },
+                'experiencia': {
+                    'type': 'array',
+                    'items': {
+                        'type': 'object',
+                        'properties': {
+                            'empresa': {'type': 'string', 'example': 'Empresa Ejemplo'},
+                            'puesto': {'type': 'string', 'example': 'Desarrollador Senior'},
+                            'descripcion': {'type': 'string', 'example': 'Desarrollo de aplicaciones web con Django y React'},
+                            'fecha_inicio': {'type': 'string', 'format': 'date', 'example': '2020-07-01'},
+                            'fecha_fin': {'type': 'string', 'format': 'date', 'example': '2023-01-15', 'nullable': True}
+                        },
+                        'required': ['empresa', 'puesto', 'fecha_inicio']
+                    }
+                },
+                'certificaciones': {
+                    'type': 'array',
+                    'items': {
+                        'type': 'object',
+                        'properties': {
+                            'nombre': {'type': 'string', 'example': 'Certificación Django'},
+                            'institucion': {'type': 'string', 'example': 'Django Foundation'},
+                            'fecha_obtencion': {'type': 'string', 'format': 'date', 'example': '2021-05-15'},
+                            'url_certificado': {'type': 'string', 'format': 'uri', 'example': 'https://certificaciones.com/cert123'}
+                        },
+                        'required': ['nombre', 'institucion', 'fecha_obtencion']
+                    }
+                },
+                'skills': {
+                    'type': 'array',
+                    'items': {'type': 'string'},
+                    'example': ['Python', 'Django', 'React', 'JavaScript']
+                },
+                'idiomas': {
+                    'type': 'array',
+                    'items': {
+                        'type': 'object',
+                        'properties': {
+                            'language': {
+                                'type': 'object',
+                                'properties': {
+                                    'nombre': {'type': 'string', 'example': 'Inglés'}
+                                },
+                                'required': ['nombre']
+                            },
+                            'nivel': {'type': 'string', 'enum': ['Básico', 'Intermedio', 'Avanzado', 'Nativo'], 'example': 'Avanzado'}
+                        },
+                        'required': ['language', 'nivel']
+                    }
+                }
+            }
+        }
+    }
+)
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def guardar_perfil_completo(request):
@@ -144,7 +292,6 @@ def guardar_perfil_completo(request):
             imagen_proyecto=proy.get("imagen_proyecto", ""),
         )
 
-    # 6️⃣ Guardar Skills
     # 6️⃣ Guardar Skills sin duplicados
     UserSkill.objects.filter(usuario=user).delete()
     skills_data = request.data.get("skills", [])
@@ -152,12 +299,16 @@ def guardar_perfil_completo(request):
         skill, _ = Skill.objects.get_or_create(nombre=skill_name)
         user_skill, created = UserSkill.objects.get_or_create(usuario=user, skill=skill)
 
-
     # 7️⃣ Guardar Idiomas
     UserLanguage.objects.filter(usuario=user).delete()
     idiomas_data = request.data.get("idiomas", [])
     for idioma in idiomas_data:
-        language, _ = Language.objects.get_or_create(nombre=idioma["nombre"])
+        nombre_idioma = idioma.get("language", {}).get("nombre")
+        if not nombre_idioma:
+            continue  # Evita errores si no hay nombre
+
+        language, _ = Language.objects.get_or_create(nombre=nombre_idioma)
+        
         user_language, created = UserLanguage.objects.get_or_create(
             usuario=user,
             language=language,
@@ -180,6 +331,16 @@ def guardar_perfil_completo(request):
 
     return Response({"message": "Perfil guardado correctamente, solicitud en estado 'pendiente'."}, status=status.HTTP_201_CREATED)
 
+@extend_schema(
+    tags=['users'],
+    operation_id='get-profile',
+    summary='Obtener perfil completo del usuario',
+    description='Obtiene toda la información del usuario autenticado (perfil, educación, experiencia, etc.).',
+    responses={
+        200: UserSerializer
+    }
+)
+
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
 def obtener_perfil_completo(request):
@@ -190,7 +351,15 @@ def obtener_perfil_completo(request):
     serializer = UserSerializer(user)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
-
+@extend_schema(
+    tags=['backoffice'],
+    operation_id='list-users',
+    summary='Listar todos los usuarios',
+    description='Obtiene la lista de usuarios con toda su información (educación, experiencia, skills, etc.).',
+    responses={
+        200: UserSerializer(many=True)
+    }
+)
 @api_view(['GET'])
 @permission_classes([permissions.IsAdminUser])
 def obtener_usuarios(request):
@@ -201,7 +370,18 @@ def obtener_usuarios(request):
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
-
+@extend_schema(
+    tags=['backoffice'],
+    operation_id='list-requests',
+    summary='Listar solicitudes',
+    description='Lista todas las solicitudes de usuarios, permitiendo filtrar por estado.',
+    parameters=[
+        OpenApiParameter(name='estado', description='Filtrar por estado (pendiente, aceptada, rechazada)', required=False, type=str, enum=['pendiente', 'aceptada', 'rechazada'])
+    ],
+    responses={
+        200: SolicitudSerializer(many=True)
+    }
+)
 @api_view(['GET'])
 @permission_classes([permissions.IsAdminUser])
 def listar_solicitudes(request):
