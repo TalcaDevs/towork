@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'education',
     'projects',
     'languages',
-    'likes'
+    'likes',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -81,6 +82,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',  # Requiere autenticación
     ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 SIMPLE_JWT = {
@@ -185,3 +187,40 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'ToWork API',
+    'DESCRIPTION': 'API para plataforma ToWork de gestión de talento',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'SWAGGER_UI_SETTINGS': {
+        'deepLinking': True,
+        'persistAuthorization': True,
+        'displayOperationId': False,
+    },
+    'TAGS': [
+        {'name': 'authentication', 'description': 'Operaciones de autenticación'},
+        {'name': 'users', 'description': 'Gestión de perfil de usuario'},
+        {'name': 'backoffice', 'description': 'Operaciones administrativas'},
+        {'name': 'solicitudes', 'description': 'Gestión de solicitudes'},
+    ],
+    # Configuración detallada de seguridad
+    'SECURITY': [
+        {
+            'Bearer': {
+                'type': 'http',
+                'scheme': 'bearer',
+                'bearerFormat': 'JWT',
+                'description': 'Ingresa tu JWT token con el prefijo "Bearer ".'
+            }
+        }
+    ],
+    
+    # Personalización de Swagger UI
+    'SWAGGER_UI_SETTINGS': {
+        'deepLinking': True,
+        'persistAuthorization': True,
+        'displayOperationId': False,
+        'defaultModelsExpandDepth': -1,
+    },
+}

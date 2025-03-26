@@ -9,6 +9,7 @@ from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework import status
 from users.models import SolicitudLog
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
 
 def custom_login(request):
     if request.method == "POST":
@@ -64,6 +65,13 @@ def update_status(request, user_id):
         solicitud = Solicitud.objects.get(usuario__id=user_id)
         return render(request, 'backoffice/update_status.html', {'solicitud': solicitud})
 
+@extend_schema(
+    tags=['backoffice'],
+    description='Obtiene la lista de usuarios con toda su información.',
+    responses={
+        200: UserSerializer(many=True)
+    }
+)
 @api_view(['GET'])
 @permission_classes([permissions.IsAdminUser])
 def user_list(request):
@@ -71,8 +79,26 @@ def user_list(request):
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
 
+@extend_schema(
+    tags=['backoffice'],
+    description='Endpoint para cambiar el estado de la solicitud de un usuario (pendiente, aceptada, rechazada).',
+    request={
+        'application/json': {
+            'type': 'object',
+            'properties': {
+                'estado': {'type': 'string', 'enum': ['pendiente', 'aceptada', 'rechazada']}
+            },
+            'required': ['estado']
+        }
+    },
+    responses={
+        200: OpenApiResponse(description='Estado de solicitud actualizado correctamente'),
+        400: OpenApiResponse(description='Estado inválido'),
+        404: OpenApiResponse(description='Solicitud no encontrada')
+    }
+)
 @api_view(['PATCH'])
-@permission_classes([permissions.IsAdminUser])  # Solo administradores pueden cambiar el estado
+@permission_classes([permissions.IsAdminUser])
 def change_request_status(request, user_id):
     """
     Endpoint para cambiar el estado de la solicitud de un usuario (pendiente, aceptada, rechazada).
@@ -92,6 +118,13 @@ def change_request_status(request, user_id):
     except Solicitud.DoesNotExist:
         return Response({"error": "Solicitud no encontrada para este usuario"}, status=status.HTTP_404_NOT_FOUND)
 
+@extend_schema(
+    tags=['backoffice'],
+    description='Obtiene el detalle de una solicitud específica.',
+    responses={
+        200: SolicitudSerializer
+    }
+)
 @api_view(['GET'])
 @permission_classes([permissions.IsAdminUser])
 def user_detail(request, user_id):
