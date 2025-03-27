@@ -7,13 +7,20 @@
     {% else %}
         <img src="{% static 'images/default_profile.png' %}" alt="Perfil">
     {% endif %}
-    <div>
-        <strong>{{ solicitud.usuario.first_name }} {{ solicitud.usuario.last_name }}</strong>
-        {% for educacion in solicitud.usuario.educacion.all %}
-                    <p>{{ educacion.titulo }}</p>
-                        
-                {% endfor %}
+    <div class="card-info">
+        <span class="user-name">{{ solicitud.usuario.first_name }} {{ solicitud.usuario.last_name }}</span>
+        {% with first_education=solicitud.usuario.educacion.all.first %}
+            {% if first_education %}
+                <p class="education-title">{{ first_education.titulo }}</p>
+            {% else %}
+                <p class="education-title">Sin información educativa</p>
+            {% endif %}
+        {% endwith %}
     </div>
     <button class="detail-link" onclick="location.href='?estado=card_detail&user_id={{ solicitud.usuario.pk }}'">Ver detalle</button>
+</div>
+{% empty %}
+<div class="empty-state">
+    <p>No hay perfiles rechazados por el momento</p>
 </div>
 {% endfor %}

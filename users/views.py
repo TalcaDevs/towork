@@ -196,6 +196,20 @@ def login_usuario(request):
                         'required': ['nombre', 'institucion', 'fecha_obtencion']
                     }
                 },
+                'proyectos': {
+                    'type': 'array',
+                    'items': {
+                        'type': 'object',
+                        'properties': {
+                            'titulo': {'type': 'string', 'example': 'Sistema de Gestión de Inventario'},
+                            'descripcion': {'type': 'string', 'example': 'Aplicación web para gestionar inventario de productos con reportes y alertas'},
+                            'herramientas_usadas': {'type': 'string', 'example': 'Django, React, Docker'},
+                            'url_proyecto': {'type': 'string', 'format': 'uri', 'example': 'https://github.com/usuario/proyecto', 'nullable': True},
+                            'imagen_proyecto': {'type': 'string', 'format': 'uri', 'example': 'https://ejemplo.com/captura.jpg', 'nullable': True}
+                        },
+                        'required': ['titulo', 'descripcion', 'herramientas_usadas']
+                    }
+                },
                 'skills': {
                     'type': 'array',
                     'items': {'type': 'string'},

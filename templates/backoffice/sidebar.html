@@ -1,8 +1,73 @@
+{% load static %}
 <div class="sidebar">
-    <h1 class="centered">Towork</h1>
+    <div class="sidebar-logo">
+        <h1 class="centered">Towork</h1>
+    </div>
+    
     <div class="stats">
-        <button class="pending" onclick="location.href='?estado=pendientes'">Pendientes <span class="count">{{ pendientes|length }}</span></button>
-        <button class="approved" onclick="location.href='?estado=aprobados'">Aprobadas <span class="count">{{ aprobados|length }}</span></button>
-        <button class="rejected" onclick="location.href='?estado=rechazados'">Rechazadas <span class="count">{{ rechazados|length }}</span></button>
+        <p class="stats-title">Solicitudes</p>
+        <a href="?estado=pendientes" class="stats-button pending">
+            <div class="stats-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+            </div>
+            <span class="button-text">Pendientes</span>
+            <span class="count">{{ pendientes|length }}</span>
+        </a>
+        
+        <a href="?estado=aprobados" class="stats-button approved">
+            <div class="stats-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+            </div>
+            <span class="button-text">Aprobadas</span>
+            <span class="count">{{ aprobados|length }}</span>
+        </a>
+        
+        <a href="?estado=rechazados" class="stats-button rejected">
+            <div class="stats-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+            </div>
+            <span class="button-text">Rechazadas</span>
+            <span class="count">{{ rechazados|length }}</span>
+        </a>
+    </div>
+    
+    <!-- User profile section at bottom of sidebar -->
+    <div class="user-profile">
+        <div class="user-profile-inner">
+            {% if request.user.foto_perfil %}
+                <img src="{{ request.user.foto_perfil }}" alt="Avatar" class="user-avatar">
+            {% else %}
+                <!-- Placeholder avatar SVG -->
+                <div class="user-avatar-placeholder">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+            {% endif %}
+            <div class="user-info">
+                <p class="user-name">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+                <p class="user-role">{{ request.user.get_rol_display }}</p>
+            </div>
+            <form id="logout-form" method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="logout-button" title="Cerrar sesión">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+                        <line x1="12" y1="2" x2="12" y2="12"></line>
+                    </svg>
+                </button>
+            </form>
+        </div>
     </div>
 </div>

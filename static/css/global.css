@@ -1,5 +1,7 @@
 @import url('variables.css');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wdth,wght@0,75..100,100..900;1,75..100,100..900&display=swap');
+
+/* ======== ESTILOS GENERALES ======== */
 body {
     background-color: var(--color-background);
     color: var(--color-text);
@@ -9,32 +11,191 @@ body {
     padding: 0;
     box-sizing: border-box;
 }
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.main-content {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ======== ESTILOS DEL SIDEBAR ======== */
 .sidebar {
     background: var(--color-background);
-    color: #e0e0e0;
-    padding: 20px;
+    color: var(--color-text);
+    padding: 30px 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 919px;
+    height: 93dvh;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+    position: relative;
 }
+
+.sidebar-logo {
+    margin-bottom: 40px;
+    transition: transform 0.3s;
+}
+
+.sidebar-logo:hover {
+    transform: scale(1.05);
+}
+
 .sidebar h1 {
     font-size: var(--font-size-xlarge);
     font-family: var(--font-family-primary);
     color: var(--color-text);
+    margin-bottom: 10px;
 }
+
 .sidebar h1.centered {
     text-align: center;
     width: 100%;
 }
+
+/* Estilos para la sección de estadísticas */
 .stats {
     width: 100%;
-    margin-top: 100px;
+    margin: 20px 0 30px 0;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    font-family: var(--font-family-primary);
 }
+
+.stats-title {
+    font-size: var(--font-size-small);
+    color: #999;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding-left: 10px;
+    font-weight: 600;
+}
+
+.stats a {
+    color: white;
+    text-decoration: none;
+}
+
+/* Estilos para los botones de estadísticas mejorados */
+.stats-button {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    border-radius: var(--o-border-cards);
+    background: var(--color-secondary-background);
+    color: var(--color-text);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stats-button::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    border-radius: 2px;
+    transition: all 0.2s ease;
+}
+
+.stats-button.pending::before {
+    background-color: #ff8049;
+}
+
+.stats-button.approved::before {
+    background-color: #378b74;
+}
+
+.stats-button.rejected::before {
+    background-color: #dc3545;
+}
+
+.stats-button:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    transform: translateX(4px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.stats-button:active {
+    transform: translateX(4px) scale(0.98);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.stats-icon {
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+}
+
+.stats-button.pending .stats-icon {
+    color: #ff8049;
+}
+
+.stats-button.approved .stats-icon {
+    color: #378b74;
+}
+
+.stats-button.rejected .stats-icon {
+    color: #dc3545;
+}
+
+.stats-button .button-text {
+    flex: 1;
+    font-size: var(--font-size-small);
+    font-weight: 500;
+}
+
+.stats-button .count {
+    background: rgba(0, 0, 0, 0.2);
+    min-width: 28px;
+    height: 28px;
+    padding: 0 8px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.stats-button.pending .count {
+    background-color: #ff8049;
+    color: white;
+}
+
+.stats-button.approved .count {
+    background-color: #378b74;
+    color: white;
+}
+
+.stats-button.rejected .count {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Animación para los botones de estadísticas */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.stats-button:hover .stats-icon {
+    animation: pulse 1s infinite;
+}
+
+/* Mantenemos compatibilidad con los estilos antiguos */
 .stats div {
     display: flex;
     justify-content: space-between;
@@ -48,6 +209,7 @@ body {
     position: relative;
     background: var(--color-secondary-background);
 }
+
 .stats a.full-link {
     position: absolute;
     top: 0;
@@ -60,6 +222,7 @@ body {
     padding: 10px;
     box-sizing: border-box;
 }
+
 .stats div span {
     position: absolute;
     right: 10px;
@@ -67,83 +230,348 @@ body {
     transform: translateY(-50%);
     font-size: var(--font-size-small);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-
-}
-.stats div:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-.stats div:active {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-
 }
 
-.stats a {
-    color: white;
-    text-decoration: none;
-}
 .stats button {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
+    padding: 14px 16px;
     border-radius: var(--o-border-cards);
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: all 0.2s ease;
     user-select: none;
-    -webkit-tap-highlight-color: transparent;
     border: none;
-    width: 80%;
-    margin: 0 auto;
-    background: none;
-    color: white;
+    width: 100%;
+    background: var(--color-secondary-background);
+    color: var(--color-text);
     font-size: var(--font-size-small);
     font-family: var(--font-family-primary);
+    position: relative;
+    overflow: hidden;
 }
+
+.stats button::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    transition: all 0.2s ease;
+}
+
+.stats .pending button::before {
+    background-color: #ff8049;
+}
+
+.stats .approved button::before {
+    background-color: #378b74;
+}
+
+.stats .rejected button::before {
+    background-color: #dc3545;
+}
+
 .stats button .count {
     background: rgba(0, 0, 0, 0.2);
     padding: 5px 10px;
     border-radius: var(--o-border-cards);
     margin-left: 10px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 24px;
+    height: 24px;
+    font-size: 12px;
+    font-weight: bold;
+    transition: all 0.2s ease;
 }
+
+.stats button .button-text {
+    flex: 1;
+    text-align: left;
+}
+
 .stats .pending .count {
     background: #ff8049;
 }
+
 .stats .approved .count {
     background: #378b74;
 }
+
 .stats .rejected .count {
     background: rgba(255, 0, 0, 0.2);
 }
-.stats button:hover {
+
+.stats div:hover, .stats button:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    transform: translateX(4px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-.stats button:active {
+
+.stats div:active, .stats button:active {
     transform: scale(0.98);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     outline: none;
 }
+
+/* Estilos para el perfil de usuario en el sidebar */
+.user-profile {
+    margin-top: auto;
+    padding-top: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-profile-inner {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    width: 100%;
+    border-radius: var(--o-border-cards);
+    transition: background-color 0.2s;
+}
+
+.user-profile-inner:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.user-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.user-avatar-placeholder {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.user-avatar-placeholder svg {
+    color: #EEEEEE;
+}
+
+.user-info {
+    flex: 1;
+}
+
+.user-name {
+    font-weight: bold;
+    font-size: 14px;
+    color: var(--color-text);
+    margin: 0;
+}
+
+.user-role {
+    font-size: 12px;
+    color: #999;
+    margin: 0;
+}
+
+.logout-button {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.logout-button:hover {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+}
+
+/* ======== ESTILOS DEL NAVBAR ======== */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    background-color: var(--color-secondary-background);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar nav {
+    width: 100%;
+    background: var(--color-secondary-background);
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-title {
+    font-size: var(--font-size-medium);
+    font-weight: bold;
+    color: var(--color-text);
+    margin: 0;
+}
+
+.navbar-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.navbar button {
+    background-color: var(--color-primary);
+    color: var(--color-text);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.navbar button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbar button:active {
+    transform: scale(0.95);
+}
+
+.navbar button img {
+    width: 20px;
+    height: 20px;
+}
+
+.navbar button svg {
+    color: #EEEEEE;
+}
+
+.navbar button.logout-button {
+    margin-left: auto;
+}
+
+.navbar-search {
+    position: relative;
+    width: 300px;
+}
+
+.navbar-search input {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--color-text);
+    border: none;
+    border-radius: 20px;
+    padding: 10px 15px 10px 40px;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.navbar-search input:focus {
+    background-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+    outline: none;
+}
+
+.navbar-search::before {
+    content: '🔍';
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 14px;
+}
+
+/* Notification icon with badge */
+.notification-button {
+    position: relative;
+}
+
+.notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #ff8049;
+    color: white;
+    font-size: 10px;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* ======== ESTILOS DEL CONTENIDO ======== */
 .content {
     flex-grow: 1;
     background: var(--color-secondary-background);
 }
+
+.components {
+    padding: 20px;
+    flex-grow: 1;
+    background: var(--color-secondary-background);
+}
+
+/* Estilos para el filtro de búsqueda */
 .search-filter {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
 }
+
 .search-filter input {
-    padding: 10px;
+    padding: 12px 16px;
     width: 45%;
     border: 1px solid var(--color-secondary-background);
     border-radius: var(--o-border-cards);
     background-color: var(--color-background);
     color: var(--color-text);
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
+
+.search-filter input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(34, 34, 34, 0.3);
+}
+
+/* Estilos para las tarjetas */
 .card-container {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
+
 .card {
     display: none;
     align-items: center;
@@ -158,6 +586,7 @@ body {
     border-radius: 50%;
     margin-right: 10px;
 }
+
 .card button {
     margin-left: auto;
     padding: 5px 10px;
@@ -166,48 +595,22 @@ body {
     background: var(--color-primary);
     cursor: pointer;
 }
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    background-color: var(--color-secondary-background);
+
+/* Estilos para el estado vacío */
+.empty-state {
+    background-color: var(--color-background);
+    padding: 30px;
+    text-align: center;
+    border-radius: var(--o-border-cards);
+    margin: 20px 0;
 }
-.navbar nav {
-    width: 100%;
-    background: var(--color-secondary-background);
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+
+.empty-state p {
+    color: #999;
+    font-style: italic;
 }
-.navbar button {
-    padding: 10px;
-    border: none;
-    border-radius: 50%;
-    background: var(--color-background);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.navbar button img {
-    width: 20px;
-    height: 20px;
-}
-.navbar button.logout-button {
-    margin-left: auto;
-}
-.components {
-    padding: 20px;
-    flex-grow: 1;
-    background: var(--color-secondary-background);
-}
-.container {
-    display: flex;
-    height: 100vh;
-}
-.main-content {
-    width: 80%;
-    display: flex;
-    flex-direction: column;
+
+/* ======== ESTILOS GENERALES PARA SVG E ICONOS ======== */
+.sidebar button svg {
+    color: #EEEEEE;
 }
