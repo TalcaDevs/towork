@@ -1,104 +1,383 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/detail.css' %}">
 <link rel="stylesheet" href="{% static 'css/popup.css' %}">
+
 <div class="detail-container">
-    <div class="internal-sidebar-section">
-        <div class="internal-sidebar">
+    <!-- Panel lateral con info básica y acciones -->
+    <div class="profile-sidebar">
+        <div class="profile-card">
             <div class="profile-header">
-                <img src="{{ solicitud.usuario.foto_perfil|default:'/static/images/default_profile.png' }}" alt="Perfil">
-                <div class="profile-info">
-                    <h1>{{ solicitud.usuario.first_name }} {{ solicitud.usuario.last_name }}</h1>
-                    <p>{{ solicitud.usuario.email }}</p>
+                <img src="{{ solicitud.usuario.foto_perfil|default:'/static/images/default_profile.png' }}" alt="Perfil de {{ solicitud.usuario.first_name }}">
+            </div>
+            <div class="profile-info">
+                <h1>{{ solicitud.usuario.first_name }} {{ solicitud.usuario.last_name }}</h1>
+                <p class="profile-email">{{ solicitud.usuario.email }}</p>
+                
+                <!-- Información de contacto crítica -->
+                <div class="contact-quick-info">
+                    {% if solicitud.usuario.telefono %}
+                    <div class="contact-item">
+                        <span class="contact-icon">📱</span>
+                        <span>{{ solicitud.usuario.telefono }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    {% if solicitud.usuario.ubicacion %}
+                    <div class="contact-item">
+                        <span class="contact-icon">📍</span>
+                        <span>{{ solicitud.usuario.ubicacion }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Enlaces sociales y externos -->
+                <div class="profile-links">
+                    {% if solicitud.usuario.linkedin %}
+                    <a href="{{ solicitud.usuario.linkedin }}" target="_blank" class="social-link linkedin">
+                        <span class="social-icon">LinkedIn</span>
+                    </a>
+                    {% endif %}
+                    
+                    {% if solicitud.usuario.id_portafolio_web %}
+                    <a href="{{ solicitud.usuario.id_portafolio_web }}" target="_blank" class="social-link portfolio">
+                        <span class="social-icon">Portfolio</span>
+                    </a>
+                    {% endif %}
                 </div>
             </div>
-            <div class="internal-sidebar-menu">
-                <button onclick="showSection('contact-info')">Información de Contacto</button>
-                <button onclick="showSection('education')">Educación</button>
-                <button onclick="showSection('certifications')">Certificaciones</button>
-                <button onclick="showSection('experience')">Experiencia Laboral</button>
-                <button onclick="showSection('projects')">Proyectos</button>
+            
+            <!-- Metadatos de la solicitud -->
+            <div class="request-metadata">
+                <div class="metadata-item">
+                    <span class="metadata-label">Fecha de solicitud:</span>
+                    <span class="metadata-value">{{ solicitud.fecha_creacion|date:"d/m/Y H:i" }}</span>
+                </div>
+                <div class="metadata-item">
+                    <span class="metadata-label">Estado actual:</span>
+                    <span class="metadata-value status-badge {{ solicitud.estado }}">{{ solicitud.estado|title }}</span>
+                </div>
             </div>
+            
+            <!-- Botones de acción principales -->
             <div class="action-buttons">
-                <button onclick="showPopup()">Actualizar Estado</button>
-                <button onclick="window.history.back()">Volver</button>
+                <button class="btn-primary" onclick="showPopup()">Cambiar Estado</button>
+                <button class="btn-secondary" onclick="window.history.back()">Volver</button>
             </div>
         </div>
     </div>
-    <div class="detail-section">
-        <div class="detail-card">
-            <div id="contact-info" class="detail-content">
-                <h2>Información de Contacto</h2>
-                <p><strong>Email:</strong> {{ solicitud.usuario.email }}</p>
-                <p><strong>Teléfono:</strong> {{ solicitud.usuario.telefono }}</p>
-                <p><strong>Ubicación:</strong> {{ solicitud.usuario.ubicacion }}</p>
-                <p><strong>LinkedIn:</strong> <a href="{{ solicitud.usuario.linkedin }}" target="_blank">{{ solicitud.usuario.linkedin }}</a></p>
-                <p><strong>Portafolio:</strong> <a href="{{ solicitud.usuario.id_portafolio_web }}" target="_blank">{{ solicitud.usuario.id_portafolio_web }}</a></p>
-            </div>
-            <div id="education" class="detail-content" style="display: none;">
-                <h2>Educación</h2>
-                {% for educacion in solicitud.usuario.educacion.all %}
-                    <div class="education-item">
-                        <h3>{{ educacion.titulo }}</h3>
-                        <p>{{ educacion.institucion }}</p>
-                        <p>{{ educacion.fecha_inicio }} - {{ educacion.fecha_fin }}</p>
+    
+    <!-- Contenido principal con tabs -->
+    <div class="detail-content-wrapper">
+        <!-- Menú de navegación en pestañas -->
+        <div class="detail-tabs">
+            <button class="tab-button active" data-tab="summary">Resumen</button>
+            <button class="tab-button" data-tab="education">Educación</button>
+            <button class="tab-button" data-tab="experience">Experiencia</button>
+            <button class="tab-button" data-tab="certifications">Certificaciones</button>
+            <button class="tab-button" data-tab="projects">Proyectos</button>
+            <button class="tab-button" data-tab="skills">Habilidades</button>
+        </div>
+        
+        <!-- Contenedor del contenido de las pestañas -->
+        <div class="detail-content">
+            <!-- Tab: Resumen -->
+            <div id="summary" class="tab-content active">
+                <h2>Descripción General</h2>
+                <div class="summary-card">
+                    {% if solicitud.usuario.descripcion %}
+                    <div class="summary-description">
+                        <h3>Sobre el candidato</h3>
+                        <p>{{ solicitud.usuario.descripcion }}</p>
                     </div>
-                {% endfor %}
-            </div>
-            <div id="certifications" class="detail-content" style="display: none;">
-                <h2>Certificaciones</h2>
-                {% for certificacion in solicitud.usuario.certificaciones.all %}
-                    <div class="certification-item">
-                        <h3>{{ certificacion.nombre }}</h3>
-                        <p>{{ certificacion.institucion }}</p>
-                        <p>{{ certificacion.fecha_obtencion }}</p>
-                        <p><a href="{{ certificacion.url_certificado }}" target="_blank">Ver Certificado</a></p>
-                    </div>
-                {% endfor %}
-            </div>
-            <div id="experience" class="detail-content" style="display: none;">
-                <h2>Experiencia Laboral</h2>
-                {% for experiencia in solicitud.usuario.experiencia_laboral.all %}
-                    <div class="experience-item">
-                        <h3>{{ experiencia.puesto }}</h3>
-                        <p>{{ experiencia.empresa }}</p>
-                        <p>{{ experiencia.fecha_inicio }} - {{ experiencia.fecha_fin|default:"Actualidad" }}</p>
-                        <p>{{ experiencia.descripcion }}</p>
-                    </div>
-                {% endfor %}
-            </div>
-            <div id="projects" class="detail-content" style="display: none;">
-                <h2>Proyectos</h2>
-                {% for proyecto in solicitud.usuario.proyectos.all %}
-                    <div class="project-item">
-                        <h3>{{ proyecto.titulo }}</h3>
-                        <p>{{ proyecto.descripcion }}</p>
-                        <p><strong>Herramientas Usadas:</strong> {{ proyecto.herramientas_usadas }}</p>
-                        <p><a href="{{ proyecto.url_proyecto }}" target="_blank">Ver Proyecto</a></p>
-                        {% if proyecto.imagen_proyecto %}
-                            <img src="{{ proyecto.imagen_proyecto }}" alt="Imagen del Proyecto" style="max-width: 100%;">
+                    {% else %}
+                    <p class="no-data">No ha proporcionado una descripción.</p>
+                    {% endif %}
+                    
+                    <!-- Resumen de educación -->
+                    <div class="summary-section">
+                        <h3>Formación Académica</h3>
+                        {% if solicitud.usuario.educacion.all %}
+                            <ul class="summary-list">
+                                {% for educacion in solicitud.usuario.educacion.all|slice:":2" %}
+                                    <li>
+                                        <strong>{{ educacion.titulo }}</strong> - {{ educacion.institucion }}
+                                    </li>
+                                {% endfor %}
+                                {% if solicitud.usuario.educacion.all|length > 2 %}
+                                    <li class="more-items">
+                                        <a href="#" onclick="switchTab('education'); return false;">+ {{ solicitud.usuario.educacion.all|length|add:"-2" }} más</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        {% else %}
+                            <p class="no-data">No hay información de educación</p>
                         {% endif %}
                     </div>
-                {% endfor %}
+                    
+                    <!-- Resumen de experiencia -->
+                    <div class="summary-section">
+                        <h3>Experiencia Laboral</h3>
+                        {% if solicitud.usuario.experiencia_laboral.all %}
+                            <ul class="summary-list">
+                                {% for experiencia in solicitud.usuario.experiencia_laboral.all|slice:":2" %}
+                                    <li>
+                                        <strong>{{ experiencia.puesto }}</strong> - {{ experiencia.empresa }}
+                                    </li>
+                                {% endfor %}
+                                {% if solicitud.usuario.experiencia_laboral.all|length > 2 %}
+                                    <li class="more-items">
+                                        <a href="#" onclick="switchTab('experience'); return false;">+ {{ solicitud.usuario.experiencia_laboral.all|length|add:"-2" }} más</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        {% else %}
+                            <p class="no-data">No hay información de experiencia laboral</p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Resumen de habilidades -->
+                    <div class="summary-section">
+                        <h3>Habilidades</h3>
+                        {% if solicitud.usuario.skills.all %}
+                            <div class="skills-tags">
+                                {% for skill in solicitud.usuario.skills.all|slice:":5" %}
+                                    <span class="skill-tag">{{ skill.skill.nombre }}</span>
+                                {% endfor %}
+                                {% if solicitud.usuario.skills.all|length > 5 %}
+                                    <span class="skill-tag more">
+                                        <a href="#" onclick="switchTab('skills'); return false;">+ {{ solicitud.usuario.skills.all|length|add:"-5" }}</a>
+                                    </span>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <p class="no-data">No hay habilidades registradas</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tab: Educación -->
+            <div id="education" class="tab-content">
+                <h2>Educación</h2>
+                <div class="detail-cards-container">
+                    {% if solicitud.usuario.educacion.all %}
+                        {% for educacion in solicitud.usuario.educacion.all %}
+                            <div class="detail-card education-card">
+                                <div class="card-header">
+                                    <h3>{{ educacion.titulo }}</h3>
+                                    <div class="time-period">
+                                        <span class="date">{{ educacion.fecha_inicio|date:"M Y" }} - {{ educacion.fecha_fin|date:"M Y"|default:"Actualidad" }}</span>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <p class="institution">{{ educacion.institucion }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="no-data-message">No hay información de educación registrada.</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Tab: Experiencia Laboral -->
+            <div id="experience" class="tab-content">
+                <h2>Experiencia Laboral</h2>
+                <div class="detail-cards-container">
+                    {% if solicitud.usuario.experiencia_laboral.all %}
+                        {% for experiencia in solicitud.usuario.experiencia_laboral.all %}
+                            <div class="detail-card experience-card">
+                                <div class="card-header">
+                                    <h3>{{ experiencia.puesto }}</h3>
+                                    <div class="time-period">
+                                        <span class="date">{{ experiencia.fecha_inicio|date:"M Y" }} - {{ experiencia.fecha_fin|date:"M Y"|default:"Actualidad" }}</span>
+                                        {% if not experiencia.fecha_fin %}
+                                            <span class="current-badge">Actual</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <p class="company">{{ experiencia.empresa }}</p>
+                                    {% if experiencia.descripcion %}
+                                        <div class="description">
+                                            <p>{{ experiencia.descripcion }}</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="no-data-message">No hay experiencia laboral registrada.</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Tab: Certificaciones -->
+            <div id="certifications" class="tab-content">
+                <h2>Certificaciones</h2>
+                <div class="detail-cards-container">
+                    {% if solicitud.usuario.certificaciones.all %}
+                        {% for certificacion in solicitud.usuario.certificaciones.all %}
+                            <div class="detail-card certification-card">
+                                <div class="card-header">
+                                    <h3>{{ certificacion.nombre }}</h3>
+                                    <div class="time-period">
+                                        <span class="date">{{ certificacion.fecha_obtencion|date:"M Y" }}</span>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <p class="institution">{{ certificacion.institucion }}</p>
+                                    {% if certificacion.url_certificado %}
+                                        <a href="{{ certificacion.url_certificado }}" target="_blank" class="certificate-link">
+                                            Ver Certificado
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="no-data-message">No hay certificaciones registradas.</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Tab: Proyectos -->
+            <div id="projects" class="tab-content">
+                <h2>Proyectos</h2>
+                <div class="detail-cards-container">
+                    {% if solicitud.usuario.proyectos.all %}
+                        {% for proyecto in solicitud.usuario.proyectos.all %}
+                            <div class="detail-card project-card">
+                                <div class="card-header">
+                                    <h3>{{ proyecto.titulo }}</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="description">
+                                        <p>{{ proyecto.descripcion }}</p>
+                                    </div>
+                                    <div class="project-details">
+                                        <div class="tools">
+                                            <h4>Herramientas</h4>
+                                            <div class="tools-list">
+                                                {% for tool in proyecto.herramientas_usadas.split|slice:":4" %}
+                                                    <span class="tool-tag">{{ tool }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% if proyecto.url_proyecto %}
+                                            <a href="{{ proyecto.url_proyecto }}" target="_blank" class="project-link">
+                                                Ver Proyecto
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                    {% if proyecto.imagen_proyecto %}
+                                        <div class="project-image">
+                                            <img src="{{ proyecto.imagen_proyecto }}" alt="Imagen del proyecto {{ proyecto.titulo }}">
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="no-data-message">No hay proyectos registrados.</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Tab: Habilidades -->
+            <div id="skills" class="tab-content">
+                <h2>Habilidades y Competencias</h2>
+                <div class="skills-section">
+                    {% if solicitud.usuario.skills.all %}
+                        <div class="skills-container">
+                            <h3>Habilidades Técnicas</h3>
+                            <div class="skills-cloud">
+                                {% for skill in solicitud.usuario.skills.all %}
+                                    <span class="skill-tag">{{ skill.skill.nombre }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% else %}
+                        <p class="no-data-message">No hay habilidades técnicas registradas.</p>
+                    {% endif %}
+                    
+                    {% if solicitud.usuario.idiomas.all %}
+                        <div class="languages-container">
+                            <h3>Idiomas</h3>
+                            <div class="languages-list">
+                                {% for idioma in solicitud.usuario.idiomas.all %}
+                                    <div class="language-item">
+                                        <span class="language-name">{{ idioma.language.nombre }}</span>
+                                        <span class="language-level level-{{ idioma.nivel|lower }}">{{ idioma.nivel }}</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% else %}
+                        <p class="no-data-message">No hay idiomas registrados.</p>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Popup para actualizar estado -->
 <div id="popup" class="popup">
     <div class="popup-content">
         <span class="close" onclick="hidePopup()">&times;</span>
         <h2>Actualizar Estado de Solicitud</h2>
         <form method="post" action="{% url 'update_status' solicitud.usuario.id %}">
             {% csrf_token %}
-            <label for="estado">Nuevo Estado:</label>
-            <select name="estado" id="estado">
-                <option value="pendiente">Pendiente</option>
-                <option value="aceptada">Aceptada</option>
-                <option value="rechazada">Rechazada</option>
-            </select>
-            <button type="submit">Actualizar</button>
+            <div class="form-group">
+                <label for="estado">Nuevo Estado:</label>
+                <select name="estado" id="estado" class="form-control">
+                    <option value="pendiente" {% if solicitud.estado == 'pendiente' %}selected{% endif %}>Pendiente</option>
+                    <option value="aceptada" {% if solicitud.estado == 'aceptada' %}selected{% endif %}>Aceptada</option>
+                    <option value="rechazada" {% if solicitud.estado == 'rechazada' %}selected{% endif %}>Rechazada</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Actualizar</button>
+                <button type="button" class="btn-secondary" onclick="hidePopup()">Cancelar</button>
+            </div>
         </form>
     </div>
 </div>
 
-<script src="{% static 'js/detail.js' %}"></script>
+<script>
+// Función para cambiar entre pestañas
+function switchTab(tabId) {
+    // Desactivar todas las pestañas
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+    });
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    
+    // Activar la pestaña seleccionada
+    document.querySelector(`.tab-button[data-tab="${tabId}"]`).classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+}
+
+// Configurar los event listeners para las pestañas
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', function() {
+            switchTab(this.getAttribute('data-tab'));
+        });
+    });
+});
+
+// Funciones para el popup
+function showPopup() {
+    document.getElementById('popup').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function hidePopup() {
+    document.getElementById('popup').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+</script>

@@ -5,20 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Backoffice - Towork</title>
-    <link rel="stylesheet" href="/static/css/global.css">
-    <link rel="stylesheet" href="/static/css/dashboard.css">
-
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <!-- Se usan los estilos que ya añadimos al global.css -->
 </head>
 <body>
     <div class="container">
         <div class="sidebar-container" style="width: 20%;">
             {% include 'backoffice/sidebar.html' %}
         </div>
-        <div class="main-content" style="width: 100%;">
-            {% include 'backoffice/navbar.html' with usuario=usuario %}
+        <div class="main-content" style="width: 80%;">
+            {% include 'backoffice/navbar.html' with estado=estado %}
             
             <div class="components">
-                {% include 'backoffice/filter.html' %}
                 <div class="card-container" id="card-container">
                     {% if estado == 'pendientes' %}
                         {% include 'backoffice/pending.html' %}

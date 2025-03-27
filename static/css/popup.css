@@ -1,92 +1,174 @@
+/* Popup.css - Estilos para ventanas modales del backoffice */
 @import url('variables.css');
 
-body {
-    background-color: var(--color-background);
-    color: var(--color-text);
-    font-family: var(--font-family-primary);
-    font-size: var(--font-size-medium);
+.popup {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.3s ease;
 }
 
-.popup {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .popup-content {
-    background-color: var(--color-secondary-background);
-    margin: 10% auto;
-    padding: 30px;
-    border: 1px solid var(--color-secondary-background);
-    width: 70%;
-    max-width: 600px;
-    border-radius: var(--o-border-cards);
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  background-color: var(--color-background);
+  margin: 10% auto;
+  padding: 30px;
+  border-radius: var(--o-border-cards);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 .close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  color: #a0a0a0;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s ease;
 }
 
 .close:hover,
 .close:focus {
-    color: white;
-    text-decoration: none;
-    cursor: pointer;
+  color: var(--color-text);
+  text-decoration: none;
 }
 
 .popup-content h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: var(--color-text);
-    font-size: var(--font-size-large);
-}
-
-.popup-content form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: var(--font-size-large);
+  color: var(--color-text);
+  font-weight: 600;
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #2c2c2c;
 }
 
 .popup-content label {
-    margin-bottom: 10px;
-    font-weight: bold;
-    color: var(--color-text);
-    font-size: var(--font-size-medium);
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--color-text);
+  font-size: var(--font-size-medium);
 }
 
 .popup-content select {
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid var(--color-secondary-background);
-    border-radius: var(--o-border-cards);
-    background-color: var(--color-secondary-background);
-    color: var(--color-text);
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #2c2c2c;
+  border-radius: var(--o-border-cards);
+  background-color: var(--color-secondary-background);
+  color: var(--color-text);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-medium);
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a0a0a0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  cursor: pointer;
+}
+
+.popup-content select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.popup-content select option {
+  background-color: var(--color-secondary-background);
+  color: var(--color-text);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.btn-primary, .btn-secondary {
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--o-border-cards);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-medium);
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-text);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-hover);
+  color: var(--color-hover-text);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-primary);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(34, 40, 49, 0.3);
+}
+
+/* Estado específico de los selectores */
+select[name="estado"] option[value="pendiente"] {
+  background-color: #ff8049;
+  color: #1a1a1a;
+}
+
+select[name="estado"] option[value="aceptada"] {
+  background-color: #378b74;
+  color: white;
+}
+
+select[name="estado"] option[value="rechazada"] {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* Media queries para responsividad */
+@media (max-width: 768px) {
+  .popup-content {
+    width: 95%;
+    padding: 20px;
+    margin: 15% auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .btn-primary, .btn-secondary {
     width: 100%;
-    max-width: 300px;
-}
-
-.popup-content button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: var(--o-border-cards);
-    background-color: var(--color-primary);
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.popup-content button:hover {
-    background-color: var(--color-hover);
-    color: var(--color-hover-text);
+    margin-bottom: 10px;
+  }
 }
