@@ -211,7 +211,6 @@
   background-color: rgba(34, 40, 49, 0.8);
 }
 
-/* Contenido principal */
 .detail-content-wrapper {
   flex: 1;
   display: flex;
@@ -220,18 +219,17 @@
   overflow-y: hidden;
 }
 
-/* Tabs de navegación */
 .detail-tabs {
   display: flex;
   border-bottom: 1px solid #2c2c2c;
   margin-bottom: 20px;
   overflow-x: auto;
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .detail-tabs::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera*/
+  display: none;
 }
 
 .tab-button {
@@ -257,7 +255,6 @@
   font-weight: 600;
 }
 
-/* Contenido de las tabs */
 .detail-content {
   flex: 1;
   overflow-y: auto;
@@ -309,7 +306,6 @@
   background-color: var(--color-primary);
 }
 
-/* Tarjetas de detalle */
 .detail-cards-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -376,7 +372,6 @@
   line-height: 1.5;
 }
 
-/* Enlaces de certificados y proyectos */
 .certificate-link, .project-link {
   display: inline-block;
   margin-top: 15px;
@@ -394,7 +389,6 @@
   color: var(--color-hover-text);
 }
 
-/* Detalles de proyectos */
 .project-details {
   margin-top: 15px;
 }
@@ -432,7 +426,6 @@
   display: block;
 }
 
-/* Sección de habilidades */
 .skills-section {
   display: flex;
   flex-direction: column;
@@ -516,7 +509,6 @@
   color: #fff;
 }
 
-/* Sección de resumen */
 .summary-card {
   background-color: var(--color-background);
   border-radius: var(--o-border-cards);
@@ -588,7 +580,6 @@
   border-radius: var(--o-border-cards);
 }
 
-/* Estilos para el formulario del popup */
 .form-group {
   margin-bottom: 20px;
 }
@@ -611,7 +602,6 @@
   margin-top: 20px;
 }
 
-/* Media queries para responsividad */
 @media (max-width: 1024px) {
   .detail-container {
     flex-direction: column;
