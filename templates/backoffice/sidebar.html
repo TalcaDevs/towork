@@ -40,14 +40,85 @@
             <span class="count">{{ rechazados_count|default:0 }}</span>
         </a>
     </div>
+    <!-- Cuenta regresiva inicio -->
+<div class="countdown-container">
+    <p class="stats-title">Tiempo restante</p>
+    <div class="countdown-box">
+        <div id="countdown-days" class="countdown-value">...</div>
+        <div class="countdown-label">días para la fecha límite</div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const countdownDate = new Date("June 20, 2025 00:00:00").getTime();
+        
+        updateCountdown();
+        
+        setInterval(updateCountdown, 86400000);
+        
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+            
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            
+            document.getElementById("countdown-days").innerHTML = days;
+            
+            if (days < 30) {
+                document.getElementById("countdown-days").classList.add("urgent");
+            }
+        }
+    });
+</script>
+
+<style>
+    .countdown-container {
+        width: 100%;
+        margin: 20px 0;
+        padding: 15px;
+        background-color: var(--color-secondary-background);
+        border-radius: var(--o-border-cards);
+        text-align: center;
+    }
     
-    <!-- User profile section at bottom of sidebar -->
+    .countdown-box {
+        background-color: rgba(0, 0, 0, 0.2);
+        padding: 15px;
+        border-radius: var(--o-border-cards);
+    }
+    
+    .countdown-value {
+        font-size: 32px;
+        font-weight: bold;
+        color: var(--color-primary);
+    }
+    
+    .countdown-label {
+        font-size: 12px;
+        color: #a0a0a0;
+        margin-top: 5px;
+    }
+    
+    .urgent {
+        color: #ff8049;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+</style>
+    <!-- Cuenta regresiva fin -->
+
+
     <div class="user-profile">
         <div class="user-profile-inner">
             {% if request.user.foto_perfil %}
                 <img src="{{ request.user.foto_perfil }}" alt="Avatar" class="user-avatar">
             {% else %}
-                <!-- Placeholder avatar SVG -->
                 <div class="user-avatar-placeholder">
                     <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>

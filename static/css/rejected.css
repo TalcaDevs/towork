@@ -22,7 +22,6 @@ body {
     color: var(--color-text);
 }
 
-/* Enhanced Card Styles */
 .card.rejected {
     display: flex;
     align-items: center;
@@ -33,9 +32,9 @@ body {
     min-height: 64px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     transition: transform 0.2s, box-shadow 0.2s;
-    border-left: 4px solid #dc3545; /* Rejected color indicator */
+    border-left: 4px solid #dc3545;
     margin-bottom: 12px;
-    opacity: 0.85; /* Slightly dimmed to indicate rejected status */
+    opacity: 0.85;
 }
 
 .card.rejected:hover {
@@ -94,7 +93,6 @@ body {
     color: var(--color-hover-text);
 }
 
-/* Status indicator */
 .status-indicator {
     display: inline-block;
     width: 10px;
@@ -118,7 +116,6 @@ body {
     font-style: italic;
 }
 
-/* Enhanced Search and Filter styles */
 .search-filter {
     display: flex;
     justify-content: space-between;

@@ -1,4 +1,4 @@
-/* Estilos para la paginación */
+
 .pagination-container {
     display: flex;
     justify-content: center;
@@ -79,13 +79,12 @@
     font-size: 0.9em;
 }
 
-/* Iconos de navegación */
+
 .pagination-arrow {
     position: relative;
     top: 1px;
 }
 
-/* Animación de pulse en hover para indicadores activos */
 @keyframes pulse-border {
     0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2); }
     70% { box-shadow: 0 0 0 4px rgba(255, 255, 255, 0); }
@@ -96,7 +95,7 @@
     animation: pulse-border 1.5s infinite;
 }
 
-/* Ajustes responsivos para paginación */
+
 @media (max-width: 768px) {
     .pagination a, .pagination span {
         padding: 8px 12px;

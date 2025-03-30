@@ -3,7 +3,6 @@
 <link rel="stylesheet" href="{% static 'css/popup.css' %}">
 
 <div class="detail-container">
-    <!-- Panel lateral con info básica y acciones -->
     <div class="profile-sidebar">
         <div class="profile-card">
             <div class="profile-header">
@@ -13,7 +12,6 @@
                 <h1>{{ solicitud.usuario.first_name }} {{ solicitud.usuario.last_name }}</h1>
                 <p class="profile-email">{{ solicitud.usuario.email }}</p>
                 
-                <!-- Información de contacto crítica -->
                 <div class="contact-quick-info">
                     {% if solicitud.usuario.telefono %}
                     <div class="contact-item">
@@ -30,7 +28,6 @@
                     {% endif %}
                 </div>
                 
-                <!-- Enlaces sociales y externos -->
                 <div class="profile-links">
                     {% if solicitud.usuario.linkedin %}
                     <a href="{{ solicitud.usuario.linkedin }}" target="_blank" class="social-link linkedin">
@@ -46,7 +43,6 @@
                 </div>
             </div>
             
-            <!-- Metadatos de la solicitud -->
             <div class="request-metadata">
                 <div class="metadata-item">
                     <span class="metadata-label">Fecha de solicitud:</span>
@@ -58,7 +54,6 @@
                 </div>
             </div>
             
-            <!-- Botones de acción principales -->
             <div class="action-buttons">
                 <button class="btn-primary" onclick="showPopup()">Cambiar Estado</button>
                 <button class="btn-secondary" onclick="window.history.back()">Volver</button>
@@ -66,9 +61,7 @@
         </div>
     </div>
     
-    <!-- Contenido principal con tabs -->
     <div class="detail-content-wrapper">
-        <!-- Menú de navegación en pestañas -->
         <div class="detail-tabs">
             <button class="tab-button active" data-tab="summary">Resumen</button>
             <button class="tab-button" data-tab="education">Educación</button>
@@ -78,9 +71,7 @@
             <button class="tab-button" data-tab="skills">Habilidades</button>
         </div>
         
-        <!-- Contenedor del contenido de las pestañas -->
         <div class="detail-content">
-            <!-- Tab: Resumen -->
             <div id="summary" class="tab-content active">
                 <h2>Descripción General</h2>
                 <div class="summary-card">
@@ -93,7 +84,6 @@
                     <p class="no-data">No ha proporcionado una descripción.</p>
                     {% endif %}
                     
-                    <!-- Resumen de educación -->
                     <div class="summary-section">
                         <h3>Formación Académica</h3>
                         {% if solicitud.usuario.educacion.all %}
@@ -114,7 +104,6 @@
                         {% endif %}
                     </div>
                     
-                    <!-- Resumen de experiencia -->
                     <div class="summary-section">
                         <h3>Experiencia Laboral</h3>
                         {% if solicitud.usuario.experiencia_laboral.all %}
@@ -135,7 +124,6 @@
                         {% endif %}
                     </div>
                     
-                    <!-- Resumen de habilidades -->
                     <div class="summary-section">
                         <h3>Habilidades</h3>
                         {% if solicitud.usuario.skills.all %}
@@ -156,7 +144,6 @@
                 </div>
             </div>
             
-            <!-- Tab: Educación -->
             <div id="education" class="tab-content">
                 <h2>Educación</h2>
                 <div class="detail-cards-container">
@@ -180,7 +167,6 @@
                 </div>
             </div>
             
-            <!-- Tab: Experiencia Laboral -->
             <div id="experience" class="tab-content">
                 <h2>Experiencia Laboral</h2>
                 <div class="detail-cards-container">
@@ -212,7 +198,6 @@
                 </div>
             </div>
             
-            <!-- Tab: Certificaciones -->
             <div id="certifications" class="tab-content">
                 <h2>Certificaciones</h2>
                 <div class="detail-cards-container">
@@ -241,7 +226,6 @@
                 </div>
             </div>
             
-            <!-- Tab: Proyectos -->
             <div id="projects" class="tab-content">
                 <h2>Proyectos</h2>
                 <div class="detail-cards-container">
@@ -284,7 +268,6 @@
                 </div>
             </div>
             
-            <!-- Tab: Habilidades -->
             <div id="skills" class="tab-content">
                 <h2>Habilidades y Competencias</h2>
                 <div class="skills-section">
@@ -322,7 +305,6 @@
     </div>
 </div>
 
-<!-- Popup para actualizar estado -->
 <div id="popup" class="popup">
     <div class="popup-content">
         <span class="close" onclick="hidePopup()">&times;</span>
@@ -346,9 +328,7 @@
 </div>
 
 <script>
-// Función para cambiar entre pestañas
 function switchTab(tabId) {
-    // Desactivar todas las pestañas
     document.querySelectorAll('.tab-button').forEach(button => {
         button.classList.remove('active');
     });
@@ -356,12 +336,10 @@ function switchTab(tabId) {
         content.classList.remove('active');
     });
     
-    // Activar la pestaña seleccionada
     document.querySelector(`.tab-button[data-tab="${tabId}"]`).classList.add('active');
     document.getElementById(tabId).classList.add('active');
 }
 
-// Configurar los event listeners para las pestañas
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.tab-button').forEach(button => {
         button.addEventListener('click', function() {
@@ -370,7 +348,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Funciones para el popup
 function showPopup() {
     document.getElementById('popup').style.display = 'block';
     document.body.style.overflow = 'hidden';

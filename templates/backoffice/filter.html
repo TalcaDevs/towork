@@ -5,7 +5,6 @@
 </div>
 
 <script>
-// Basic client-side filtering logic
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('search-input');
     const filterInput = document.getElementById('filter-input');
@@ -21,8 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 const userName = card.querySelector('.user-name').textContent.toLowerCase();
                 const educationTitle = card.querySelector('.education-title') ? 
                                       card.querySelector('.education-title').textContent.toLowerCase() : '';
-                // Assuming there's a location data somewhere in the card
-                // If not, you'd need to adapt this part
                 const userLocation = card.dataset.location ? card.dataset.location.toLowerCase() : '';
                 
                 const matchesSearch = userName.includes(searchTerm) || educationTitle.includes(searchTerm);

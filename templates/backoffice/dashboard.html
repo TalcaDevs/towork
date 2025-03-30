@@ -11,14 +11,11 @@
 </head>
 <body>
     <div class="container">
-        <!-- Sidebar fijo sin contenedor adicional -->
         {% include 'backoffice/sidebar.html' %}
         
         <div class="main-content">
-            <!-- Navbar dentro del main-content -->
             {% include 'backoffice/navbar.html' with estado=estado %}
             
-            <!-- Componentes con scroll independiente -->
             <div class="components">
                 <div class="card-container" id="card-container">
                     {% if estado == 'pendientes' %}
