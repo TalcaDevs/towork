@@ -14,7 +14,7 @@
                 </svg>
             </div>
             <span class="button-text">Pendientes</span>
-            <span class="count">{{ pendientes|length }}</span>
+            <span class="count">{{ pendientes_count|default:0 }}</span>
         </a>
         
         <a href="?estado=aprobados" class="stats-button approved">
@@ -25,7 +25,7 @@
                 </svg>
             </div>
             <span class="button-text">Aprobadas</span>
-            <span class="count">{{ aprobados|length }}</span>
+            <span class="count">{{ aprobados_count|default:0 }}</span>
         </a>
         
         <a href="?estado=rechazados" class="stats-button rejected">
@@ -37,7 +37,7 @@
                 </svg>
             </div>
             <span class="button-text">Rechazadas</span>
-            <span class="count">{{ rechazados|length }}</span>
+            <span class="count">{{ rechazados_count|default:0 }}</span>
         </a>
     </div>
     
@@ -71,3 +71,5 @@
         </div>
     </div>
 </div>
+
+

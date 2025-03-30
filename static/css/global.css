@@ -2,6 +2,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wdth,wght@0,75..100,100..900;1,75..100,100..900&display=swap');
 
 /* ======== ESTILOS GENERALES ======== */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 body {
     background-color: var(--color-background);
     color: var(--color-text);
@@ -9,35 +13,51 @@ body {
     font-size: var(--font-size-medium);
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    overflow: hidden; /* Previene scroll en el body */
 }
 
 .container {
     display: flex;
     height: 100vh;
-}
-
-.main-content {
-    width: 80%;
-    display: flex;
-    flex-direction: column;
+    width: 100%;
+    overflow: hidden;
 }
 
 /* ======== ESTILOS DEL SIDEBAR ======== */
 .sidebar {
     background: var(--color-background);
     color: var(--color-text);
-    padding: 30px 20px;
+    padding: 20px 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 93dvh;
+    height: 100vh;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-    position: relative;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 250px;
+    z-index: 20;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #444 #222;
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: #222;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: #444;
+    border-radius: 6px;
 }
 
 .sidebar-logo {
-    margin-bottom: 40px;
+    margin-bottom: 30px;
     transition: transform 0.3s;
 }
 
@@ -46,7 +66,7 @@ body {
 }
 
 .sidebar h1 {
-    font-size: var(--font-size-xlarge);
+    font-size: 28px; /* Reducido del tamaño original */
     font-family: var(--font-family-primary);
     color: var(--color-text);
     margin-bottom: 10px;
@@ -60,7 +80,7 @@ body {
 /* Estilos para la sección de estadísticas */
 .stats {
     width: 100%;
-    margin: 20px 0 30px 0;
+    margin: 15px 0 20px 0;
     display: flex;
     flex-direction: column;
 }
@@ -68,10 +88,10 @@ body {
 .stats-title {
     font-size: var(--font-size-small);
     color: #999;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     text-transform: uppercase;
     letter-spacing: 1px;
-    padding-left: 10px;
+    padding-left: 5px;
     font-weight: 600;
 }
 
@@ -84,7 +104,7 @@ body {
 .stats-button {
     display: flex;
     align-items: center;
-    padding: 14px 16px;
+    padding: 12px 14px;
     margin-bottom: 8px;
     border-radius: var(--o-border-cards);
     background: var(--color-secondary-background);
@@ -402,6 +422,16 @@ body {
     color: #dc3545;
 }
 
+/* ======== MAIN CONTENT ======== */
+.main-content {
+    margin-left: 250px; /* Debe coincidir con el width del sidebar */
+    width: calc(100% - 250px);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: relative;
+}
+
 /* ======== ESTILOS DEL NAVBAR ======== */
 .navbar {
     display: flex;
@@ -411,16 +441,18 @@ body {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 10; /* Menor al sidebar para que quede debajo */
+    height: 64px; /* Altura fija para el navbar */
 }
 
 .navbar nav {
     width: 100%;
     background: var(--color-secondary-background);
-    padding: 15px 25px;
+    padding: 0 25px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 100%;
 }
 
 .navbar-title {
@@ -531,15 +563,27 @@ body {
 }
 
 /* ======== ESTILOS DEL CONTENIDO ======== */
-.content {
-    flex-grow: 1;
-    background: var(--color-secondary-background);
-}
-
 .components {
     padding: 20px;
     flex-grow: 1;
     background: var(--color-secondary-background);
+    overflow-y: auto;
+    height: calc(100vh - 64px); /* Altura total menos la altura del navbar */
+    scrollbar-width: thin;
+    scrollbar-color: #444 #222;
+}
+
+.components::-webkit-scrollbar {
+    width: 8px;
+}
+
+.components::-webkit-scrollbar-track {
+    background: #222;
+}
+
+.components::-webkit-scrollbar-thumb {
+    background-color: #444;
+    border-radius: 8px;
 }
 
 /* Estilos para el filtro de búsqueda */
@@ -547,11 +591,12 @@ body {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
+    gap: 15px;
 }
 
 .search-filter input {
     padding: 12px 16px;
-    width: 45%;
+    width: 100%;
     border: 1px solid var(--color-secondary-background);
     border-radius: var(--o-border-cards);
     background-color: var(--color-background);
@@ -573,27 +618,43 @@ body {
 }
 
 .card {
-    display: none;
+    display: flex;
     align-items: center;
     background: var(--color-secondary-background);
-    padding: 10px;
+    padding: 16px;
     border-radius: var(--o-border-cards);
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .card img {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    margin-right: 10px;
+    margin-right: 15px;
+    object-fit: cover;
 }
 
 .card button {
     margin-left: auto;
-    padding: 5px 10px;
+    padding: 8px 16px;
     border: none;
     border-radius: var(--o-border-cards);
     background: var(--color-primary);
+    color: var(--color-text);
     cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.card button:hover {
+    background-color: var(--color-hover);
+    color: var(--color-hover-text);
 }
 
 /* Estilos para el estado vacío */
@@ -613,4 +674,65 @@ body {
 /* ======== ESTILOS GENERALES PARA SVG E ICONOS ======== */
 .sidebar button svg {
     color: #EEEEEE;
+}
+
+/* Para ocultar el contenedor del sidebar */
+.sidebar-container {
+    display: none; /* Ocultamos este contenedor ya que el sidebar ahora es fijo */
+}
+
+/* Ajustes responsivos para pantallas pequeñas */
+@media (max-width: 1200px) {
+    .sidebar {
+        width: 220px;
+    }
+    
+    .main-content {
+        margin-left: 220px;
+        width: calc(100% - 220px);
+    }
+    
+    .navbar-search {
+        width: 250px;
+    }
+}
+
+@media (max-width: 992px) {
+    .sidebar {
+        width: 200px;
+    }
+    
+    .main-content {
+        margin-left: 200px;
+        width: calc(100% - 200px);
+    }
+    
+    .navbar-search {
+        width: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 180px;
+    }
+    
+    .main-content {
+        margin-left: 180px;
+        width: calc(100% - 180px);
+    }
+    
+    .navbar-search {
+        width: 150px;
+    }
+    
+    .sidebar h1 {
+        font-size: 24px;
+    }
+}
+
+/* Ajustes para la vista detallada */
+.detail-container {
+    height: calc(100vh - 64px);
+    overflow: hidden;
 }
