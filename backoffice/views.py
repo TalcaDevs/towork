@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from users.models import SolicitudLog
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def custom_login(request):
     if request.method == "POST":
@@ -29,20 +30,54 @@ def dashboard(request):
     estado = request.GET.get('estado', 'pendientes')
     user_id = request.GET.get('user_id')
     solicitud = None
+    
     if estado in ['card_detail', 'update_status'] and user_id:
         solicitud = Solicitud.objects.get(usuario__id=user_id)
-    solicitudes_pendientes = Solicitud.objects.filter(estado='pendiente')
-    solicitudes_aprobadas = Solicitud.objects.filter(estado='aceptada')
-    solicitudes_rechazadas = Solicitud.objects.filter(estado='rechazada')
-
+        return render(request, 'backoffice/dashboard.html', {
+            'estado': estado,
+            'solicitud': solicitud,
+        })
+    
+    # Obtener las solicitudes según el estado seleccionado
+    if estado == 'pendientes':
+        solicitudes_list = Solicitud.objects.filter(estado='pendiente').order_by('-fecha_creacion')
+    elif estado == 'aprobados':
+        solicitudes_list = Solicitud.objects.filter(estado='aceptada').order_by('-fecha_creacion')
+    elif estado == 'rechazados':
+        solicitudes_list = Solicitud.objects.filter(estado='rechazada').order_by('-fecha_creacion')
+    else:
+        solicitudes_list = Solicitud.objects.filter(estado='pendiente').order_by('-fecha_creacion')
+    
+    # Configurar la paginación
+    page = request.GET.get('page', 1)
+    items_per_page = 5  # Puedes ajustar este número según tus necesidades
+    paginator = Paginator(solicitudes_list, items_per_page)
+    
+    try:
+        solicitudes = paginator.page(page)
+    except PageNotAnInteger:
+        # Si la página no es un número, mostrar la primera página
+        solicitudes = paginator.page(1)
+    except EmptyPage:
+        # Si la página está fuera de rango, mostrar la última página
+        solicitudes = paginator.page(paginator.num_pages)
+    
+    # Obtener contadores para la sidebar
+    solicitudes_pendientes_count = Solicitud.objects.filter(estado='pendiente').count()
+    solicitudes_aprobadas_count = Solicitud.objects.filter(estado='aceptada').count()
+    solicitudes_rechazadas_count = Solicitud.objects.filter(estado='rechazada').count()
+    
     return render(request, 'backoffice/dashboard.html', {
-        'pendientes': solicitudes_pendientes,
-        'aprobados': solicitudes_aprobadas,
-        'rechazados': solicitudes_rechazadas,
-        'solicitud': solicitud,
+        'pendientes': solicitudes if estado == 'pendientes' else None,
+        'aprobados': solicitudes if estado == 'aprobados' else None,
+        'rechazados': solicitudes if estado == 'rechazados' else None,
+        'pendientes_count': solicitudes_pendientes_count,
+        'aprobados_count': solicitudes_aprobadas_count,
+        'rechazados_count': solicitudes_rechazadas_count,
         'estado': estado,
+        'page_obj': solicitudes,
+        'paginator': paginator,
     })
-
 @login_required
 def update_status(request, user_id):
     if request.method == 'POST':
