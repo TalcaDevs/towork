@@ -15,3 +15,23 @@ function hidePopup() {
     document.getElementById('popup').style.display = 'none';
     document.body.style.overflow = 'auto';
 }
+
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+    });
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    
+    document.querySelector(`.tab-button[data-tab="${tabId}"]`).classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', function() {
+            switchTab(this.getAttribute('data-tab'));
+        });
+    });
+});

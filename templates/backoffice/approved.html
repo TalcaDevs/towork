@@ -1,5 +1,6 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/approved.css' %}">
+
 {% for solicitud in aprobados %}
 <div class="card approved">
     {% if solicitud.usuario.foto_perfil %}
