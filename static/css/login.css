@@ -1,7 +1,6 @@
 @import url('variables.css');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
-/* Estilos básicos y reset */
 * {
     margin: 0;
     padding: 0;
@@ -20,7 +19,6 @@ body {
     position: relative;
 }
 
-/* Fondo animado con colores morados para un aspecto más futurista */
 .animated-background {
     position: absolute;
     top: 0;
@@ -41,13 +39,11 @@ body {
 .particle {
     position: absolute;
     border-radius: 50%;
-    /* Cambiado a tonos morados para un aspecto más futurista */
     background: linear-gradient(
         to right,
         rgba(92, 48, 125, 0.15),
         rgba(145, 70, 200, 0.2)
     );
-    /* Animación más rápida: de 25s a 15s */
     animation: float 15s infinite ease-in-out;
     z-index: -1;
 }
@@ -66,7 +62,7 @@ body {
     height: 250px;
     top: 60%;
     left: 80%;
-    animation-delay: 1s; /* Reducido para mayor velocidad */
+    animation-delay: 1s;
     opacity: 0.4;
 }
 
@@ -75,7 +71,7 @@ body {
     height: 200px;
     top: 80%;
     left: 20%;
-    animation-delay: 2s; /* Reducido para mayor velocidad */
+    animation-delay: 2s; 
     opacity: 0.3;
 }
 
@@ -84,7 +80,7 @@ body {
     height: 180px;
     top: 40%;
     left: 60%;
-    animation-delay: 3s; /* Reducido para mayor velocidad */
+    animation-delay: 3s;
     opacity: 0.4;
 }
 
@@ -93,7 +89,7 @@ body {
     height: 220px;
     top: 10%;
     left: 70%;
-    animation-delay: 4s; /* Reducido para mayor velocidad */
+    animation-delay: 4s; 
     opacity: 0.25;
 }
 
@@ -102,7 +98,7 @@ body {
     height: 300px;
     top: 70%;
     left: 40%;
-    animation-delay: 5s; /* Reducido para mayor velocidad */
+    animation-delay: 5s;
     opacity: 0.35;
 }
 
@@ -111,7 +107,7 @@ body {
     height: 150px;
     top: 30%;
     left: 30%;
-    animation-delay: 6s; /* Reducido para mayor velocidad */
+    animation-delay: 6s; 
     opacity: 0.45;
 }
 
@@ -120,7 +116,7 @@ body {
     height: 350px;
     top: 50%;
     left: 50%;
-    animation-delay: 7s; /* Reducido para mayor velocidad */
+    animation-delay: 7s;
     opacity: 0.2;
 }
 
@@ -129,7 +125,7 @@ body {
     height: 270px;
     top: 20%;
     left: 90%;
-    animation-delay: 8s; /* Reducido para mayor velocidad */
+    animation-delay: 8s;
     opacity: 0.3;
 }
 
@@ -138,7 +134,7 @@ body {
     height: 280px;
     top: 90%;
     left: 5%;
-    animation-delay: 9s; /* Reducido para mayor velocidad */
+    animation-delay: 9s;
     opacity: 0.35;
 }
 
@@ -147,7 +143,7 @@ body {
     height: 320px;
     top: 15%;
     left: 40%;
-    animation-delay: 10s; /* Reducido para mayor velocidad */
+    animation-delay: 10s;
     opacity: 0.3;
 }
 
@@ -156,7 +152,7 @@ body {
     height: 180px;
     top: 75%;
     left: 75%;
-    animation-delay: 11s; /* Reducido para mayor velocidad */
+    animation-delay: 11s;
     opacity: 0.4;
 }
 
@@ -165,7 +161,7 @@ body {
     height: 260px;
     top: 45%;
     left: 20%;
-    animation-delay: 12s; /* Reducido para mayor velocidad */
+    animation-delay: 12s;
     opacity: 0.25;
 }
 
@@ -174,7 +170,7 @@ body {
     height: 290px;
     top: 5%;
     left: 60%;
-    animation-delay: 13s; /* Reducido para mayor velocidad */
+    animation-delay: 13s; 
     opacity: 0.3;
 }
 
@@ -183,11 +179,10 @@ body {
     height: 230px;
     top: 85%;
     left: 85%;
-    animation-delay: 14s; /* Reducido para mayor velocidad */
+    animation-delay: 14s;
     opacity: 0.35;
 }
 
-/* Animación más rápida y con mayor movimiento */
 @keyframes float {
     0% {
         transform: translate(0, 0) rotate(0deg) scale(1);
@@ -206,16 +201,14 @@ body {
     }
 }
 
-/* Contenedor principal del login */
 .login-container {
     width: 100%;
     max-width: 420px;
     z-index: 1;
     perspective: 1000px;
-    animation: focusIn 0.8s ease-out forwards; /* Animación más rápida */
+    animation: focusIn 0.8s ease-out forwards;
 }
 
-/* Animación de entrada más rápida */
 @keyframes focusIn {
     0% {
         opacity: 0;
@@ -241,7 +234,6 @@ body {
     transform-style: preserve-3d;
     position: relative;
     overflow: hidden;
-    /* Rotación inicial para más dinamismo */
     transform: rotateX(3deg) rotateY(-4deg);
 }
 
@@ -252,7 +244,6 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    /* Actualizado a un gradiente morado futurista */
     background: linear-gradient(90deg, #9146c8, #614dc9);
     z-index: 1;
 }
@@ -261,11 +252,9 @@ body {
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5),
                 0 0 0 1px rgba(255, 255, 255, 0.07) inset,
                 0 5px 15px rgba(0, 0, 0, 0.2) inset;
-    /* Mayor rotación en hover para dinamismo */
     transform: translateY(-5px) rotateX(5deg) rotateY(-7deg);
 }
 
-/* Encabezado del login */
 .login-header {
     text-align: center;
     margin-bottom: 30px;
@@ -289,7 +278,6 @@ body {
     left: 50%;
     width: 40px;
     height: 3px;
-    /* Actualizado a un gradiente morado futurista */
     background: linear-gradient(90deg, #9146c8, #614dc9);
     transform: translateX(-50%);
     border-radius: 3px;
@@ -302,7 +290,6 @@ body {
     margin-top: 5px;
 }
 
-/* Formulario */
 .login-form {
     margin-bottom: 30px;
 }
@@ -356,16 +343,13 @@ body {
 
 .form-group input:focus {
     outline: none;
-    /* Actualizado a color morado */
     border-color: rgba(145, 70, 200, 0.5);
     background-color: rgba(40, 40, 40, 0.7);
     box-shadow: 0 0 0 3px rgba(145, 70, 200, 0.2);
 }
 
-/* Botón de login */
 .login-button {
     width: 100%;
-    /* Actualizado a gradiente morado futurista */
     background: linear-gradient(45deg, #614dc9, #9146c8);
     color: white;
     border: none;
@@ -400,7 +384,6 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    /* Actualizado a gradiente morado futurista (invertido) */
     background: linear-gradient(45deg, #9146c8, #614dc9);
     opacity: 0;
     transition: opacity 0.3s;
@@ -408,7 +391,6 @@ body {
 }
 
 .login-button:hover {
-    /* Actualizado a color morado */
     box-shadow: 0 5px 15px rgba(145, 70, 200, 0.4);
     transform: translateY(-2px);
 }
@@ -423,11 +405,9 @@ body {
 
 .login-button:active {
     transform: translateY(0);
-    /* Actualizado a color morado */
     box-shadow: 0 2px 8px rgba(145, 70, 200, 0.4);
 }
 
-/* Footer */
 .login-footer {
     text-align: center;
     margin-top: 30px;
@@ -435,7 +415,6 @@ body {
     font-size: 12px;
 }
 
-/* Responsive */
 @media (max-width: 480px) {
     .login-card {
         padding: 30px 20px;
@@ -446,14 +425,12 @@ body {
         font-size: 28px;
     }
 }
-
-/* Animación adicional para enfoque */
 @keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(145, 70, 200, 0.4); } /* Actualizado a color morado */
-    70% { box-shadow: 0 0 0 10px rgba(145, 70, 200, 0); } /* Actualizado a color morado */
-    100% { box-shadow: 0 0 0 0 rgba(145, 70, 200, 0); } /* Actualizado a color morado */
+    0% { box-shadow: 0 0 0 0 rgba(145, 70, 200, 0.4); } 
+    70% { box-shadow: 0 0 0 10px rgba(145, 70, 200, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(145, 70, 200, 0); }
 }
 
 .form-group input:focus {
-    animation: pulse 0.2s infinite; /* Más rápido: 1.5s a 1.2s */
+    animation: pulse 0.2s infinite;
 }

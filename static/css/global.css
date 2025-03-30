@@ -1,7 +1,7 @@
 @import url('variables.css');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wdth,wght@0,75..100,100..900;1,75..100,100..900&display=swap');
 
-/* ======== ESTILOS GENERALES ======== */
+
 *, *::before, *::after {
     box-sizing: border-box;
 }
@@ -13,7 +13,7 @@ body {
     font-size: var(--font-size-medium);
     margin: 0;
     padding: 0;
-    overflow: hidden; /* Previene scroll en el body */
+    overflow: hidden;
 }
 
 .container {
@@ -23,7 +23,6 @@ body {
     overflow: hidden;
 }
 
-/* ======== ESTILOS DEL SIDEBAR ======== */
 .sidebar {
     background: var(--color-background);
     color: var(--color-text);
@@ -66,7 +65,7 @@ body {
 }
 
 .sidebar h1 {
-    font-size: 28px; /* Reducido del tamaño original */
+    font-size: 28px;
     font-family: var(--font-family-primary);
     color: var(--color-text);
     margin-bottom: 10px;
@@ -77,7 +76,7 @@ body {
     width: 100%;
 }
 
-/* Estilos para la sección de estadísticas */
+
 .stats {
     width: 100%;
     margin: 15px 0 20px 0;
@@ -100,7 +99,6 @@ body {
     text-decoration: none;
 }
 
-/* Estilos para los botones de estadísticas mejorados */
 .stats-button {
     display: flex;
     align-items: center;
@@ -204,7 +202,7 @@ body {
     color: white;
 }
 
-/* Animación para los botones de estadísticas */
+
 @keyframes pulse {
     0% { transform: scale(1); }
     50% { transform: scale(1.05); }
@@ -215,7 +213,7 @@ body {
     animation: pulse 1s infinite;
 }
 
-/* Mantenemos compatibilidad con los estilos antiguos */
+
 .stats div {
     display: flex;
     justify-content: space-between;
@@ -337,7 +335,7 @@ body {
     outline: none;
 }
 
-/* Estilos para el perfil de usuario en el sidebar */
+
 .user-profile {
     margin-top: auto;
     padding-top: 20px;
@@ -422,9 +420,8 @@ body {
     color: #dc3545;
 }
 
-/* ======== MAIN CONTENT ======== */
 .main-content {
-    margin-left: 250px; /* Debe coincidir con el width del sidebar */
+    margin-left: 250px;
     width: calc(100% - 250px);
     display: flex;
     flex-direction: column;
@@ -432,7 +429,6 @@ body {
     position: relative;
 }
 
-/* ======== ESTILOS DEL NAVBAR ======== */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -441,8 +437,8 @@ body {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
-    z-index: 10; /* Menor al sidebar para que quede debajo */
-    height: 64px; /* Altura fija para el navbar */
+    z-index: 10;
+    height: 64px;
 }
 
 .navbar nav {
@@ -541,7 +537,6 @@ body {
     font-size: 14px;
 }
 
-/* Notification icon with badge */
 .notification-button {
     position: relative;
 }
@@ -562,13 +557,12 @@ body {
     font-weight: bold;
 }
 
-/* ======== ESTILOS DEL CONTENIDO ======== */
 .components {
     padding: 20px;
     flex-grow: 1;
     background: var(--color-secondary-background);
     overflow-y: auto;
-    height: calc(100vh - 64px); /* Altura total menos la altura del navbar */
+    height: calc(100vh - 64px);
     scrollbar-width: thin;
     scrollbar-color: #444 #222;
 }
@@ -586,7 +580,6 @@ body {
     border-radius: 8px;
 }
 
-/* Estilos para el filtro de búsqueda */
 .search-filter {
     display: flex;
     justify-content: space-between;
@@ -610,7 +603,6 @@ body {
     box-shadow: 0 0 0 2px rgba(34, 34, 34, 0.3);
 }
 
-/* Estilos para las tarjetas */
 .card-container {
     display: flex;
     flex-direction: column;
@@ -657,7 +649,6 @@ body {
     color: var(--color-hover-text);
 }
 
-/* Estilos para el estado vacío */
 .empty-state {
     background-color: var(--color-background);
     padding: 30px;
@@ -671,17 +662,14 @@ body {
     font-style: italic;
 }
 
-/* ======== ESTILOS GENERALES PARA SVG E ICONOS ======== */
 .sidebar button svg {
     color: #EEEEEE;
 }
 
-/* Para ocultar el contenedor del sidebar */
 .sidebar-container {
-    display: none; /* Ocultamos este contenedor ya que el sidebar ahora es fijo */
+    display: none;
 }
 
-/* Ajustes responsivos para pantallas pequeñas */
 @media (max-width: 1200px) {
     .sidebar {
         width: 220px;
@@ -731,7 +719,6 @@ body {
     }
 }
 
-/* Ajustes para la vista detallada */
 .detail-container {
     height: calc(100vh - 64px);
     overflow: hidden;
