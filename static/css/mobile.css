@@ -1,0 +1,335 @@
+/* mobile.css - Estilos específicos para dispositivos móviles */
+@import url('variables.css');
+
+/* === Estilos responsive para el backoffice === */
+@media (max-width: 768px) {
+    /* Estructura principal */
+    .container {
+        flex-direction: column;
+        height: auto;
+        overflow: auto;
+    }
+    
+    .sidebar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 0;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+        z-index: 100;
+        overflow: visible;
+    }
+    
+    .sidebar-logo, .stats-title, .user-profile, .countdown-container {
+        display: none;
+    }
+    
+    .stats {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        margin: 0;
+        justify-content: space-around;
+    }
+    
+    .stats-button {
+        flex-direction: column;
+        width: auto;
+        margin: 0;
+        padding: 10px 0;
+        background: transparent;
+        border-radius: 0;
+    }
+    
+    .stats-button::before {
+        display: none;
+    }
+    
+    .stats-button .stats-icon {
+        margin: 0 0 5px 0;
+    }
+    
+    .stats-button .button-text {
+        font-size: 10px;
+        white-space: nowrap;
+    }
+    
+    .stats-button .count {
+        position: absolute;
+        top: 0;
+        right: 0;
+        font-size: 10px;
+        width: 20px;
+        height: 20px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding-bottom: 70px; /* Espacio para el menú inferior */
+    }
+    
+    .navbar {
+        height: 56px;
+    }
+    
+    .navbar-title {
+        font-size: 16px;
+    }
+    
+    .navbar-search {
+        display: none;
+    }
+    
+    /* Estilo de tarjetas inspirado en la imagen */
+    .card-container {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+        gap: 12px !important;
+        padding: 10px !important;
+        width: 100% !important;
+        min-height: 200px !important; /* Asegura espacio para contenido */
+    }
+    
+    /* Estilos comunes para todos los tipos de tarjetas */
+    .card {
+        flex-direction: column !important;
+        height: auto !important;
+        border-radius: 16px !important;
+        padding: 16px !important;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2) !important;
+        transition: transform 0.3s ease !important;
+        position: relative !important;
+        overflow: hidden !important;
+        align-items: flex-start !important;
+        min-height: 160px !important;
+        margin-bottom: 0 !important; /* Elimina márgenes en el grid */
+        border-left: none !important; /* Elimina los bordes laterales en el grid */
+    }
+    
+    /* Colores específicos para cada tipo de tarjeta */
+    .card.pending {
+        background: linear-gradient(145deg, #594c73, #403366) !important;
+    }
+    
+    .card.approved {
+        background: linear-gradient(145deg, #378b74, #276859) !important;
+    }
+    
+    .card.rejected {
+        background: linear-gradient(145deg, #8d3f46, #6d2f36) !important;
+    }
+    
+    /* Estilo para la imagen de perfil */
+    .card img {
+        width: 40px !important;
+        height: 40px !important;
+        margin-right: 0 !important;
+        margin-bottom: 10px !important;
+        object-fit: cover !important;
+        border: 2px solid rgba(255, 255, 255, 0.5) !important;
+    }
+    
+    /* Estilos para la información de la tarjeta */
+    .card-info {
+        width: 100% !important;
+    }
+    
+    .card .user-name {
+        font-size: 14px !important;
+        display: block !important;
+        margin-bottom: 5px !important;
+        font-weight: 600 !important;
+        color: white !important;
+    }
+    
+    .card .education-title {
+        font-size: 12px !important;
+        color: rgba(255, 255, 255, 0.8) !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+        margin-bottom: 10px !important;
+    }
+    
+    /* Estilo para el enlace de detalle */
+    .card .detail-link {
+        position: absolute !important;
+        right: 10px !important;
+        bottom: 10px !important;
+        width: 36px !important;
+        height: 36px !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 !important;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+        text-decoration: none !important;
+        background: rgba(0, 0, 0, 0.2) !important;
+    }
+    
+    .card .detail-link svg {
+        width: 18px !important;
+        height: 18px !important;
+        color: white !important;
+    }
+    
+    /* Estilos para los indicadores de estado */
+    .card .pending-timer, 
+    .card .status-indicator {
+        font-size: 10px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        border-radius: 10px !important;
+        padding: 2px 8px 2px 6px !important;
+        color: white !important;
+        background-color: rgba(0, 0, 0, 0.2) !important;
+        margin-top: auto !important;
+    }
+    
+    /* Estilos para la paginación */
+    .pagination-container {
+        margin: 15px 0 80px 0 !important; /* Más espacio abajo para el menú */
+        display: flex !important;
+        justify-content: center !important;
+        width: 100% !important;
+        position: relative !important;
+        clear: both !important;
+    }
+    
+    .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .pagination a, .pagination span {
+        padding: 8px 10px;
+        min-width: 36px;
+    }
+    
+    .page-ellipsis, .pagination li:first-child, .pagination li:last-child,
+    .pagination li:nth-child(2), .pagination li:nth-last-child(2) {
+        display: none;
+    }
+    
+    /* Vista de detalle */
+    .detail-container {
+        flex-direction: column;
+        height: auto;
+    }
+    
+    .profile-sidebar {
+        width: 100%;
+        padding: 10px;
+    }
+    
+    .detail-content-wrapper {
+        padding: 10px;
+    }
+    
+    .detail-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 5px;
+    }
+    
+    .tab-button {
+        padding: 10px 15px;
+        font-size: 14px;
+        white-space: nowrap;
+    }
+    
+    .detail-cards-container {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Popup */
+    .popup-content {
+        width: 95%;
+        padding: 20px;
+        margin: 20% auto;
+    }
+    
+    /* Estilos mejorados para los estados vacíos */
+    .empty-state {
+        grid-column: 1 / -1; /* Extiende a través de todas las columnas */
+        padding: 40px 20px !important;
+        text-align: center !important;
+        border-radius: 16px !important;
+        margin: 15px !important;
+        background-color: var(--color-background) !important;
+    }
+    
+    /* Prevenir que elementos floten incorrectamente */
+    .components {
+        overflow-y: auto !important;
+        padding-bottom: 80px !important;
+    }
+}
+
+/* Estilo específico de tarjetas para tabletas */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .card-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 15px;
+        padding: 15px;
+    }
+}
+
+/* Estilos para efectos táctiles y feedback visual */
+.touch-active {
+    transform: scale(0.97) !important;
+    opacity: 0.9;
+    transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+.ripple {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    transform: scale(0);
+    animation: ripple 0.5s linear;
+    pointer-events: none;
+}
+
+@keyframes ripple {
+    to {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-button.active {
+        color: var(--color-primary);
+    }
+    
+    .stats-button.active .stats-icon {
+        transform: translateY(-5px);
+    }
+    
+    .stats-button.pending.active .stats-icon {
+        color: #ff8049;
+    }
+    
+    .stats-button.approved.active .stats-icon {
+        color: #378b74;
+    }
+    
+    .stats-button.rejected.active .stats-icon {
+        color: #dc3545;
+    }
+}
