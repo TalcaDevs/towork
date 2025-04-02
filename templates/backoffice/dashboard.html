@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{% static 'css/global.css' %}">
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'css/pagination.css' %}">
-    <link rel="stylesheet" href="{% static 'css/mobile.css' %}"> <!-- Nuevo archivo CSS para móviles -->
+    <link rel="stylesheet" href="{% static 'css/mobile.css' %}">
 </head>
 <body>
     <div class="container">
@@ -29,6 +29,10 @@
                         {% include 'backoffice/detail.html' with solicitud=solicitud %}
                     {% elif estado == 'update_status' %}
                         {% include 'backoffice/update_status.html' with solicitud=solicitud %}
+                    {% elif estado == 'administrar_usuarios' %}
+                        {% include 'backoffice/user_list.html' with users=users %}
+                    {% elif estado == 'user_form' %}
+                        {% include 'backoffice/user_form.html' with user_form=user_form success=success error=error %}
                     {% endif %}
                 </div>
             </div>

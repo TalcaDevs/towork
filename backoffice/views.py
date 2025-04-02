@@ -1,17 +1,17 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from users.models import Solicitud
-from users.models import CustomUser
+from django.contrib.auth.hashers import make_password
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib import messages
+from users.models import Solicitud, CustomUser, SolicitudLog
 from users.serializers import UserSerializer, SolicitudSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework import status
-from users.models import SolicitudLog
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+from .forms import CustomUserCreationForm, CustomUserEditForm
 def custom_login(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -166,3 +166,103 @@ def user_detail(request, user_id):
     solicitud = Solicitud.objects.get(usuario__id=user_id)
     serializer = SolicitudSerializer(solicitud)
     return render(request, 'backoffice/detail.html', {'solicitud': serializer.data})
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAdminUser])
+def user_detail(request, user_id):
+    solicitud = Solicitud.objects.get(usuario__id=user_id)
+    serializer = SolicitudSerializer(solicitud)
+    return render(request, 'backoffice/detail.html', {'solicitud': serializer.data})
+
+# Vistas para la gestión de usuarios
+@login_required
+def administrar_usuarios(request):
+    """Vista para listar todos los usuarios"""
+    # Obtener todos los usuarios
+    usuarios_list = CustomUser.objects.all().order_by('-date_joined')
+    
+    # Configurar paginación
+    page = request.GET.get('page', 1)
+    paginator = Paginator(usuarios_list, 10)  # 10 usuarios por página
+    
+    try:
+        usuarios = paginator.page(page)
+    except PageNotAnInteger:
+        usuarios = paginator.page(1)
+    except EmptyPage:
+        usuarios = paginator.page(paginator.num_pages)
+    
+    return render(request, 'backoffice/dashboard.html', {
+        'estado': 'administrar_usuarios',
+        'users': usuarios,
+        'pendientes_count': Solicitud.objects.filter(estado='pendiente').count(),
+        'aprobados_count': Solicitud.objects.filter(estado='aceptada').count(),
+        'rechazados_count': Solicitud.objects.filter(estado='rechazada').count()
+    })
+
+@login_required
+def crear_usuario(request):
+    """Vista para crear un nuevo usuario"""
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            return render(request, 'backoffice/dashboard.html', {
+                'estado': 'user_form',
+                'user_form': CustomUserCreationForm(),
+                'success': f'Usuario {user.first_name} {user.last_name} creado correctamente.',
+                'pendientes_count': Solicitud.objects.filter(estado='pendiente').count(),
+                'aprobados_count': Solicitud.objects.filter(estado='aceptada').count(),
+                'rechazados_count': Solicitud.objects.filter(estado='rechazada').count()
+            })
+    else:
+        form = CustomUserCreationForm()
+    
+    return render(request, 'backoffice/dashboard.html', {
+        'estado': 'user_form',
+        'user_form': form,
+        'pendientes_count': Solicitud.objects.filter(estado='pendiente').count(),
+        'aprobados_count': Solicitud.objects.filter(estado='aceptada').count(),
+        'rechazados_count': Solicitud.objects.filter(estado='rechazada').count()
+    })
+
+@login_required
+def editar_usuario(request, user_id):
+    """Vista para editar un usuario existente"""
+    usuario = get_object_or_404(CustomUser, id=user_id)
+    
+    if request.method == 'POST':
+        form = CustomUserEditForm(request.POST, instance=usuario)
+        if form.is_valid():
+            user = form.save()
+            return render(request, 'backoffice/dashboard.html', {
+                'estado': 'user_form',
+                'user_form': CustomUserEditForm(instance=user),
+                'success': f'Usuario {user.first_name} {user.last_name} actualizado correctamente.',
+                'pendientes_count': Solicitud.objects.filter(estado='pendiente').count(),
+                'aprobados_count': Solicitud.objects.filter(estado='aceptada').count(),
+                'rechazados_count': Solicitud.objects.filter(estado='rechazada').count()
+            })
+    else:
+        form = CustomUserEditForm(instance=usuario)
+    
+    return render(request, 'backoffice/dashboard.html', {
+        'estado': 'user_form',
+        'user_form': form,
+        'pendientes_count': Solicitud.objects.filter(estado='pendiente').count(),
+        'aprobados_count': Solicitud.objects.filter(estado='aceptada').count(),
+        'rechazados_count': Solicitud.objects.filter(estado='rechazada').count()
+    })
+
+@login_required
+def toggle_usuario_estado(request, user_id):
+    """Vista para activar/desactivar un usuario"""
+    usuario = get_object_or_404(CustomUser, id=user_id)
+    usuario.is_active = not usuario.is_active
+    usuario.save()
+    
+    # Registrar el cambio en el log
+    accion = "activado" if usuario.is_active else "desactivado"
+    # Aquí podrías registrar un log si lo necesitas
+    
+    return redirect('administrar_usuarios')
