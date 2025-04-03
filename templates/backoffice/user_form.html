@@ -1,0 +1,162 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/user_management.css' %}">
+
+<div class="user-form-container">
+    <div class="user-form-header">
+        <h2>{% if user_form.instance.pk %}Editar{% else %}Crear{% endif %} Usuario</h2>
+        <a href="?estado=administrar_usuarios" class="btn-secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5"></path>
+                <path d="M12 19l-7-7 7-7"></path>
+            </svg>
+            Volver
+        </a>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-error">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span>{{ error }}</span>
+    </div>
+    {% endif %}
+
+    {% if success %}
+    <div class="alert alert-success">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        <span>{{ success }}</span>
+    </div>
+    {% endif %}
+
+    <form method="post" class="user-form">
+        {% csrf_token %}
+        
+        <div class="form-section">
+            <h3>Información Básica</h3>
+            
+            <div class="form-group-row">
+                <div class="form-group">
+                    <label for="{{ user_form.first_name.id_for_label }}">Nombre*</label>
+                    {{ user_form.first_name }}
+                    {% if user_form.first_name.errors %}
+                        <span class="form-error">{{ user_form.first_name.errors.0 }}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ user_form.last_name.id_for_label }}">Apellido*</label>
+                    {{ user_form.last_name }}
+                    {% if user_form.last_name.errors %}
+                        <span class="form-error">{{ user_form.last_name.errors.0 }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="form-group-row">
+                <div class="form-group">
+                    <label for="{{ user_form.email.id_for_label }}">Email*</label>
+                    {{ user_form.email }}
+                    {% if user_form.email.errors %}
+                        <span class="form-error">{{ user_form.email.errors.0 }}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ user_form.rol.id_for_label }}">Rol*</label>
+                    {{ user_form.rol }}
+                    {% if user_form.rol.errors %}
+                        <span class="form-error">{{ user_form.rol.errors.0 }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if not user_form.instance.pk %}
+            <div class="form-group-row">
+                <div class="form-group">
+                    <label for="{{ user_form.password1.id_for_label }}">Contraseña*</label>
+                    {{ user_form.password1 }}
+                    {% if user_form.password1.errors %}
+                        <span class="form-error">{{ user_form.password1.errors.0 }}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ user_form.password2.id_for_label }}">Confirmar Contraseña*</label>
+                    {{ user_form.password2 }}
+                    {% if user_form.password2.errors %}
+                        <span class="form-error">{{ user_form.password2.errors.0 }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+            <div class="form-group">
+                <label for="{{ user_form.is_active.id_for_label }}" class="checkbox-label">
+                    {{ user_form.is_active }}
+                    <span>Usuario activo</span>
+                </label>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-section">
+            <h3>Información de Contacto</h3>
+            
+            <div class="form-group-row">
+                <div class="form-group">
+                    <label for="{{ user_form.telefono.id_for_label }}">Teléfono</label>
+                    {{ user_form.telefono }}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ user_form.ubicacion.id_for_label }}">Ubicación</label>
+                    {{ user_form.ubicacion }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h3>Perfil Profesional</h3>
+            
+            <div class="form-group">
+                <label for="{{ user_form.foto_perfil.id_for_label }}">URL de Foto de Perfil</label>
+                {{ user_form.foto_perfil }}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ user_form.descripcion.id_for_label }}">Descripción</label>
+                {{ user_form.descripcion }}
+            </div>
+            
+            <div class="form-group-row">
+                <div class="form-group">
+                    <label for="{{ user_form.linkedin.id_for_label }}">LinkedIn</label>
+                    {{ user_form.linkedin }}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ user_form.id_portafolio_web.id_for_label }}">Portafolio Web</label>
+                    {{ user_form.id_portafolio_web }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                    <polyline points="7 3 7 8 15 8"></polyline>
+                </svg>
+                Guardar
+            </button>
+            
+            <a href="?estado=administrar_usuarios" class="btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>

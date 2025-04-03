@@ -1,0 +1,141 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/user_management.css' %}">
+
+<div class="user-management-container">
+    <div class="user-header">
+        <h2>Gestión de Usuarios</h2>
+        <a href="?estado=user_form" class="btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Nuevo Usuario
+        </a>
+    </div>
+
+    <div class="search-filter">
+        <input type="text" placeholder="Buscar usuario..." id="search-user-input">
+    </div>
+
+    <div class="user-table-container">
+        <table class="user-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="user-table-body">
+                {% for user in users %}
+                <tr>
+                    <td class="user-name">
+                        {% if user.foto_perfil %}
+                            <img src="{{ user.foto_perfil }}" alt="Perfil" class="user-small-avatar">
+                        {% else %}
+                            <div class="user-small-avatar-placeholder">{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}</div>
+                        {% endif %}
+                        <span>{{ user.first_name }} {{ user.last_name }}</span>
+                    </td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.get_rol_display }}</td>
+                    <td>
+                        {% if user.is_active %}
+                            <span class="status-badge active">Activo</span>
+                        {% else %}
+                            <span class="status-badge inactive">Inactivo</span>
+                        {% endif %}
+                    </td>
+                    <td class="actions">
+                        <a href="?estado=user_form&user_id={{ user.id }}" class="action-btn edit-btn" title="Editar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                        </a>
+                        {% if user.is_active %}
+                            <a href="{% url 'toggle_usuario_estado' user.id %}" class="action-btn deactivate-btn" title="Desactivar">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                                </svg>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'toggle_usuario_estado' user.id %}" class="action-btn activate-btn" title="Activar">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M8 12h8"></path>
+                                    <path d="M12 8v8"></path>
+                                </svg>
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="empty-table">
+                        <p>No hay usuarios registrados</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginación -->
+    {% if users.has_other_pages %}
+    <div class="pagination-container">
+        <ul class="pagination">
+            {% if users.has_previous %}
+                <li><a href="?estado=administrar_usuarios&page=1">&laquo; Primera</a></li>
+                <li><a href="?estado=administrar_usuarios&page={{ users.previous_page_number }}">&lsaquo; Anterior</a></li>
+            {% else %}
+                <li class="disabled"><span>&laquo; Primera</span></li>
+                <li class="disabled"><span>&lsaquo; Anterior</span></li>
+            {% endif %}
+            
+            {% for i in users.paginator.page_range %}
+                {% if users.number == i %}
+                    <li class="active"><span>{{ i }}</span></li>
+                {% elif i >= users.number|add:"-2" and i <= users.number|add:"2" %}
+                    <li><a href="?estado=administrar_usuarios&page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if users.has_next %}
+                <li><a href="?estado=administrar_usuarios&page={{ users.next_page_number }}">Siguiente &rsaquo;</a></li>
+                <li><a href="?estado=administrar_usuarios&page={{ users.paginator.num_pages }}">Última &raquo;</a></li>
+            {% else %}
+                <li class="disabled"><span>Siguiente &rsaquo;</span></li>
+                <li class="disabled"><span>Última &raquo;</span></li>
+            {% endif %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('search-user-input');
+        
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const rows = document.querySelectorAll('#user-table-body tr');
+                
+                rows.forEach(row => {
+                    const name = row.querySelector('.user-name')?.textContent.toLowerCase() || '';
+                    const email = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
+                    
+                    if (name.includes(searchTerm) || email.includes(searchTerm)) {
+                        row.style.display = 'table-row';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+    });
+</script>
