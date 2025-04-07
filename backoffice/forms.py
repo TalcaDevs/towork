@@ -21,8 +21,19 @@ class CustomUserCreationForm(UserCreationForm):
             if field_name not in ['is_active']:
                 field.widget.attrs.update({'class': 'form-control'})
         
-        # Si ya existe un usuario con ese email, no dejar crear otro
+        # Etiquetas en español
+        self.fields['first_name'].label = 'Nombre'
+        self.fields['last_name'].label = 'Apellido'
+        self.fields['email'].label = 'Email'
+        self.fields['password1'].label = 'Contraseña'
+        self.fields['password2'].label = 'Confirmar Contraseña'
+        
+        # Placeholders
         self.fields['email'].widget.attrs.update({'placeholder': 'ejemplo@towork.com'})
+        self.fields['first_name'].widget.attrs.update({'placeholder': 'Ingrese el nombre'})
+        self.fields['last_name'].widget.attrs.update({'placeholder': 'Ingrese el apellido'})
+        self.fields['password1'].widget.attrs.update({'placeholder': 'Ingrese la contraseña'})
+        self.fields['password2'].widget.attrs.update({'placeholder': 'Confirme la contraseña'})
     
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -64,6 +75,22 @@ class CustomUserEditForm(forms.ModelForm):
         for field_name, field in self.fields.items():
             if field_name not in ['is_active']:
                 field.widget.attrs.update({'class': 'form-control'})
+                
+        # Etiquetas en español
+        self.fields['first_name'].label = 'Nombre'
+        self.fields['last_name'].label = 'Apellido'
+        self.fields['email'].label = 'Email'
+        self.fields['foto_perfil'].label = 'URL de Foto de Perfil'
+        self.fields['descripcion'].label = 'Descripción'
+        self.fields['telefono'].label = 'Teléfono'
+        self.fields['ubicacion'].label = 'Ubicación'
+        self.fields['linkedin'].label = 'LinkedIn'
+        self.fields['id_portafolio_web'].label = 'Portafolio Web'
+        
+        # Placeholders
+        self.fields['email'].widget.attrs.update({'placeholder': 'ejemplo@towork.com'})
+        self.fields['first_name'].widget.attrs.update({'placeholder': 'Ingrese el nombre'})
+        self.fields['last_name'].widget.attrs.update({'placeholder': 'Ingrese el apellido'})
     
     def clean_email(self):
         email = self.cleaned_data.get('email')

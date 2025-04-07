@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear Usuario - Towork</title>
+    <title>{% if edit_mode %}Editar{% else %}Crear{% endif %} Usuario - Towork</title>
     <link rel="stylesheet" href="{% static 'css/global.css' %}">
     <link rel="stylesheet" href="{% static 'css/user_management.css' %}">
 </head>
@@ -12,152 +12,210 @@
     <div class="container">
         {% include 'backoffice/sidebar.html' %}
         
-            
-            <div class="components">
-                <div class="user-form-container">
-                    <form method="post" action="" id="userForm">
-                        {% csrf_token %}
-                        
-                        <!-- Basic Information -->
-                        <div class="form-section">
-                            <h2 class="form-section-title">Información Básica</h2>
-                            
-                            <div class="form-row">
-                                <div class="form-column">
-                                    <div class="form-group">
-                                        <label for="first_name" class="form-label">Nombre<span class="required">*</span></label>
-                                        <input type="text" id="first_name" name="first_name" class="form-control" required placeholder="Ingrese el nombre">
-                                    </div>
-                                </div>
-                                
-                                <div class="form-column">
-                                    <div class="form-group">
-                                        <label for="last_name" class="form-label">Apellido<span class="required">*</span></label>
-                                        <input type="text" id="last_name" name="last_name" class="form-control" required placeholder="Ingrese el apellido">
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-column">
-                                    <div class="form-group">
-                                        <label for="email" class="form-label">Email<span class="required">*</span></label>
-                                        <input type="email" id="email" name="email" class="form-control" required placeholder="correo@ejemplo.com">
-                                    </div>
-                                </div>
-                                
-                                <div class="form-column">
-                                    <div class="form-group">
-                                        <label for="role" class="form-label">Rol<span class="required">*</span></label>
-                                        <select id="role" name="role" class="form-select" required>
-                                            <option value="" selected disabled>Seleccione un rol</option>
-                                            <option value="admin">Administrador</option>
-                                            <option value="user">Usuario</option>
-                                            <option value="moderator">Moderador</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-column">
-                                    <div class="form-group">
-                                        <label for="password" class="form-label">Contraseña<span class="required">*</span></label>
-                                        <input type="password" id="password" name="password" class="form-control" required placeholder="Ingrese la contraseña">
-                                        <small class="form-text">La contraseña debe tener al menos 8 caracteres</small>
-                                    </div>
-                                </div>
-                                
-                                <div class="form-column">
-                                    <div class="form-group">
-                                        <label for="confirm_password" class="form-label">Confirmar Contraseña<span class="required">*</span></label>
-                                        <input type="password" id="confirm_password" name="confirm_password" class="form-control" required placeholder="Confirme la contraseña">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Contact Information -->
-                        <div class="form-section">
-                            <h2 class="form-section-title">Información de Contacto</h2>
-                            
-                            <div class="form-row">
-                                <div class="form-column">
-                                    <div class="form-group">
-                                        <label for="phone" class="form-label">Teléfono</label>
-                                        <input type="tel" id="phone" name="phone" class="form-control" placeholder="Ej: +34 612345678">
-                                    </div>
-                                </div>
-                                
-                                <div class="form-column">
-                                    <div class="form-group">
-                                        <label for="location" class="form-label">Ubicación</label>
-                                        <input type="text" id="location" name="location" class="form-control" placeholder="Ciudad, País">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Professional Profile -->
-                        <div class="form-section">
-                            <h2 class="form-section-title">Perfil Profesional</h2>
-                            
-                            <div class="form-group">
-                                <label for="profile_picture_url" class="form-label">URL de Foto de Perfil</label>
-                                <input type="url" id="profile_picture_url" name="profile_picture_url" class="form-control" placeholder="https://ejemplo.com/foto.jpg">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="description" class="form-label">Descripción</label>
-                                <textarea id="description" name="description" class="form-control" rows="4" placeholder="Breve descripción profesional del usuario"></textarea>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-column">
-                                    <div class="form-group">
-                                        <label for="linkedin" class="form-label">LinkedIn</label>
-                                        <input type="url" id="linkedin" name="linkedin" class="form-control" placeholder="https://linkedin.com/in/usuario">
-                                    </div>
-                                </div>
-                                
-                                <div class="form-column">
-                                    <div class="form-group">
-                                        <label for="portfolio" class="form-label">Portafolio Web</label>
-                                        <input type="url" id="portfolio" name="portfolio" class="form-control" placeholder="https://portafolio.com/usuario">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Action Buttons -->
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-secondary" onclick="window.history.back()">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <line x1="19" y1="12" x2="5" y2="12"></line>
-                                    <polyline points="12 19 5 12 12 5"></polyline>
-                                </svg>
-                                Cancelar
-                            </button>
-                            
-                            <button type="submit" class="btn btn-primary">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                                    <polyline points="7 3 7 8 15 8"></polyline>
-                                </svg>
-                                Guardar Usuario
-                            </button>
-                        </div>
-                    </form>
+        <div class="components">
+            <div class="user-form-container">
+                {% if form_errors %}
+                <div class="alert alert-danger">
+                    <ul>
+                        {% for field, errors in form_errors.items %}
+                            {% for error in errors %}
+                                <li>{{ field }}: {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
                 </div>
+                {% endif %}
+                
+                {% if messages %}
+                <div class="alert alert-success">
+                    <ul>
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                
+                <form method="post" action="" id="userForm">
+                    {% csrf_token %}
+                    
+                    <!-- Información Básica -->
+                    <div class="form-section">
+                        <h2 class="form-section-title">Información Básica</h2>
+                        
+                        <div class="form-row">
+                            <div class="form-column">
+                                <div class="form-group">
+                                    <label for="nombre" class="form-label">Nombre<span class="required">*</span></label>
+                                    <input type="text" id="nombre" name="nombre" class="form-control" required placeholder="Ingrese el nombre" value="{{ user_form.first_name.value|default:'' }}">
+                                    {% if user_form.first_name.errors %}
+                                        <div class="error-message">{{ user_form.first_name.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="form-column">
+                                <div class="form-group">
+                                    <label for="apellido" class="form-label">Apellido<span class="required">*</span></label>
+                                    <input type="text" id="apellido" name="apellido" class="form-control" required placeholder="Ingrese el apellido" value="{{ user_form.last_name.value|default:'' }}">
+                                    {% if user_form.last_name.errors %}
+                                        <div class="error-message">{{ user_form.last_name.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-column">
+                                <div class="form-group">
+                                    <label for="email" class="form-label">Email<span class="required">*</span></label>
+                                    <input type="email" id="email" name="email" class="form-control" required placeholder="correo@ejemplo.com" value="{{ user_form.email.value|default:'' }}">
+                                    {% if user_form.email.errors %}
+                                        <div class="error-message">{{ user_form.email.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="form-column">
+                                <div class="form-group">
+                                    <label for="rol" class="form-label">Rol<span class="required">*</span></label>
+                                    <select id="rol" name="rol" class="form-select" required>
+                                        <option value="" {% if not user_form.rol.value %}selected{% endif %} disabled>Seleccione un rol</option>
+                                        <option value="admin" {% if user_form.rol.value == 'admin' %}selected{% endif %}>Administrador</option>
+                                        <option value="usuario" {% if user_form.rol.value == 'usuario' %}selected{% endif %}>Usuario</option>
+                                        <option value="moderador" {% if user_form.rol.value == 'moderador' %}selected{% endif %}>Moderador</option>
+                                    </select>
+                                    {% if user_form.rol.errors %}
+                                        <div class="error-message">{{ user_form.rol.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {% if not edit_mode %}
+                        <div class="form-row">
+                            <div class="form-column">
+                                <div class="form-group">
+                                    <label for="contrasena" class="form-label">Contraseña<span class="required">*</span></label>
+                                    <input type="password" id="contrasena" name="contrasena" class="form-control" required placeholder="Ingrese la contraseña">
+                                    <small class="form-text">La contraseña debe tener al menos 8 caracteres</small>
+                                    {% if user_form.password1.errors %}
+                                        <div class="error-message">{{ user_form.password1.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="form-column">
+                                <div class="form-group">
+                                    <label for="confirmar_contrasena" class="form-label">Confirmar Contraseña<span class="required">*</span></label>
+                                    <input type="password" id="confirmar_contrasena" name="confirmar_contrasena" class="form-control" required placeholder="Confirme la contraseña">
+                                    {% if user_form.password2.errors %}
+                                        <div class="error-message">{{ user_form.password2.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Información de Contacto -->
+                    <div class="form-section">
+                        <h2 class="form-section-title">Información de Contacto</h2>
+                        
+                        <div class="form-row">
+                            <div class="form-column">
+                                <div class="form-group">
+                                    <label for="telefono" class="form-label">Teléfono</label>
+                                    <input type="tel" id="telefono" name="telefono" class="form-control" placeholder="Ej: +34 612345678" value="{{ user_form.telefono.value|default:'' }}">
+                                    {% if user_form.telefono.errors %}
+                                        <div class="error-message">{{ user_form.telefono.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="form-column">
+                                <div class="form-group">
+                                    <label for="ubicacion" class="form-label">Ubicación</label>
+                                    <input type="text" id="ubicacion" name="ubicacion" class="form-control" placeholder="Ciudad, País" value="{{ user_form.ubicacion.value|default:'' }}">
+                                    {% if user_form.ubicacion.errors %}
+                                        <div class="error-message">{{ user_form.ubicacion.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Perfil Profesional -->
+                    <div class="form-section">
+                        <h2 class="form-section-title">Perfil Profesional</h2>
+                        
+                        <div class="form-group">
+                            <label for="url_foto" class="form-label">URL de Foto de Perfil</label>
+                            <input type="url" id="url_foto" name="url_foto" class="form-control" placeholder="https://ejemplo.com/foto.jpg" value="{{ user_form.foto_perfil.value|default:'' }}">
+                            {% if user_form.foto_perfil.errors %}
+                                <div class="error-message">{{ user_form.foto_perfil.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="descripcion" class="form-label">Descripción</label>
+                            <textarea id="descripcion" name="descripcion" class="form-control" rows="4" placeholder="Breve descripción profesional del usuario">{{ user_form.descripcion.value|default:'' }}</textarea>
+                            {% if user_form.descripcion.errors %}
+                                <div class="error-message">{{ user_form.descripcion.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-column">
+                                <div class="form-group">
+                                    <label for="linkedin" class="form-label">LinkedIn</label>
+                                    <input type="url" id="linkedin" name="linkedin" class="form-control" placeholder="https://linkedin.com/in/usuario" value="{{ user_form.linkedin.value|default:'' }}">
+                                    {% if user_form.linkedin.errors %}
+                                        <div class="error-message">{{ user_form.linkedin.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="form-column">
+                                <div class="form-group">
+                                    <label for="portafolio" class="form-label">Portafolio Web</label>
+                                    <input type="url" id="portafolio" name="portafolio" class="form-control" placeholder="https://portafolio.com/usuario" value="{{ user_form.id_portafolio_web.value|default:'' }}">
+                                    {% if user_form.id_portafolio_web.errors %}
+                                        <div class="error-message">{{ user_form.id_portafolio_web.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Botones de acción -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="19" y1="12" x2="5" y2="12"></line>
+                                <polyline points="12 19 5 12 12 5"></polyline>
+                            </svg>
+                            Cancelar
+                        </button>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                <polyline points="7 3 7 8 15 8"></polyline>
+                            </svg>
+                            {% if edit_mode %}Actualizar Usuario{% else %}Guardar Usuario{% endif %}
+                        </button>
+                    </div>
+                </form>
             </div>
-       
+        </div>
     </div>
 
     <script>
-        // Password match validation
-        document.getElementById('confirm_password').addEventListener('input', function() {
-            const password = document.getElementById('password').value;
+        // Validación de coincidencia de contraseñas
+        document.getElementById('confirmar_contrasena').addEventListener('input', function() {
+            const password = document.getElementById('contrasena').value;
             const confirmPassword = this.value;
             
             if (confirmPassword === '') {
@@ -171,12 +229,13 @@
             }
         });
 
-        // Form validation before submission
+        // Validación del formulario antes de enviar
         document.getElementById('userForm').addEventListener('submit', function(event) {
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm_password').value;
+            const password = document.getElementById('contrasena');
+            const confirmPassword = document.getElementById('confirmar_contrasena');
             
-            if (password !== confirmPassword) {
+            // Solo verificar las contraseñas si los campos existen (en modo creación)
+            if (password && confirmPassword && password.value !== confirmPassword.value) {
                 event.preventDefault();
                 alert('Las contraseñas no coinciden');
             }
