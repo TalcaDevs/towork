@@ -207,14 +207,7 @@ def crear_usuario(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            return render(request, 'backoffice/dashboard.html', {
-                'estado': 'user_form',
-                'user_form': CustomUserCreationForm(),
-                'success': f'Usuario {user.first_name} {user.last_name} creado correctamente.',
-                'pendientes_count': Solicitud.objects.filter(estado='pendiente').count(),
-                'aprobados_count': Solicitud.objects.filter(estado='aceptada').count(),
-                'rechazados_count': Solicitud.objects.filter(estado='rechazada').count()
-            })
+            return redirect('administrar_usuarios')  # Redirect to avoid rendering on POST
     else:
         form = CustomUserCreationForm()
     
@@ -234,15 +227,8 @@ def editar_usuario(request, user_id):
     if request.method == 'POST':
         form = CustomUserEditForm(request.POST, instance=usuario)
         if form.is_valid():
-            user = form.save()
-            return render(request, 'backoffice/dashboard.html', {
-                'estado': 'user_form',
-                'user_form': CustomUserEditForm(instance=user),
-                'success': f'Usuario {user.first_name} {user.last_name} actualizado correctamente.',
-                'pendientes_count': Solicitud.objects.filter(estado='pendiente').count(),
-                'aprobados_count': Solicitud.objects.filter(estado='aceptada').count(),
-                'rechazados_count': Solicitud.objects.filter(estado='rechazada').count()
-            })
+            form.save()
+            return redirect('administrar_usuarios')  # Redirect to avoid rendering on POST
     else:
         form = CustomUserEditForm(instance=usuario)
     

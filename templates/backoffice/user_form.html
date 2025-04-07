@@ -1,162 +1,186 @@
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/user_management.css' %}">
-
-<div class="user-form-container">
-    <div class="user-form-header">
-        <h2>{% if user_form.instance.pk %}Editar{% else %}Crear{% endif %} Usuario</h2>
-        <a href="?estado=administrar_usuarios" class="btn-secondary">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M19 12H5"></path>
-                <path d="M12 19l-7-7 7-7"></path>
-            </svg>
-            Volver
-        </a>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Usuario - Towork</title>
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <link rel="stylesheet" href="{% static 'css/user_management.css' %}">
+</head>
+<body>
+    <div class="container">
+        {% include 'backoffice/sidebar.html' %}
+        
+            
+            <div class="components">
+                <div class="user-form-container">
+                    <form method="post" action="" id="userForm">
+                        {% csrf_token %}
+                        
+                        <!-- Información Básica -->
+                        <div class="form-section">
+                            <h2 class="form-section-title">Información Básica</h2>
+                            
+                            <div class="form-row">
+                                <div class="form-column">
+                                    <div class="form-group">
+                                        <label for="nombre" class="form-label">Nombre<span class="required">*</span></label>
+                                        <input type="text" id="nombre" name="nombre" class="form-control" required placeholder="Ingrese el nombre">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-column">
+                                    <div class="form-group">
+                                        <label for="apellido" class="form-label">Apellido<span class="required">*</span></label>
+                                        <input type="text" id="apellido" name="apellido" class="form-control" required placeholder="Ingrese el apellido">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-column">
+                                    <div class="form-group">
+                                        <label for="email" class="form-label">Email<span class="required">*</span></label>
+                                        <input type="email" id="email" name="email" class="form-control" required placeholder="correo@ejemplo.com">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-column">
+                                    <div class="form-group">
+                                        <label for="rol" class="form-label">Rol<span class="required">*</span></label>
+                                        <select id="rol" name="rol" class="form-select" required>
+                                            <option value="" selected disabled>Seleccione un rol</option>
+                                            <option value="admin">Administrador</option>
+                                            <option value="usuario">Usuario</option>
+                                            <option value="moderador">Moderador</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-column">
+                                    <div class="form-group">
+                                        <label for="contrasena" class="form-label">Contraseña<span class="required">*</span></label>
+                                        <input type="password" id="contrasena" name="contrasena" class="form-control" required placeholder="Ingrese la contraseña">
+                                        <small class="form-text">La contraseña debe tener al menos 8 caracteres</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-column">
+                                    <div class="form-group">
+                                        <label for="confirmar_contrasena" class="form-label">Confirmar Contraseña<span class="required">*</span></label>
+                                        <input type="password" id="confirmar_contrasena" name="confirmar_contrasena" class="form-control" required placeholder="Confirme la contraseña">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Información de Contacto -->
+                        <div class="form-section">
+                            <h2 class="form-section-title">Información de Contacto</h2>
+                            
+                            <div class="form-row">
+                                <div class="form-column">
+                                    <div class="form-group">
+                                        <label for="telefono" class="form-label">Teléfono</label>
+                                        <input type="tel" id="telefono" name="telefono" class="form-control" placeholder="Ej: +34 612345678">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-column">
+                                    <div class="form-group">
+                                        <label for="ubicacion" class="form-label">Ubicación</label>
+                                        <input type="text" id="ubicacion" name="ubicacion" class="form-control" placeholder="Ciudad, País">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Perfil Profesional -->
+                        <div class="form-section">
+                            <h2 class="form-section-title">Perfil Profesional</h2>
+                            
+                            <div class="form-group">
+                                <label for="url_foto" class="form-label">URL de Foto de Perfil</label>
+                                <input type="url" id="url_foto" name="url_foto" class="form-control" placeholder="https://ejemplo.com/foto.jpg">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="descripcion" class="form-label">Descripción</label>
+                                <textarea id="descripcion" name="descripcion" class="form-control" rows="4" placeholder="Breve descripción profesional del usuario"></textarea>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-column">
+                                    <div class="form-group">
+                                        <label for="linkedin" class="form-label">LinkedIn</label>
+                                        <input type="url" id="linkedin" name="linkedin" class="form-control" placeholder="https://linkedin.com/in/usuario">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-column">
+                                    <div class="form-group">
+                                        <label for="portafolio" class="form-label">Portafolio Web</label>
+                                        <input type="url" id="portafolio" name="portafolio" class="form-control" placeholder="https://portafolio.com/usuario">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Botones de acción -->
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                                    <polyline points="12 19 5 12 12 5"></polyline>
+                                </svg>
+                                Cancelar
+                            </button>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                    <polyline points="7 3 7 8 15 8"></polyline>
+                                </svg>
+                                Guardar Usuario
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+       
     </div>
 
-    {% if error %}
-    <div class="alert alert-error">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-        </svg>
-        <span>{{ error }}</span>
-    </div>
-    {% endif %}
+    <script>
+        // Validación de coincidencia de contraseñas
+        document.getElementById('confirmar_contrasena').addEventListener('input', function() {
+            const password = document.getElementById('contrasena').value;
+            const confirmPassword = this.value;
+            
+            if (confirmPassword === '') {
+                this.classList.remove('password-match', 'password-mismatch');
+            } else if (password === confirmPassword) {
+                this.classList.remove('password-mismatch');
+                this.classList.add('password-match');
+            } else {
+                this.classList.remove('password-match');
+                this.classList.add('password-mismatch');
+            }
+        });
 
-    {% if success %}
-    <div class="alert alert-success">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-        </svg>
-        <span>{{ success }}</span>
-    </div>
-    {% endif %}
-
-    <form method="post" class="user-form">
-        {% csrf_token %}
-        
-        <div class="form-section">
-            <h3>Información Básica</h3>
+        // Validación del formulario antes de enviar
+        document.getElementById('userForm').addEventListener('submit', function(event) {
+            const password = document.getElementById('contrasena').value;
+            const confirmPassword = document.getElementById('confirmar_contrasena').value;
             
-            <div class="form-group-row">
-                <div class="form-group">
-                    <label for="{{ user_form.first_name.id_for_label }}">Nombre*</label>
-                    {{ user_form.first_name }}
-                    {% if user_form.first_name.errors %}
-                        <span class="form-error">{{ user_form.first_name.errors.0 }}</span>
-                    {% endif %}
-                </div>
-                
-                <div class="form-group">
-                    <label for="{{ user_form.last_name.id_for_label }}">Apellido*</label>
-                    {{ user_form.last_name }}
-                    {% if user_form.last_name.errors %}
-                        <span class="form-error">{{ user_form.last_name.errors.0 }}</span>
-                    {% endif %}
-                </div>
-            </div>
-            
-            <div class="form-group-row">
-                <div class="form-group">
-                    <label for="{{ user_form.email.id_for_label }}">Email*</label>
-                    {{ user_form.email }}
-                    {% if user_form.email.errors %}
-                        <span class="form-error">{{ user_form.email.errors.0 }}</span>
-                    {% endif %}
-                </div>
-                
-                <div class="form-group">
-                    <label for="{{ user_form.rol.id_for_label }}">Rol*</label>
-                    {{ user_form.rol }}
-                    {% if user_form.rol.errors %}
-                        <span class="form-error">{{ user_form.rol.errors.0 }}</span>
-                    {% endif %}
-                </div>
-            </div>
-            
-            {% if not user_form.instance.pk %}
-            <div class="form-group-row">
-                <div class="form-group">
-                    <label for="{{ user_form.password1.id_for_label }}">Contraseña*</label>
-                    {{ user_form.password1 }}
-                    {% if user_form.password1.errors %}
-                        <span class="form-error">{{ user_form.password1.errors.0 }}</span>
-                    {% endif %}
-                </div>
-                
-                <div class="form-group">
-                    <label for="{{ user_form.password2.id_for_label }}">Confirmar Contraseña*</label>
-                    {{ user_form.password2 }}
-                    {% if user_form.password2.errors %}
-                        <span class="form-error">{{ user_form.password2.errors.0 }}</span>
-                    {% endif %}
-                </div>
-            </div>
-            {% else %}
-            <div class="form-group">
-                <label for="{{ user_form.is_active.id_for_label }}" class="checkbox-label">
-                    {{ user_form.is_active }}
-                    <span>Usuario activo</span>
-                </label>
-            </div>
-            {% endif %}
-        </div>
-        
-        <div class="form-section">
-            <h3>Información de Contacto</h3>
-            
-            <div class="form-group-row">
-                <div class="form-group">
-                    <label for="{{ user_form.telefono.id_for_label }}">Teléfono</label>
-                    {{ user_form.telefono }}
-                </div>
-                
-                <div class="form-group">
-                    <label for="{{ user_form.ubicacion.id_for_label }}">Ubicación</label>
-                    {{ user_form.ubicacion }}
-                </div>
-            </div>
-        </div>
-        
-        <div class="form-section">
-            <h3>Perfil Profesional</h3>
-            
-            <div class="form-group">
-                <label for="{{ user_form.foto_perfil.id_for_label }}">URL de Foto de Perfil</label>
-                {{ user_form.foto_perfil }}
-            </div>
-            
-            <div class="form-group">
-                <label for="{{ user_form.descripcion.id_for_label }}">Descripción</label>
-                {{ user_form.descripcion }}
-            </div>
-            
-            <div class="form-group-row">
-                <div class="form-group">
-                    <label for="{{ user_form.linkedin.id_for_label }}">LinkedIn</label>
-                    {{ user_form.linkedin }}
-                </div>
-                
-                <div class="form-group">
-                    <label for="{{ user_form.id_portafolio_web.id_for_label }}">Portafolio Web</label>
-                    {{ user_form.id_portafolio_web }}
-                </div>
-            </div>
-        </div>
-        
-        <div class="form-actions">
-            <button type="submit" class="btn-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                    <polyline points="7 3 7 8 15 8"></polyline>
-                </svg>
-                Guardar
-            </button>
-            
-            <a href="?estado=administrar_usuarios" class="btn-secondary">Cancelar</a>
-        </div>
-    </form>
-</div>
+            if (password !== confirmPassword) {
+                event.preventDefault();
+                alert('Las contraseñas no coinciden');
+            }
+        });
+    </script>
+</body>
+</html>
