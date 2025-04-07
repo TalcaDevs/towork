@@ -18,22 +18,22 @@
                     <form method="post" action="" id="userForm">
                         {% csrf_token %}
                         
-                        <!-- Información Básica -->
+                        <!-- Basic Information -->
                         <div class="form-section">
                             <h2 class="form-section-title">Información Básica</h2>
                             
                             <div class="form-row">
                                 <div class="form-column">
                                     <div class="form-group">
-                                        <label for="nombre" class="form-label">Nombre<span class="required">*</span></label>
-                                        <input type="text" id="nombre" name="nombre" class="form-control" required placeholder="Ingrese el nombre">
+                                        <label for="first_name" class="form-label">Nombre<span class="required">*</span></label>
+                                        <input type="text" id="first_name" name="first_name" class="form-control" required placeholder="Ingrese el nombre">
                                     </div>
                                 </div>
                                 
                                 <div class="form-column">
                                     <div class="form-group">
-                                        <label for="apellido" class="form-label">Apellido<span class="required">*</span></label>
-                                        <input type="text" id="apellido" name="apellido" class="form-control" required placeholder="Ingrese el apellido">
+                                        <label for="last_name" class="form-label">Apellido<span class="required">*</span></label>
+                                        <input type="text" id="last_name" name="last_name" class="form-control" required placeholder="Ingrese el apellido">
                                     </div>
                                 </div>
                             </div>
@@ -48,12 +48,12 @@
                                 
                                 <div class="form-column">
                                     <div class="form-group">
-                                        <label for="rol" class="form-label">Rol<span class="required">*</span></label>
-                                        <select id="rol" name="rol" class="form-select" required>
+                                        <label for="role" class="form-label">Rol<span class="required">*</span></label>
+                                        <select id="role" name="role" class="form-select" required>
                                             <option value="" selected disabled>Seleccione un rol</option>
                                             <option value="admin">Administrador</option>
-                                            <option value="usuario">Usuario</option>
-                                            <option value="moderador">Moderador</option>
+                                            <option value="user">Usuario</option>
+                                            <option value="moderator">Moderador</option>
                                         </select>
                                     </div>
                                 </div>
@@ -62,54 +62,54 @@
                             <div class="form-row">
                                 <div class="form-column">
                                     <div class="form-group">
-                                        <label for="contrasena" class="form-label">Contraseña<span class="required">*</span></label>
-                                        <input type="password" id="contrasena" name="contrasena" class="form-control" required placeholder="Ingrese la contraseña">
+                                        <label for="password" class="form-label">Contraseña<span class="required">*</span></label>
+                                        <input type="password" id="password" name="password" class="form-control" required placeholder="Ingrese la contraseña">
                                         <small class="form-text">La contraseña debe tener al menos 8 caracteres</small>
                                     </div>
                                 </div>
                                 
                                 <div class="form-column">
                                     <div class="form-group">
-                                        <label for="confirmar_contrasena" class="form-label">Confirmar Contraseña<span class="required">*</span></label>
-                                        <input type="password" id="confirmar_contrasena" name="confirmar_contrasena" class="form-control" required placeholder="Confirme la contraseña">
+                                        <label for="confirm_password" class="form-label">Confirmar Contraseña<span class="required">*</span></label>
+                                        <input type="password" id="confirm_password" name="confirm_password" class="form-control" required placeholder="Confirme la contraseña">
                                     </div>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- Información de Contacto -->
+                        <!-- Contact Information -->
                         <div class="form-section">
                             <h2 class="form-section-title">Información de Contacto</h2>
                             
                             <div class="form-row">
                                 <div class="form-column">
                                     <div class="form-group">
-                                        <label for="telefono" class="form-label">Teléfono</label>
-                                        <input type="tel" id="telefono" name="telefono" class="form-control" placeholder="Ej: +34 612345678">
+                                        <label for="phone" class="form-label">Teléfono</label>
+                                        <input type="tel" id="phone" name="phone" class="form-control" placeholder="Ej: +34 612345678">
                                     </div>
                                 </div>
                                 
                                 <div class="form-column">
                                     <div class="form-group">
-                                        <label for="ubicacion" class="form-label">Ubicación</label>
-                                        <input type="text" id="ubicacion" name="ubicacion" class="form-control" placeholder="Ciudad, País">
+                                        <label for="location" class="form-label">Ubicación</label>
+                                        <input type="text" id="location" name="location" class="form-control" placeholder="Ciudad, País">
                                     </div>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- Perfil Profesional -->
+                        <!-- Professional Profile -->
                         <div class="form-section">
                             <h2 class="form-section-title">Perfil Profesional</h2>
                             
                             <div class="form-group">
-                                <label for="url_foto" class="form-label">URL de Foto de Perfil</label>
-                                <input type="url" id="url_foto" name="url_foto" class="form-control" placeholder="https://ejemplo.com/foto.jpg">
+                                <label for="profile_picture_url" class="form-label">URL de Foto de Perfil</label>
+                                <input type="url" id="profile_picture_url" name="profile_picture_url" class="form-control" placeholder="https://ejemplo.com/foto.jpg">
                             </div>
                             
                             <div class="form-group">
-                                <label for="descripcion" class="form-label">Descripción</label>
-                                <textarea id="descripcion" name="descripcion" class="form-control" rows="4" placeholder="Breve descripción profesional del usuario"></textarea>
+                                <label for="description" class="form-label">Descripción</label>
+                                <textarea id="description" name="description" class="form-control" rows="4" placeholder="Breve descripción profesional del usuario"></textarea>
                             </div>
                             
                             <div class="form-row">
@@ -122,14 +122,14 @@
                                 
                                 <div class="form-column">
                                     <div class="form-group">
-                                        <label for="portafolio" class="form-label">Portafolio Web</label>
-                                        <input type="url" id="portafolio" name="portafolio" class="form-control" placeholder="https://portafolio.com/usuario">
+                                        <label for="portfolio" class="form-label">Portafolio Web</label>
+                                        <input type="url" id="portfolio" name="portfolio" class="form-control" placeholder="https://portafolio.com/usuario">
                                     </div>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- Botones de acción -->
+                        <!-- Action Buttons -->
                         <div class="form-actions">
                             <button type="button" class="btn btn-secondary" onclick="window.history.back()">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -155,9 +155,9 @@
     </div>
 
     <script>
-        // Validación de coincidencia de contraseñas
-        document.getElementById('confirmar_contrasena').addEventListener('input', function() {
-            const password = document.getElementById('contrasena').value;
+        // Password match validation
+        document.getElementById('confirm_password').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
             const confirmPassword = this.value;
             
             if (confirmPassword === '') {
@@ -171,10 +171,10 @@
             }
         });
 
-        // Validación del formulario antes de enviar
+        // Form validation before submission
         document.getElementById('userForm').addEventListener('submit', function(event) {
-            const password = document.getElementById('contrasena').value;
-            const confirmPassword = document.getElementById('confirmar_contrasena').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
             
             if (password !== confirmPassword) {
                 event.preventDefault();
