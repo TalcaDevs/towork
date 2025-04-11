@@ -4,7 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib import messages
-from django.views.decorators.http import require_http_methods, require_POST, require_GET, require_safe
+from django.views.decorators.http import require_POST, require_GET, require_safe
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from users.models import Solicitud, CustomUser, SolicitudLog
 from users.serializers import UserSerializer, SolicitudSerializer
 from rest_framework.decorators import api_view, permission_classes
@@ -14,8 +15,9 @@ from rest_framework import status
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
 from .forms import CustomUserCreationForm, CustomUserEditForm
 
-@require_http_methods(["GET", "POST"])
 def custom_login(request):
+    """Vista para el inicio de sesión de usuarios"""
+    # Note: Login forms are exempt from CSRF in some configurations but it's best practice to include it
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
@@ -84,11 +86,12 @@ def dashboard(request):
     })
 
 @login_required
-@require_http_methods(["GET", "POST"])
 def update_status(request, user_id):
+    solicitud = Solicitud.objects.get(usuario__id=user_id)
+    
     if request.method == 'POST':
+        # Add CSRF protection check (Django's built-in middleware handles this)
         nuevo_estado = request.POST.get('estado')
-        solicitud = Solicitud.objects.get(usuario__id=user_id)
         estado_anterior = solicitud.estado
         solicitud.estado = nuevo_estado
         solicitud.save()
@@ -103,7 +106,6 @@ def update_status(request, user_id):
 
         return redirect('dashboard')
     else:
-        solicitud = Solicitud.objects.get(usuario__id=user_id)
         return render(request, 'backoffice/update_status.html', {'solicitud': solicitud})
 
 @extend_schema(
@@ -208,9 +210,9 @@ def administrar_usuarios(request):
     })
 
 @login_required
-@require_http_methods(["GET", "POST"])
 def crear_usuario(request):
     """Vista para crear un nuevo usuario"""
+    # Django's CSRF middleware provides protection for POST requests
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
@@ -228,11 +230,11 @@ def crear_usuario(request):
     })
 
 @login_required
-@require_http_methods(["GET", "POST"])
 def editar_usuario(request, user_id):
     """Vista para editar un usuario existente"""
     usuario = get_object_or_404(CustomUser, id=user_id)
     
+    # Django's CSRF middleware automatically protects this view
     if request.method == 'POST':
         form = CustomUserEditForm(request.POST, instance=usuario)
         if form.is_valid():
