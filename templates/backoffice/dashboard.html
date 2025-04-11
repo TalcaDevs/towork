@@ -19,21 +19,19 @@
             
             <div class="components">
                 <div class="card-container" id="card-container">
-                    {% if estado == 'pendientes' %}
-                        {% include 'backoffice/pending.html' %}
-                    {% elif estado == 'aprobados' %}
-                        {% include 'backoffice/approved.html' %}
-                    {% elif estado == 'rechazados' %}
-                        {% include 'backoffice/rejected.html' %}
-                    {% elif estado == 'card_detail' %}
-                        {% include 'backoffice/detail.html' with solicitud=solicitud %}
-                    {% elif estado == 'update_status' %}
-                        {% include 'backoffice/update_status.html' with solicitud=solicitud %}
-                    {% elif estado == 'administrar_usuarios' %}
-                        {% include 'backoffice/user_list.html' with users=users %}
-                    {% elif estado == 'user_form' %}
-                        {% include 'backoffice/user_form.html' with user_form=user_form success=success error=error %}
-                    {% endif %}
+                    {% with template_name='backoffice/'|add:estado|add:'.html' %}
+                        {% if estado == 'pendientes' or estado == 'aprobados' or estado == 'rechazados' %}
+                            {% include 'backoffice/pending.html' %}
+                        {% elif estado == 'card_detail' %}
+                            {% include 'backoffice/detail.html' with solicitud=solicitud %}
+                        {% elif estado == 'update_status' %}
+                            {% include 'backoffice/update_status.html' with solicitud=solicitud %}
+                        {% elif estado == 'administrar_usuarios' %}
+                            {% include 'backoffice/user_list.html' with users=users %}
+                        {% elif estado == 'user_form' %}
+                            {% include 'backoffice/user_form.html' with user_form=user_form success=success error=error %}
+                        {% endif %}
+                    {% endwith %}
                 </div>
             </div>
         </div>

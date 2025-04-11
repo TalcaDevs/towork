@@ -26,7 +26,7 @@ class CustomUserCreationForm(UserCreationForm):
     
     def clean_email(self):
         email = self.cleaned_data.get('email')
-        username = self.cleaned_data.get('username', email)  # Si no hay username, usar email
+        
         
         # Si no es una edición o es un usuario diferente
         if not self.instance.pk or self.instance.email != email:

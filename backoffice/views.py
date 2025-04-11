@@ -4,8 +4,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib import messages
-from django.views.decorators.http import require_POST, require_GET, require_safe
-from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from users.models import Solicitud, CustomUser, SolicitudLog
 from users.serializers import UserSerializer, SolicitudSerializer
 from rest_framework.decorators import api_view, permission_classes
@@ -14,10 +12,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
 from .forms import CustomUserCreationForm, CustomUserEditForm
-
-@ensure_csrf_cookie
 def custom_login(request):
-    """Vista para el inicio de sesión de usuarios"""
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
@@ -31,7 +26,6 @@ def custom_login(request):
     return render(request, "backoffice/login.html")
 
 @login_required
-@require_GET
 def dashboard(request):
     estado = request.GET.get('estado', 'pendientes')
     user_id = request.GET.get('user_id')
@@ -84,34 +78,27 @@ def dashboard(request):
         'page_obj': solicitudes,
         'paginator': paginator,
     })
-
 @login_required
-@require_GET
-def update_status_form(request, user_id):
-    """Vista para mostrar el formulario de actualización de estado"""
-    solicitud = Solicitud.objects.get(usuario__id=user_id)
-    return render(request, 'backoffice/update_status.html', {'solicitud': solicitud})
+def update_status(request, user_id):
+    if request.method == 'POST':
+        nuevo_estado = request.POST.get('estado')
+        solicitud = Solicitud.objects.get(usuario__id=user_id)
+        estado_anterior = solicitud.estado
+        solicitud.estado = nuevo_estado
+        solicitud.save()
 
-@login_required
-@require_POST
-@csrf_protect
-def update_status_submit(request, user_id):
-    """Vista para procesar la actualización de estado"""
-    solicitud = Solicitud.objects.get(usuario__id=user_id)
-    nuevo_estado = request.POST.get('estado')
-    estado_anterior = solicitud.estado
-    solicitud.estado = nuevo_estado
-    solicitud.save()
+        # Registrar el cambio en SolicitudLog
+        SolicitudLog.objects.create(
+            solicitud=solicitud,
+            usuario=request.user,
+            estado_anterior=estado_anterior,
+            nuevo_estado=nuevo_estado
+        )
 
-    # Registrar el cambio en SolicitudLog
-    SolicitudLog.objects.create(
-        solicitud=solicitud,
-        usuario=request.user,
-        estado_anterior=estado_anterior,
-        nuevo_estado=nuevo_estado
-    )
-
-    return redirect('dashboard')
+        return redirect('dashboard')
+    else:
+        solicitud = Solicitud.objects.get(usuario__id=user_id)
+        return render(request, 'backoffice/update_status.html', {'solicitud': solicitud})
 
 @extend_schema(
     tags=['backoffice'],
@@ -173,19 +160,15 @@ def change_request_status(request, user_id):
         200: SolicitudSerializer
     }
 )
-@api_view(['GET'])  # Explicitly restrict to only GET method
+@api_view(['GET'])
 @permission_classes([permissions.IsAdminUser])
-def user_detail_api(request, user_id):
-    """
-    Endpoint para obtener el detalle de una solicitud. 
-    Restringido explícitamente a método GET.
-    """
+def user_detail(request, user_id):
     solicitud = Solicitud.objects.get(usuario__id=user_id)
     serializer = SolicitudSerializer(solicitud)
-    return Response(serializer.data)
+    return render(request, 'backoffice/detail.html', {'solicitud': serializer.data})
 
-@login_required
-@require_GET
+@api_view(['GET'])
+@permission_classes([permissions.IsAdminUser])
 def user_detail(request, user_id):
     solicitud = Solicitud.objects.get(usuario__id=user_id)
     serializer = SolicitudSerializer(solicitud)
@@ -193,7 +176,6 @@ def user_detail(request, user_id):
 
 # Vistas para la gestión de usuarios
 @login_required
-@require_GET
 def administrar_usuarios(request):
     """Vista para listar todos los usuarios"""
     # Obtener todos los usuarios
@@ -219,10 +201,15 @@ def administrar_usuarios(request):
     })
 
 @login_required
-@require_GET
-def crear_usuario_form(request):
-    """Vista para mostrar el formulario de creación de usuario"""
-    form = CustomUserCreationForm()
+def crear_usuario(request):
+    """Vista para crear un nuevo usuario"""
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            return redirect('administrar_usuarios')  # Redirect to avoid rendering on POST
+    else:
+        form = CustomUserCreationForm()
     
     return render(request, 'backoffice/dashboard.html', {
         'estado': 'user_form',
@@ -233,52 +220,25 @@ def crear_usuario_form(request):
     })
 
 @login_required
-@require_POST
-@csrf_protect
-def crear_usuario_submit(request):
-    """Vista para procesar el formulario de creación de usuario"""
-    form = CustomUserCreationForm(request.POST)
-    if form.is_valid():
-        user = form.save()
-        return redirect('administrar_usuarios')
-    
-    # Si el formulario no es válido, volvemos a mostrar el formulario con errores
-    return render(request, 'backoffice/dashboard.html', {
-        'estado': 'user_form',
-        'user_form': form,
-        'pendientes_count': Solicitud.objects.filter(estado='pendiente').count(),
-        'aprobados_count': Solicitud.objects.filter(estado='aceptada').count(),
-        'rechazados_count': Solicitud.objects.filter(estado='rechazada').count()
-    })
-
-@login_required
-@require_GET
-def editar_usuario_form(request, user_id):
-    """Vista para mostrar el formulario de edición de usuario"""
+def editar_usuario(request, user_id):
+    """Vista para editar un usuario existente"""
     usuario = get_object_or_404(CustomUser, id=user_id)
-    form = CustomUserEditForm(instance=usuario)
     
-    return render(request, 'backoffice/dashboard.html', {
-        'estado': 'user_form',
-        'user_form': form,
-        'pendientes_count': Solicitud.objects.filter(estado='pendiente').count(),
-        'aprobados_count': Solicitud.objects.filter(estado='aceptada').count(),
-        'rechazados_count': Solicitud.objects.filter(estado='rechazada').count()
-    })
-
+    if request.method == 'POST':
+        form = CustomUserEditForm(request.POST, instance=usuario)
 @login_required
-@require_POST
-@csrf_protect
-def editar_usuario_submit(request, user_id):
-    """Vista para procesar el formulario de edición de usuario"""
+def editar_usuario(request, user_id):
+    """Vista para editar un usuario existente"""
     usuario = get_object_or_404(CustomUser, id=user_id)
-    form = CustomUserEditForm(request.POST, instance=usuario)
     
-    if form.is_valid():
-        form.save()
-        return redirect('administrar_usuarios')
+    if request.method == 'POST':
+        form = CustomUserEditForm(request.POST, instance=usuario)
+        if form.is_valid():
+            form.save()
+            return redirect('administrar_usuarios')  # Redirect to avoid rendering on POST
+    else:
+        form = CustomUserEditForm(instance=usuario)
     
-    # Si el formulario no es válido, volvemos a mostrar el formulario con errores
     return render(request, 'backoffice/dashboard.html', {
         'estado': 'user_form',
         'user_form': form,
@@ -288,7 +248,6 @@ def editar_usuario_submit(request, user_id):
     })
 
 @login_required
-@require_POST
 def toggle_usuario_estado(request, user_id):
     """Vista para activar/desactivar un usuario"""
     usuario = get_object_or_404(CustomUser, id=user_id)
