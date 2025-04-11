@@ -15,9 +15,9 @@ from rest_framework import status
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
 from .forms import CustomUserCreationForm, CustomUserEditForm
 
+@ensure_csrf_cookie
 def custom_login(request):
     """Vista para el inicio de sesión de usuarios"""
-    # Note: Login forms are exempt from CSRF in some configurations but it's best practice to include it
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
@@ -86,27 +86,32 @@ def dashboard(request):
     })
 
 @login_required
-def update_status(request, user_id):
+@require_GET
+def update_status_form(request, user_id):
+    """Vista para mostrar el formulario de actualización de estado"""
     solicitud = Solicitud.objects.get(usuario__id=user_id)
-    
-    if request.method == 'POST':
-        # Add CSRF protection check (Django's built-in middleware handles this)
-        nuevo_estado = request.POST.get('estado')
-        estado_anterior = solicitud.estado
-        solicitud.estado = nuevo_estado
-        solicitud.save()
+    return render(request, 'backoffice/update_status.html', {'solicitud': solicitud})
 
-        # Registrar el cambio en SolicitudLog
-        SolicitudLog.objects.create(
-            solicitud=solicitud,
-            usuario=request.user,
-            estado_anterior=estado_anterior,
-            nuevo_estado=nuevo_estado
-        )
+@login_required
+@require_POST
+@csrf_protect
+def update_status_submit(request, user_id):
+    """Vista para procesar la actualización de estado"""
+    solicitud = Solicitud.objects.get(usuario__id=user_id)
+    nuevo_estado = request.POST.get('estado')
+    estado_anterior = solicitud.estado
+    solicitud.estado = nuevo_estado
+    solicitud.save()
 
-        return redirect('dashboard')
-    else:
-        return render(request, 'backoffice/update_status.html', {'solicitud': solicitud})
+    # Registrar el cambio en SolicitudLog
+    SolicitudLog.objects.create(
+        solicitud=solicitud,
+        usuario=request.user,
+        estado_anterior=estado_anterior,
+        nuevo_estado=nuevo_estado
+    )
+
+    return redirect('dashboard')
 
 @extend_schema(
     tags=['backoffice'],
@@ -210,16 +215,10 @@ def administrar_usuarios(request):
     })
 
 @login_required
-def crear_usuario(request):
-    """Vista para crear un nuevo usuario"""
-    # Django's CSRF middleware provides protection for POST requests
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            return redirect('administrar_usuarios')  # Redirect to avoid rendering on POST
-    else:
-        form = CustomUserCreationForm()
+@require_GET
+def crear_usuario_form(request):
+    """Vista para mostrar el formulario de creación de usuario"""
+    form = CustomUserCreationForm()
     
     return render(request, 'backoffice/dashboard.html', {
         'estado': 'user_form',
@@ -230,19 +229,52 @@ def crear_usuario(request):
     })
 
 @login_required
-def editar_usuario(request, user_id):
-    """Vista para editar un usuario existente"""
+@require_POST
+@csrf_protect
+def crear_usuario_submit(request):
+    """Vista para procesar el formulario de creación de usuario"""
+    form = CustomUserCreationForm(request.POST)
+    if form.is_valid():
+        user = form.save()
+        return redirect('administrar_usuarios')
+    
+    # Si el formulario no es válido, volvemos a mostrar el formulario con errores
+    return render(request, 'backoffice/dashboard.html', {
+        'estado': 'user_form',
+        'user_form': form,
+        'pendientes_count': Solicitud.objects.filter(estado='pendiente').count(),
+        'aprobados_count': Solicitud.objects.filter(estado='aceptada').count(),
+        'rechazados_count': Solicitud.objects.filter(estado='rechazada').count()
+    })
+
+@login_required
+@require_GET
+def editar_usuario_form(request, user_id):
+    """Vista para mostrar el formulario de edición de usuario"""
     usuario = get_object_or_404(CustomUser, id=user_id)
+    form = CustomUserEditForm(instance=usuario)
     
-    # Django's CSRF middleware automatically protects this view
-    if request.method == 'POST':
-        form = CustomUserEditForm(request.POST, instance=usuario)
-        if form.is_valid():
-            form.save()
-            return redirect('administrar_usuarios')  # Redirect to avoid rendering on POST
-    else:
-        form = CustomUserEditForm(instance=usuario)
+    return render(request, 'backoffice/dashboard.html', {
+        'estado': 'user_form',
+        'user_form': form,
+        'pendientes_count': Solicitud.objects.filter(estado='pendiente').count(),
+        'aprobados_count': Solicitud.objects.filter(estado='aceptada').count(),
+        'rechazados_count': Solicitud.objects.filter(estado='rechazada').count()
+    })
+
+@login_required
+@require_POST
+@csrf_protect
+def editar_usuario_submit(request, user_id):
+    """Vista para procesar el formulario de edición de usuario"""
+    usuario = get_object_or_404(CustomUser, id=user_id)
+    form = CustomUserEditForm(request.POST, instance=usuario)
     
+    if form.is_valid():
+        form.save()
+        return redirect('administrar_usuarios')
+    
+    # Si el formulario no es válido, volvemos a mostrar el formulario con errores
     return render(request, 'backoffice/dashboard.html', {
         'estado': 'user_form',
         'user_form': form,
