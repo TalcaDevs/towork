@@ -12,6 +12,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
 from .forms import CustomUserCreationForm, CustomUserEditForm
+from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 def custom_login(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -198,6 +202,7 @@ def administrar_usuarios(request):
     })
 
 @login_required
+@require_http_methods(["POST"])
 def crear_usuario(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -242,6 +247,7 @@ def editar_usuario(request, user_id):
     })
 
 @login_required
+@require_http_methods(["GET"])
 def toggle_usuario_estado(request, user_id):
     usuario = get_object_or_404(CustomUser, id=user_id)
     usuario.is_active = not usuario.is_active
