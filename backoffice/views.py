@@ -173,9 +173,13 @@ def change_request_status(request, user_id):
         200: SolicitudSerializer
     }
 )
-@api_view(['GET'])
+@api_view(['GET'])  # Explicitly restrict to only GET method
 @permission_classes([permissions.IsAdminUser])
 def user_detail_api(request, user_id):
+    """
+    Endpoint para obtener el detalle de una solicitud. 
+    Restringido explícitamente a método GET.
+    """
     solicitud = Solicitud.objects.get(usuario__id=user_id)
     serializer = SolicitudSerializer(solicitud)
     return Response(serializer.data)
