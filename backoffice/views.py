@@ -135,9 +135,6 @@ def user_list(request):
 @api_view(['PATCH'])
 @permission_classes([permissions.IsAdminUser])
 def change_request_status(request, user_id):
-    """
-    Endpoint para cambiar el estado de la solicitud de un usuario (pendiente, aceptada, rechazada).
-    """
     try:
         solicitud = Solicitud.objects.get(usuario__id=user_id)
         nuevo_estado = request.data.get("estado")
@@ -200,13 +197,12 @@ def administrar_usuarios(request):
         'rechazados_count': Solicitud.objects.filter(estado='rechazada').count()
     })
 
-@login_required(["POST"]) 
+@login_required
 def crear_usuario(request):
-    """Vista para crear un nuevo usuario"""
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
+        if form.is_valid(request.POST):
+            user = form.save(request.POST)
             return redirect('administrar_usuarios')  # Redirect to avoid rendering on POST
     else:
         form = CustomUserCreationForm()
@@ -221,14 +217,12 @@ def crear_usuario(request):
 
 @login_required
 def editar_usuario(request, user_id):
-    """Vista para editar un usuario existente"""
     usuario = get_object_or_404(CustomUser, id=user_id)
     
     if request.method == 'POST':
         form = CustomUserEditForm(request.POST, instance=usuario)
 @login_required
 def editar_usuario(request, user_id):
-    """Vista para editar un usuario existente"""
     usuario = get_object_or_404(CustomUser, id=user_id)
     
     if request.method == 'POST':
@@ -247,9 +241,8 @@ def editar_usuario(request, user_id):
         'rechazados_count': Solicitud.objects.filter(estado='rechazada').count()
     })
 
-@login_required(["GET"]) 
+@login_required
 def toggle_usuario_estado(request, user_id):
-    """Vista para activar/desactivar un usuario"""
     usuario = get_object_or_404(CustomUser, id=user_id)
     usuario.is_active = not usuario.is_active
     usuario.save()
