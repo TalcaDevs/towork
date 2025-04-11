@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib import messages
+from django.views.decorators.http import require_http_methods, require_POST, require_GET, require_safe
 from users.models import Solicitud, CustomUser, SolicitudLog
 from users.serializers import UserSerializer, SolicitudSerializer
 from rest_framework.decorators import api_view, permission_classes
@@ -12,6 +13,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
 from .forms import CustomUserCreationForm, CustomUserEditForm
+
+@require_http_methods(["GET", "POST"])
 def custom_login(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -26,6 +29,7 @@ def custom_login(request):
     return render(request, "backoffice/login.html")
 
 @login_required
+@require_GET
 def dashboard(request):
     estado = request.GET.get('estado', 'pendientes')
     user_id = request.GET.get('user_id')
@@ -78,7 +82,9 @@ def dashboard(request):
         'page_obj': solicitudes,
         'paginator': paginator,
     })
+
 @login_required
+@require_http_methods(["GET", "POST"])
 def update_status(request, user_id):
     if request.method == 'POST':
         nuevo_estado = request.POST.get('estado')
@@ -162,13 +168,13 @@ def change_request_status(request, user_id):
 )
 @api_view(['GET'])
 @permission_classes([permissions.IsAdminUser])
-def user_detail(request, user_id):
+def user_detail_api(request, user_id):
     solicitud = Solicitud.objects.get(usuario__id=user_id)
     serializer = SolicitudSerializer(solicitud)
-    return render(request, 'backoffice/detail.html', {'solicitud': serializer.data})
+    return Response(serializer.data)
 
-@api_view(['GET'])
-@permission_classes([permissions.IsAdminUser])
+@login_required
+@require_GET
 def user_detail(request, user_id):
     solicitud = Solicitud.objects.get(usuario__id=user_id)
     serializer = SolicitudSerializer(solicitud)
@@ -176,6 +182,7 @@ def user_detail(request, user_id):
 
 # Vistas para la gestión de usuarios
 @login_required
+@require_GET
 def administrar_usuarios(request):
     """Vista para listar todos los usuarios"""
     # Obtener todos los usuarios
@@ -201,6 +208,7 @@ def administrar_usuarios(request):
     })
 
 @login_required
+@require_http_methods(["GET", "POST"])
 def crear_usuario(request):
     """Vista para crear un nuevo usuario"""
     if request.method == 'POST':
@@ -220,13 +228,7 @@ def crear_usuario(request):
     })
 
 @login_required
-def editar_usuario(request, user_id):
-    """Vista para editar un usuario existente"""
-    usuario = get_object_or_404(CustomUser, id=user_id)
-    
-    if request.method == 'POST':
-        form = CustomUserEditForm(request.POST, instance=usuario)
-@login_required
+@require_http_methods(["GET", "POST"])
 def editar_usuario(request, user_id):
     """Vista para editar un usuario existente"""
     usuario = get_object_or_404(CustomUser, id=user_id)
@@ -248,6 +250,7 @@ def editar_usuario(request, user_id):
     })
 
 @login_required
+@require_POST
 def toggle_usuario_estado(request, user_id):
     """Vista para activar/desactivar un usuario"""
     usuario = get_object_or_404(CustomUser, id=user_id)
