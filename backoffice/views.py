@@ -200,7 +200,7 @@ def administrar_usuarios(request):
         'rechazados_count': Solicitud.objects.filter(estado='rechazada').count()
     })
 
-@login_required
+@login_required(["POST"]) 
 def crear_usuario(request):
     """Vista para crear un nuevo usuario"""
     if request.method == 'POST':
@@ -247,7 +247,7 @@ def editar_usuario(request, user_id):
         'rechazados_count': Solicitud.objects.filter(estado='rechazada').count()
     })
 
-@login_required
+@login_required(["GET"]) 
 def toggle_usuario_estado(request, user_id):
     """Vista para activar/desactivar un usuario"""
     usuario = get_object_or_404(CustomUser, id=user_id)
