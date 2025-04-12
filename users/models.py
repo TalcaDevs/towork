@@ -26,6 +26,7 @@ class CustomUser(AbstractUser):
     
 class Solicitud(models.Model):
     ESTADOS = (
+        ('nuevo', 'Nuevo Usuario'),
         ('pendiente', 'Pendiente'),
         ('aceptada', 'Aceptada'),
         ('rechazada', 'Rechazada'),
@@ -33,7 +34,7 @@ class Solicitud(models.Model):
 
     usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     descripcion = models.TextField()
-    estado = models.CharField(max_length=20, choices=ESTADOS, default='pendiente')
+    estado = models.CharField(max_length=20, choices=ESTADOS, default='nuevo')
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

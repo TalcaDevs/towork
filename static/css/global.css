@@ -723,3 +723,126 @@ body {
     height: calc(100vh - 64px);
     overflow: hidden;
 }
+
+.add-user-button-container {
+    width: 100%;
+    margin: 15px 0;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.add-user-button {
+    display: flex;
+    align-items: center;
+    padding: 12px 14px;
+    border-radius: var(--o-border-cards);
+    background: var(--color-primary);
+    color: var(--color-text);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.add-user-button::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    border-radius: 2px;
+    background-color: #378b74;
+    transition: all 0.2s ease;
+}
+
+.add-user-button:hover {
+    background-color: rgba(55, 139, 116, 0.2);
+    transform: translateX(4px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.add-user-button:active {
+    transform: translateX(4px) scale(0.98);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.add-user-button .add-icon {
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #378b74;
+}
+
+.add-user-button .button-text {
+    flex: 1;
+    font-size: var(--font-size-small);
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .add-user-button-container {
+        display: none;
+    }
+}
+
+/* Estilos para notificaciones */
+.notification {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: var(--o-border-cards);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+    animation: slideIn 0.3s ease forwards;
+    max-width: 350px;
+}
+
+.notification.success {
+    background-color: #378b74;
+}
+
+.notification.error {
+    background-color: #dc3545;
+}
+
+.notification-message {
+    margin-right: 15px;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.notification-close:hover {
+    opacity: 1;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+.stats-button.new::before {
+    background-color: #9146c8;
+}
+
+.stats-button.new .stats-icon {
+    color: #9146c8;
+}
+
+.stats-button.new .count {
+    background-color: #9146c8;
+    color: white;
+}

@@ -70,6 +70,13 @@ def registro_usuario(request):
         password=make_password(password)  # Encriptamos la contraseña
     )
 
+    # Crear solicitud en estado "nuevo"
+    Solicitud.objects.create(
+        usuario=user,
+        descripcion="Usuario recién registrado",
+        estado="nuevo"
+    )
+
     # Generamos tokens JWT para el usuario registrado
     refresh = RefreshToken.for_user(user)
 
@@ -334,17 +341,19 @@ def guardar_perfil_completo(request):
 
     solicitud, created = Solicitud.objects.get_or_create(
         usuario=user,
-        estado="pendiente",
-        defaults={"descripcion": "Solicitud de revisión de perfil completa."}
+        defaults={
+            "descripcion": "Solicitud de revisión de perfil completa.",
+            "estado": "pendiente"
+        }
     )
 
     if not created:
         solicitud.descripcion = "Solicitud de revisión de perfil actualizada."
-        solicitud.estado = "pendiente"
+        solicitud.estado = "pendiente"  # Cambia de 'nuevo' a 'pendiente'
         solicitud.save()
 
     return Response({"message": "Perfil guardado correctamente, solicitud en estado 'pendiente'."}, status=status.HTTP_201_CREATED)
-
+    
 @extend_schema(
     tags=['users'],
     operation_id='get-profile',
