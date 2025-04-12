@@ -8,7 +8,8 @@
     <link rel="stylesheet" href="{% static 'css/global.css' %}">
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'css/pagination.css' %}">
-    <link rel="stylesheet" href="{% static 'css/mobile.css' %}"> <!-- Nuevo archivo CSS para móviles -->
+    <link rel="stylesheet" href="{% static 'css/mobile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/add_user.css' %}">
 </head>
 <body>
     <div class="container">
@@ -18,8 +19,17 @@
             {% include 'backoffice/navbar.html' with estado=estado %}
             
             <div class="components">
+                {% if request.GET.message %}
+                <div class="notification {{ request.GET.message_type }}">
+                    <span class="notification-message">{{ request.GET.message }}</span>
+                    <button class="notification-close">×</button>
+                </div>
+                {% endif %}
+                
                 <div class="card-container" id="card-container">
-                    {% if estado == 'pendientes' %}
+                    {% if estado == 'nuevos' %}
+                        {% include 'backoffice/nuevos.html' %}
+                    {% elif estado == 'pendientes' %}
                         {% include 'backoffice/pending.html' %}
                     {% elif estado == 'aprobados' %}
                         {% include 'backoffice/approved.html' %}
@@ -29,6 +39,8 @@
                         {% include 'backoffice/detail.html' with solicitud=solicitud %}
                     {% elif estado == 'update_status' %}
                         {% include 'backoffice/update_status.html' with solicitud=solicitud %}
+                    {% elif estado == 'add_user' %}
+                        {% include 'backoffice/add_user.html' with message=message message_type=message_type %}
                     {% endif %}
                 </div>
             </div>
@@ -41,4 +53,33 @@
     <script src="{% static 'js/detail.js' %}"></script>
     <script src="{% static 'js/mobile.js' %}"></script>
 </body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Manejo de notificaciones
+        const notification = document.querySelector('.notification');
+        if (notification) {
+            // Auto-ocultar después de 6 segundos
+            setTimeout(function() {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(function() {
+                    notification.style.display = 'none';
+                }, 300);
+            }, 6000);
+            
+            // Botón para cerrar manualmente
+            const closeBtn = notification.querySelector('.notification-close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function() {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(function() {
+                        notification.style.display = 'none';
+                    }, 300);
+                });
+            }
+        }
+    });
+</script>
 </html>

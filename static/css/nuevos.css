@@ -1,0 +1,110 @@
+@import url('variables.css');
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-family-primary);
+    font-size: var(--font-size-medium);
+}
+
+.search-filter {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.search-filter input {
+    padding: 10px;
+    width: 45%;
+    border: 1px solid var(--color-secondary-background);
+    border-radius: var(--o-border-cards);
+    background-color: var(--color-background);
+    color: var(--color-text);
+}
+
+.card.new {
+    display: flex;
+    align-items: center;
+    background: var(--color-background);
+    padding: 16px;
+    border-radius: var(--o-border-cards);
+    position: relative;
+    min-height: 64px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-left: 4px solid #9146c8;
+    margin-bottom: 12px;
+}
+
+.card.new:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.card img {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    margin-right: 16px;
+    object-fit: cover;
+    border: 2px solid #9146c8;
+}
+
+.card-info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.user-name {
+    font-family: var(--font-family-primary);
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.email-info {
+    font-family: var(--font-family-primary);
+    font-weight: normal;
+    font-size: 14px;
+    color: #ebebeb;
+    margin: 0;
+}
+
+.card .detail-link {
+    margin-left: auto;
+    padding: 8px 16px;
+    border: none;
+    border-radius: var(--o-border-cards);
+    background: var(--color-primary);
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    position: absolute;
+    right: 16px;
+    transition: background 0.2s;
+}
+
+.card .detail-link:hover {
+    background: var(--color-hover);
+    color: var(--color-hover-text);
+}
+
+.new-indicator {
+    display: inline-block;
+    font-size: 12px;
+    color: #9146c8;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin: 25px 0;
+    user-select: none;
+    clear: both;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}

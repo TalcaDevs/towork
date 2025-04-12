@@ -6,7 +6,19 @@
     
     <div class="stats">
         <p class="stats-title">Solicitudes</p>
-        <a href="?estado=pendientes" class="stats-button pending">
+        <a href="{% url 'dashboard' %}?estado=nuevos" class="stats-button new">
+            <div class="stats-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="8.5" cy="7" r="4"></circle>
+                    <line x1="20" y1="8" x2="20" y2="14"></line>
+                    <line x1="23" y1="11" x2="17" y2="11"></line>
+                </svg>
+            </div>
+            <span class="button-text">Nuevos</span>
+            <span class="count">{{ nuevos_count|default:0 }}</span>
+        </a>
+        <a href="{% url 'dashboard' %}?estado=pendientes" class="stats-button pending">
             <div class="stats-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="10"></circle>
@@ -17,7 +29,7 @@
             <span class="count">{{ pendientes_count|default:0 }}</span>
         </a>
         
-        <a href="?estado=aprobados" class="stats-button approved">
+        <a href="{% url 'dashboard' %}?estado=aprobados" class="stats-button approved">
             <div class="stats-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
@@ -28,7 +40,7 @@
             <span class="count">{{ aprobados_count|default:0 }}</span>
         </a>
         
-        <a href="?estado=rechazados" class="stats-button rejected">
+        <a href="{% url 'dashboard' %}?estado=rechazados" class="stats-button rejected">
             <div class="stats-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="10"></circle>
@@ -38,6 +50,20 @@
             </div>
             <span class="button-text">Rechazadas</span>
             <span class="count">{{ rechazados_count|default:0 }}</span>
+        </a>
+    </div>
+    
+    <div class="add-user-button-container">
+        <a href="{% url 'dashboard' %}?estado=add_user" class="add-user-button">
+            <div class="add-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="8.5" cy="7" r="4"></circle>
+                    <line x1="20" y1="8" x2="20" y2="14"></line>
+                    <line x1="23" y1="11" x2="17" y2="11"></line>
+                </svg>
+            </div>
+            <span class="button-text">Agregar Usuario</span>
         </a>
     </div>
     <!-- Cuenta regresiva inicio -->
