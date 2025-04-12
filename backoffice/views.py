@@ -11,6 +11,8 @@ from users.models import SolicitudLog
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.hashers import make_password
+from django.views.decorators.http import require_http_methods
+
 
 
 def custom_login(request):
@@ -188,6 +190,7 @@ def user_detail(request, user_id):
 
 
 @login_required
+@require_http_methods(["POST"])
 def add_user(request):
     if request.method == 'POST':
         # Obtener datos del formulario
