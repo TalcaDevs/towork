@@ -43,8 +43,12 @@ def dashboard(request):
     
     # Obtener las solicitudes según el estado seleccionado
     if estado == 'nuevos':
-        # Ahora mostraremos los usuarios con rol 'usuario'
-        usuarios_list = CustomUser.objects.filter(rol='usuario').order_by('-date_joined')
+        # Ahora filtramos por estado 'nuevo' en la tabla Solicitud 
+        # en lugar de filtrar por rol de usuario
+        solicitudes_list = Solicitud.objects.filter(estado='nuevo').order_by('-fecha_creacion')
+        usuarios_list = CustomUser.objects.filter(
+            id__in=solicitudes_list.values_list('usuario_id', flat=True)
+        ).order_by('-date_joined')
     elif estado == 'pendientes':
         solicitudes_list = Solicitud.objects.filter(estado='pendiente').order_by('-fecha_creacion')
     elif estado == 'aprobados':
@@ -80,7 +84,7 @@ def dashboard(request):
             solicitudes = paginator.page(paginator.num_pages)
     
     # Obtener contadores para la sidebar
-    usuarios_count = CustomUser.objects.filter(rol='usuario').count()
+    nuevos_count = Solicitud.objects.filter(estado='nuevo').count()
     solicitudes_pendientes_count = Solicitud.objects.filter(estado='pendiente').count()
     solicitudes_aprobadas_count = Solicitud.objects.filter(estado='aceptada').count()
     solicitudes_rechazadas_count = Solicitud.objects.filter(estado='rechazada').count()
@@ -90,7 +94,7 @@ def dashboard(request):
         'pendientes': solicitudes if estado == 'pendientes' else None,
         'aprobados': solicitudes if estado == 'aprobados' else None,
         'rechazados': solicitudes if estado == 'rechazados' else None,
-        'nuevos_count': usuarios_count,
+        'nuevos_count': nuevos_count,
         'pendientes_count': solicitudes_pendientes_count,
         'aprobados_count': solicitudes_aprobadas_count,
         'rechazados_count': solicitudes_rechazadas_count,
