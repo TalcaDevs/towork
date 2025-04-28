@@ -1,18 +1,16 @@
-/* Detail.css - Estilos para la vista detallada del backoffice */
+
 @import url('variables.css');
 
-/* Prefijo único para evitar colisiones */
 .detail-container {
   display: flex;
   width: 100%;
-  height: calc(100vh - 80px); /* Ajustar según el tamaño de tu navbar */
+  height: calc(100vh - 80px); 
   overflow: hidden;
   background-color: var(--color-secondary-background);
   color: var(--color-text);
   font-family: var(--font-family-primary);
 }
 
-/* Panel lateral con info del perfil */
 .profile-sidebar {
   width: 320px;
   flex-shrink: 0;
@@ -89,7 +87,6 @@
   margin: 0 0 15px 0;
 }
 
-/* Enlaces rápidos de contacto */
 .contact-quick-info {
   margin: 15px 0;
 }
@@ -108,7 +105,6 @@
   font-size: var(--font-size-medium);
 }
 
-/* Enlaces externos */
 .profile-links {
   display: flex;
   justify-content: center;
@@ -131,7 +127,6 @@
   transform: translateY(-2px);
 }
 
-/* Metadatos de la solicitud */
 .request-metadata {
   margin: 20px 0;
   padding: 15px;

@@ -80,14 +80,14 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',  # Requiere autenticación
+        'rest_framework.permissions.IsAuthenticated', 
     ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),  # El token expira en 1 día
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),  # El refresh token dura 7 días
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),  
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),  
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
     'AUTH_HEADER_TYPES': ('Bearer',),
@@ -204,7 +204,6 @@ SPECTACULAR_SETTINGS = {
         {'name': 'backoffice', 'description': 'Operaciones administrativas'},
         {'name': 'solicitudes', 'description': 'Gestión de solicitudes'},
     ],
-    # Configuración detallada de seguridad
     'SECURITY': [
         {
             'Bearer': {
@@ -216,7 +215,6 @@ SPECTACULAR_SETTINGS = {
         }
     ],
     
-    # Personalización de Swagger UI
     'SWAGGER_UI_SETTINGS': {
         'deepLinking': True,
         'persistAuthorization': True,

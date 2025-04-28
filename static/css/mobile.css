@@ -1,9 +1,8 @@
-/* mobile.css - Estilos específicos para dispositivos móviles */
+
 @import url('variables.css');
 
-/* === Estilos responsive para el backoffice === */
+
 @media (max-width: 768px) {
-    /* Estructura principal */
     .container {
         flex-direction: column;
         height: auto;
@@ -74,7 +73,7 @@
     .main-content {
         margin-left: 0;
         width: 100%;
-        padding-bottom: 70px; /* Espacio para el menú inferior */
+        padding-bottom: 70px; 
     }
     
     .navbar {
@@ -89,17 +88,16 @@
         display: none;
     }
     
-    /* Estilo de tarjetas inspirado en la imagen */
     .card-container {
         display: grid !important;
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
         gap: 12px !important;
         padding: 10px !important;
         width: 100% !important;
-        min-height: 200px !important; /* Asegura espacio para contenido */
+        min-height: 200px !important;
     }
     
-    /* Estilos comunes para todos los tipos de tarjetas */
+
     .card {
         flex-direction: column !important;
         height: auto !important;
@@ -111,11 +109,11 @@
         overflow: hidden !important;
         align-items: flex-start !important;
         min-height: 160px !important;
-        margin-bottom: 0 !important; /* Elimina márgenes en el grid */
-        border-left: none !important; /* Elimina los bordes laterales en el grid */
+        margin-bottom: 0 !important; 
+        border-left: none !important; 
     }
     
-    /* Colores específicos para cada tipo de tarjeta */
+
     .card.pending {
         background: linear-gradient(145deg, #594c73, #403366) !important;
     }
@@ -128,7 +126,7 @@
         background: linear-gradient(145deg, #8d3f46, #6d2f36) !important;
     }
     
-    /* Estilo para la imagen de perfil */
+   
     .card img {
         width: 40px !important;
         height: 40px !important;
@@ -138,7 +136,6 @@
         border: 2px solid rgba(255, 255, 255, 0.5) !important;
     }
     
-    /* Estilos para la información de la tarjeta */
     .card-info {
         width: 100% !important;
     }
@@ -161,7 +158,6 @@
         margin-bottom: 10px !important;
     }
     
-    /* Estilo para el enlace de detalle */
     .card .detail-link {
         position: absolute !important;
         right: 10px !important;
@@ -184,7 +180,6 @@
         color: white !important;
     }
     
-    /* Estilos para los indicadores de estado */
     .card .pending-timer, 
     .card .status-indicator {
         font-size: 10px !important;
@@ -197,9 +192,8 @@
         margin-top: auto !important;
     }
     
-    /* Estilos para la paginación */
     .pagination-container {
-        margin: 15px 0 80px 0 !important; /* Más espacio abajo para el menú */
+        margin: 15px 0 80px 0 !important; 
         display: flex !important;
         justify-content: center !important;
         width: 100% !important;
@@ -221,8 +215,7 @@
     .pagination li:nth-child(2), .pagination li:nth-last-child(2) {
         display: none;
     }
-    
-    /* Vista de detalle */
+   
     .detail-container {
         flex-direction: column;
         height: auto;
@@ -253,16 +246,14 @@
         grid-template-columns: 1fr;
     }
     
-    /* Popup */
     .popup-content {
         width: 95%;
         padding: 20px;
         margin: 20% auto;
     }
-    
-    /* Estilos mejorados para los estados vacíos */
+
     .empty-state {
-        grid-column: 1 / -1; /* Extiende a través de todas las columnas */
+        grid-column: 1 / -1; 
         padding: 40px 20px !important;
         text-align: center !important;
         border-radius: 16px !important;
@@ -270,14 +261,13 @@
         background-color: var(--color-background) !important;
     }
     
-    /* Prevenir que elementos floten incorrectamente */
+   
     .components {
         overflow-y: auto !important;
         padding-bottom: 80px !important;
     }
 }
 
-/* Estilo específico de tarjetas para tabletas */
 @media (min-width: 769px) and (max-width: 1024px) {
     .card-container {
         display: grid;
@@ -287,7 +277,6 @@
     }
 }
 
-/* Estilos para efectos táctiles y feedback visual */
 .touch-active {
     transform: scale(0.97) !important;
     opacity: 0.9;
