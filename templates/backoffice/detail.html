@@ -340,6 +340,7 @@
             <form method="post" action="{% url 'delete_user' solicitud.usuario.id %}">
                 {% csrf_token %}
                 <button type="submit" class="btn-danger">Eliminar</button>
+                <br><br>
                 <button type="button" class="btn-secondary" onclick="hideDeleteConfirmation()">Cancelar</button>
             </form>
         </div>
