@@ -8,7 +8,6 @@ from django.shortcuts import render
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiResponse
 
 class IsAdmin(permissions.BasePermission):
-    """ Permiso para administradores """
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user.rol == 'admin'
 

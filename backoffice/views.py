@@ -12,7 +12,7 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiRespon
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.hashers import make_password
 from django.views.decorators.http import require_http_methods
-
+from django.urls import reverse
 
 
 def custom_login(request):
@@ -41,10 +41,7 @@ def dashboard(request):
             'solicitud': solicitud,
         })
     
-    # Obtener las solicitudes según el estado seleccionado
     if estado == 'nuevos':
-        # Ahora filtramos por estado 'nuevo' en la tabla Solicitud 
-        # en lugar de filtrar por rol de usuario
         solicitudes_list = Solicitud.objects.filter(estado='nuevo').order_by('-fecha_creacion')
         usuarios_list = CustomUser.objects.filter(
             id__in=solicitudes_list.values_list('usuario_id', flat=True)
@@ -58,7 +55,6 @@ def dashboard(request):
     else:
         solicitudes_list = Solicitud.objects.filter(estado='pendiente').order_by('-fecha_creacion')
     
-    # Configurar la paginación
     page = request.GET.get('page', 1)
     items_per_page = 5
     
@@ -83,7 +79,6 @@ def dashboard(request):
         else:
             solicitudes = paginator.page(paginator.num_pages)
     
-    # Obtener contadores para la sidebar
     nuevos_count = Solicitud.objects.filter(estado='nuevo').count()
     solicitudes_pendientes_count = Solicitud.objects.filter(estado='pendiente').count()
     solicitudes_aprobadas_count = Solicitud.objects.filter(estado='aceptada').count()
@@ -111,7 +106,6 @@ def update_status(request, user_id):
         solicitud.estado = nuevo_estado
         solicitud.save()
 
-        # Registrar el cambio en SolicitudLog
         SolicitudLog.objects.create(
             solicitud=solicitud,
             usuario=request.user,
@@ -156,12 +150,25 @@ def user_list(request):
         404: OpenApiResponse(description='Solicitud no encontrada')
     }
 )
+@login_required
+@require_http_methods(["POST"])
+def delete_user(request, user_id):
+    if not request.user.is_staff and request.user.rol != 'admin':
+        return redirect('dashboard')
+        
+    try:
+        user_to_delete = CustomUser.objects.get(id=user_id)
+        user_name = f"{user_to_delete.first_name} {user_to_delete.last_name}"
+        user_to_delete.delete()
+        return redirect(f"{reverse('dashboard')}?estado=pendientes&message=Usuario {user_name} eliminado correctamente&message_type=success")
+        
+    except CustomUser.DoesNotExist:
+        return redirect(f"{reverse('dashboard')}?estado=pendientes&message=Error: El usuario no existe&message_type=error")
+    except Exception as e:
+        return redirect(f"{reverse('dashboard')}?estado=pendientes&message=Error al eliminar usuario: {str(e)}&message_type=error")
 @api_view(['PATCH'])
 @permission_classes([permissions.IsAdminUser])
 def change_request_status(request, user_id):
-    """
-    Endpoint para cambiar el estado de la solicitud de un usuario (pendiente, aceptada, rechazada).
-    """
     try:
         solicitud = Solicitud.objects.get(usuario__id=user_id)
         nuevo_estado = request.data.get("estado")
@@ -197,44 +204,37 @@ def user_detail(request, user_id):
 @require_http_methods(["POST"])
 def add_user(request):
     if request.method == 'POST':
-        # Obtener datos del formulario
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
         password = request.POST.get('password')
         rol = request.POST.get('rol')
         
-        # Validar que todos los campos estén presentes
         if not first_name or not last_name or not email or not password:
             return redirect('dashboard')
         
-        # Validar que el correo no exista
         if CustomUser.objects.filter(email=email).exists():
             return redirect('dashboard')
             
         try:
-            # Crear usuario
             user = CustomUser.objects.create(
                 first_name=first_name,
                 last_name=last_name,
                 email=email,
-                username=email,  # Usamos el email como username
-                password=make_password(password),  # Encriptamos la contraseña
+                username=email,
+                password=make_password(password),  
                 rol=rol
             )
             
-            # Crear solicitud con estado "nuevo"
             Solicitud.objects.create(
                 usuario=user,
                 descripcion="Usuario creado desde el backoffice",
                 estado="nuevo"
             )
             
-            # Redirigir a la página de nuevos usuarios
             return redirect('dashboard')
             
         except Exception as e:
             return redirect('dashboard')
     
-    # Si es GET, redireccionar a dashboard con estado add_user
     return redirect('dashboard')

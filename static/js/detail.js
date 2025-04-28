@@ -16,6 +16,16 @@ function hidePopup() {
     document.body.style.overflow = 'auto';
 }
 
+function showDeleteConfirmation() {
+    document.getElementById('delete-confirmation').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+    
+function hideDeleteConfirmation() {
+    document.getElementById('delete-confirmation').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
 function switchTab(tabId) {
     document.querySelectorAll('.tab-button').forEach(button => {
         button.classList.remove('active');

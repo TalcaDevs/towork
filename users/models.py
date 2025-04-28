@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
 
-# Create your models here.
 class CustomUser(AbstractUser):
     ROLES = (
         ('admin', 'Administrador'),
@@ -9,7 +8,6 @@ class CustomUser(AbstractUser):
         ('moderador', 'Moderador'),
     )
 
-    """Modelo para usuarios o estudiantes egresados."""
     foto_perfil = models.URLField(blank=True, null=True)
     descripcion = models.TextField(blank=True)
     telefono = models.CharField(max_length=20, blank=True, null=True)

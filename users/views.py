@@ -48,9 +48,7 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiRespon
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def registro_usuario(request):
-    """
-    Endpoint para registrar nuevos usuarios con nombre, apellido, email y contraseña.
-    """
+
     first_name = request.data.get("first_name")
     last_name = request.data.get("last_name")
     email = request.data.get("email")
@@ -66,18 +64,17 @@ def registro_usuario(request):
         first_name=first_name,
         last_name=last_name,
         email=email,
-        username=email,  # Usamos el email como username
-        password=make_password(password)  # Encriptamos la contraseña
+        username=email,  
+        password=make_password(password) 
     )
 
-    # Crear solicitud en estado "nuevo"
+
     Solicitud.objects.create(
         usuario=user,
         descripcion="Usuario recién registrado",
         estado="nuevo"
     )
 
-    # Generamos tokens JWT para el usuario registrado
     refresh = RefreshToken.for_user(user)
 
     return Response({
@@ -116,9 +113,6 @@ def registro_usuario(request):
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def login_usuario(request):
-    """
-    Endpoint para iniciar sesión con email y contraseña y obtener tokens JWT.
-    """
     email = request.data.get("email")
     password = request.data.get("password")
 
@@ -246,11 +240,8 @@ def login_usuario(request):
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def guardar_perfil_completo(request):
-    """
-    Recibe toda la información del usuario (perfil, educación, experiencia, etc.)
-    y la guarda en la base de datos.
-    """
-    user = request.user  # Usuario autenticado
+
+    user = request.user 
 
     # 1️⃣ Guardar datos básicos del usuario
     user.first_name = request.data.get("first_name", user.first_name)
@@ -326,17 +317,17 @@ def guardar_perfil_completo(request):
     for idioma in idiomas_data:
         nombre_idioma = idioma.get("language", {}).get("nombre")
         if not nombre_idioma:
-            continue  # Evita errores si no hay nombre
+            continue  
 
         language, _ = Language.objects.get_or_create(nombre=nombre_idioma)
         
         user_language, created = UserLanguage.objects.get_or_create(
             usuario=user,
             language=language,
-            defaults={"nivel": idioma["nivel"]}  # Solo se guarda si no existe
+            defaults={"nivel": idioma["nivel"]} 
         )
         if not created:
-            user_language.nivel = idioma["nivel"]  # Si ya existe, actualiza el nivel
+            user_language.nivel = idioma["nivel"]  
             user_language.save()
 
     solicitud, created = Solicitud.objects.get_or_create(
@@ -349,7 +340,7 @@ def guardar_perfil_completo(request):
 
     if not created:
         solicitud.descripcion = "Solicitud de revisión de perfil actualizada."
-        solicitud.estado = "pendiente"  # Cambia de 'nuevo' a 'pendiente'
+        solicitud.estado = "pendiente" 
         solicitud.save()
 
     return Response({"message": "Perfil guardado correctamente, solicitud en estado 'pendiente'."}, status=status.HTTP_201_CREATED)
@@ -367,9 +358,6 @@ def guardar_perfil_completo(request):
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
 def obtener_perfil_completo(request):
-    """
-    Obtiene toda la información del usuario autenticado (perfil, educación, experiencia, etc.).
-    """
     user = request.user
     serializer = UserSerializer(user)
     return Response(serializer.data, status=status.HTTP_200_OK)
@@ -386,9 +374,6 @@ def obtener_perfil_completo(request):
 @api_view(['GET'])
 @permission_classes([permissions.IsAdminUser])
 def obtener_usuarios(request):
-    """
-    Obtiene la lista de usuarios con toda su información (educación, experiencia, skills, etc.).
-    """
     users = CustomUser.objects.all()
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
@@ -408,12 +393,7 @@ def obtener_usuarios(request):
 @api_view(['GET'])
 @permission_classes([permissions.IsAdminUser])
 def listar_solicitudes(request):
-    """
-    Lista todas las solicitudes de usuarios, permitiendo filtrar por estado.
-    Parámetros opcionales:
-        - estado: pendiente, aceptada, rechazada
-    """
-    estado = request.GET.get('estado')  # Obtiene el estado de la URL (si se proporciona)
+    estado = request.GET.get('estado')  
 
     if estado:
         solicitudes = Solicitud.objects.filter(estado=estado)

@@ -56,10 +56,8 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Manejo de notificaciones
         const notification = document.querySelector('.notification');
         if (notification) {
-            // Auto-ocultar después de 6 segundos
             setTimeout(function() {
                 notification.style.opacity = '0';
                 notification.style.transform = 'translateX(100%)';
@@ -68,7 +66,6 @@
                 }, 300);
             }, 6000);
             
-            // Botón para cerrar manualmente
             const closeBtn = notification.querySelector('.notification-close');
             if (closeBtn) {
                 closeBtn.addEventListener('click', function() {

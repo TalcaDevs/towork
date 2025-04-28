@@ -15,5 +15,4 @@ urlpatterns = [
     path('requests/', listar_solicitudes, name='listar_solicitudes'),
 ]
 
-# Añadir los endpoints de documentación
 urlpatterns += schema_urlpatterns
