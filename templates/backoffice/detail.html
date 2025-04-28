@@ -55,6 +55,7 @@
             </div>
             
             <div class="action-buttons">
+                <button class="btn-danger" onclick="showDeleteConfirmation()">Eliminar Usuario</button>
                 <button class="btn-primary" onclick="showPopup()">Cambiar Estado</button>
                 <button class="btn-secondary" onclick="window.history.back()">Volver</button>
             </div>
@@ -327,3 +328,18 @@
     </div>
 </div>
 
+<div id="delete-confirmation" class="popup">
+    <div class="popup-content delete-confirmation-content">
+        <span class="close" onclick="hideDeleteConfirmation()">&times;</span>
+        <h2>Confirmar Eliminación</h2>
+        <p class="delete-warning">¿Está seguro que desea eliminar al usuario <strong>{{ solicitud.usuario.first_name }} {{ solicitud.usuario.last_name }}</strong>?</p>
+        <p class="delete-warning-details">Esta acción eliminará permanentemente al usuario y todos sus datos asociados.</p>
+        <div class="form-actions">
+            <form method="post" action="{% url 'delete_user' solicitud.usuario.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn-danger">Eliminar</button>
+                <button type="button" class="btn-secondary" onclick="hideDeleteConfirmation()">Cancelar</button>
+            </form>
+        </div>
+    </div>
+</div>

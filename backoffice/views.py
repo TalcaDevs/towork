@@ -12,7 +12,7 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiRespon
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.hashers import make_password
 from django.views.decorators.http import require_http_methods
-
+from django.urls import reverse
 
 
 def custom_login(request):
@@ -156,6 +156,26 @@ def user_list(request):
         404: OpenApiResponse(description='Solicitud no encontrada')
     }
 )
+@login_required
+@require_http_methods(["POST"])
+def delete_user(request, user_id):
+    """
+    Vista para eliminar un usuario y todos sus datos asociados.
+    Se requiere confirmación del administrador.
+    """
+    if not request.user.is_staff and request.user.rol != 'admin':
+        return redirect('dashboard')
+        
+    try:
+        user_to_delete = CustomUser.objects.get(id=user_id)
+        user_name = f"{user_to_delete.first_name} {user_to_delete.last_name}"
+        user_to_delete.delete()
+        return redirect(f"{reverse('dashboard')}?estado=pendientes&message=Usuario {user_name} eliminado correctamente&message_type=success")
+        
+    except CustomUser.DoesNotExist:
+        return redirect(f"{reverse('dashboard')}?estado=pendientes&message=Error: El usuario no existe&message_type=error")
+    except Exception as e:
+        return redirect(f"{reverse('dashboard')}?estado=pendientes&message=Error al eliminar usuario: {str(e)}&message_type=error")
 @api_view(['PATCH'])
 @permission_classes([permissions.IsAdminUser])
 def change_request_status(request, user_id):

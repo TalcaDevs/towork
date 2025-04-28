@@ -104,8 +104,7 @@
   gap: 15px;
   margin-top: 30px;
 }
-
-.btn-primary, .btn-secondary {
+.btn-primary, .btn-secondary, .btn-danger {
   padding: 10px 20px;
   border: none;
   border-radius: var(--o-border-cards);
@@ -136,6 +135,15 @@
   background-color: rgba(34, 40, 49, 0.3);
 }
 
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
 select[name="estado"] option[value="pendiente"] {
   background-color: #ff8049;
   color: #1a1a1a;
