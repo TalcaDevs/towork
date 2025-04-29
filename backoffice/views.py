@@ -150,6 +150,9 @@ def user_list(request):
         404: OpenApiResponse(description='Solicitud no encontrada')
     }
 )
+
+
+
 @login_required
 @require_http_methods(["POST"])
 def delete_user(request, user_id):
@@ -159,6 +162,14 @@ def delete_user(request, user_id):
     try:
         user_to_delete = CustomUser.objects.get(id=user_id)
         user_name = f"{user_to_delete.first_name} {user_to_delete.last_name}"
+        
+        # Create deletion log before deleting the user
+        from users.models import UserDeletionLog
+        UserDeletionLog.objects.create(
+            deleted_user_id=user_id,
+            deleted_by=request.user
+        )
+        
         user_to_delete.delete()
         return redirect(f"{reverse('dashboard')}?estado=pendientes&message=Usuario {user_name} eliminado correctamente&message_type=success")
         
@@ -166,6 +177,8 @@ def delete_user(request, user_id):
         return redirect(f"{reverse('dashboard')}?estado=pendientes&message=Error: El usuario no existe&message_type=error")
     except Exception as e:
         return redirect(f"{reverse('dashboard')}?estado=pendientes&message=Error al eliminar usuario: {str(e)}&message_type=error")
+    
+
 @api_view(['PATCH'])
 @permission_classes([permissions.IsAdminUser])
 def change_request_status(request, user_id):

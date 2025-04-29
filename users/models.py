@@ -47,3 +47,11 @@ class SolicitudLog(models.Model):
 
     def __str__(self):
         return f'{self.usuario.username} cambió {self.solicitud} de {self.estado_anterior} a {self.nuevo_estado} el {self.fecha_cambio}'
+
+class UserDeletionLog(models.Model):
+    deleted_user_id = models.IntegerField()
+    deleted_by = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name='deletion_logs')
+    deletion_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"User ID {self.deleted_user_id} deleted by {self.deleted_by.id} on {self.deletion_date}"
