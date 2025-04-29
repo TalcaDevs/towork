@@ -152,7 +152,6 @@ def user_list(request):
 )
 
 
-
 @login_required
 @require_http_methods(["POST"])
 def delete_user(request, user_id):
@@ -177,7 +176,6 @@ def delete_user(request, user_id):
         return redirect(f"{reverse('dashboard')}?estado=pendientes&message=Error: El usuario no existe&message_type=error")
     except Exception as e:
         return redirect(f"{reverse('dashboard')}?estado=pendientes&message=Error al eliminar usuario: {str(e)}&message_type=error")
-    
 
 @api_view(['PATCH'])
 @permission_classes([permissions.IsAdminUser])

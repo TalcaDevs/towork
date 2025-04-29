@@ -54,4 +54,5 @@ class UserDeletionLog(models.Model):
     deletion_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"User ID {self.deleted_user_id} deleted by {self.deleted_by.id} on {self.deletion_date}"
+        deleted_by_info = f"User ID {self.deleted_by.id}" if self.deleted_by else "Unknown"
+        return f"User ID {self.deleted_user_id} deleted by {deleted_by_info} on {self.deletion_date}"
