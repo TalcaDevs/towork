@@ -18,10 +18,12 @@ class CustomUser(AbstractUser):
     rol = models.CharField(max_length=20, choices=ROLES, default='usuario')
     groups = models.ManyToManyField(Group, related_name='customuser_groups', blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name="customuser_permissions", blank=True)
+    template = models.ForeignKey('Template', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
-    
+
+
 class Solicitud(models.Model):
     ESTADOS = (
         ('nuevo', 'Nuevo Usuario'),
@@ -38,6 +40,7 @@ class Solicitud(models.Model):
     def __str__(self):
         return f'{self.usuario.username} - {self.estado}'
 
+
 class SolicitudLog(models.Model):
     solicitud = models.ForeignKey(Solicitud, on_delete=models.CASCADE, related_name='logs')
     usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
@@ -48,6 +51,7 @@ class SolicitudLog(models.Model):
     def __str__(self):
         return f'{self.usuario.username} cambió {self.solicitud} de {self.estado_anterior} a {self.nuevo_estado} el {self.fecha_cambio}'
 
+
 class UserDeletionLog(models.Model):
     deleted_user_id = models.IntegerField()
     deleted_by = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name='deletion_logs')
@@ -55,4 +59,11 @@ class UserDeletionLog(models.Model):
 
     def __str__(self):
         deleted_by_info = f"User ID {self.deleted_by.id}" if self.deleted_by else "Unknown"
-        return f"User ID {self.deleted_user_id} deleted by {deleted_by_info} on {self.deletion_date}"
+        return f"User ID {self.deleted_user_id} deleted by {deleted_by_info} on {self.deletion_date}'"
+
+
+class Template(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
