@@ -52,6 +52,10 @@
                     <span class="metadata-label">Estado actual:</span>
                     <span class="metadata-value status-badge {{ solicitud.estado }}">{{ solicitud.estado|title }}</span>
                 </div>
+                <div class="metadata-item">
+                    <span class="metadata-label">Template:</span>
+                    <span class="metadata-value">{{ solicitud.usuario.template.name|default:"Sin template asignado" }}</span>
+                </div>
             </div>
             
             <div class="action-buttons">
