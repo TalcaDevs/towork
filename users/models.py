@@ -59,7 +59,7 @@ class UserDeletionLog(models.Model):
 
     def __str__(self):
         deleted_by_info = f"User ID {self.deleted_by.id}" if self.deleted_by else "Unknown"
-        return f"User ID {self.deleted_user_id} deleted by {deleted_by_info} on {self.deletion_date}'"
+        return f"User ID {self.deleted_user_id} deleted by {deleted_by_info} on {self.deletion_date}"
 
 
 class Template(models.Model):
