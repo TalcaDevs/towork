@@ -13,7 +13,7 @@ from .serializers import UserSerializer, SolicitudSerializer
 from django.contrib.auth.hashers import make_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-from .models import Solicitud
+from .models import Solicitud, Template
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
 
 @extend_schema(
@@ -232,7 +232,10 @@ def login_usuario(request):
                         },
                         'required': ['language', 'nivel']
                     }
+                },
+                'template': {'type': 'integer', 'example': 1, 'description': 'ID del template a asignar al usuario'
                 }
+
             }
         }
     }
@@ -252,6 +255,20 @@ def guardar_perfil_completo(request):
     user.ubicacion = request.data.get("ubicacion", user.ubicacion)
     user.linkedin = request.data.get("linkedin", user.linkedin)
     user.id_portafolio_web = request.data.get("id_portafolio_web", user.id_portafolio_web)
+    
+    # Añadir procesamiento del template
+    template_id = request.data.get("template")
+    if template_id is not None:
+        try:
+            template_obj = Template.objects.get(pk=template_id)  # Usar pk en vez de id
+            user.template = template_obj
+        except Template.DoesNotExist:
+            # Manejo más específico del error
+            return Response(
+                {"error": f"El template con ID {template_id} no existe"}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+    
     user.save()
 
     # 2️⃣ Guardar Educación
