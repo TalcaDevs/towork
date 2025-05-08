@@ -67,9 +67,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'towork.urls'
 AUTH_USER_MODEL = 'users.CustomUser'
-LOGIN_URL = "/backoffice/login/"
-LOGIN_REDIRECT_URL = "/backoffice/"
-LOGOUT_REDIRECT_URL = "/backoffice/login/"
+LOGIN_URL = "/api/login/"
+LOGIN_REDIRECT_URL = "/api/"
+LOGOUT_REDIRECT_URL = "/api/login/"
 CORS_ALLOW_ALL_ORIGINS = True
 
 
