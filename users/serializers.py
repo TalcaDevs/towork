@@ -7,7 +7,6 @@ from projects.models import Proyecto
 from skills.models import Skill, UserSkill
 from languages.models import Language, UserLanguage
 from .models import Solicitud
-from .models import Template
 
 class EducacionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -66,7 +65,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'first_name', 'last_name', 'foto_perfil', 'descripcion', 'telefono', 
             'ubicacion', 'linkedin', 'id_portafolio_web', 'educacion', 'experiencia', 
-            'certificaciones', 'proyectos', 'skills', 'idiomas', 'template'
+            'certificaciones', 'proyectos', 'skills', 'idiomas'
         ]
 
 class SolicitudSerializer(serializers.ModelSerializer):
