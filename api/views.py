@@ -66,49 +66,65 @@ class SolicitudViewSet(viewsets.ModelViewSet):
         solicitud.save()
         return Response({"message": "Usuario rechazado correctamente"})
 
-# Nuevos endpoints para manejar templates
 @extend_schema(
     tags=['templates'],
-    description='Guarda la asignación de template para un usuario',
+    description='Crea un nuevo template y lo asigna al usuario autenticado o actualiza un template existente',
     request={
         'application/json': {
             'type': 'object',
             'properties': {
-                'id': {'type': 'integer', 'description': 'ID del template'},
-                'name': {'type': 'string', 'description': 'Nombre del template'}
+                'id': {'type': 'integer', 'description': 'ID del template a crear o actualizar', 'example': 1},
+                'name': {'type': 'string', 'description': 'Nombre del template', 'example': 'Portfolio Profesional'}
             },
-            'required': ['id']
+            'required': ['id', 'name']
         }
     },
     responses={
-        200: OpenApiResponse(description='Template asignado correctamente'),
-        400: OpenApiResponse(description='Error en la solicitud'),
-        404: OpenApiResponse(description='Template no encontrado')
+        201: OpenApiResponse(
+            description='Template creado y asignado correctamente',
+        ),
+        200: OpenApiResponse(
+            description='Template actualizado y asignado correctamente',
+        ),
+        400: OpenApiResponse(
+            description='Error en la solicitud',
+        )
     }
 )
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def save_template(request):
-    # Verificar si el token de acceso es válido (ya lo hace IsAuthenticated)
     user = request.user
     
-    # Obtener datos del request
     template_id = request.data.get('id')
+    template_name = request.data.get('name')
     
-    if not template_id:
-        return Response({"error": "ID del template es requerido"}, status=status.HTTP_400_BAD_REQUEST)
+    if not template_id or not template_name:
+        return Response({"error": "ID y nombre del template son requeridos"}, status=status.HTTP_400_BAD_REQUEST)
     
-    # Buscar el template por ID
-    try:
-        template = Template.objects.get(pk=template_id)
-        # Asignar el template al usuario
-        user.template = template
-        user.save()
-        
-        return Response({"message": "Template asignado correctamente"}, status=status.HTTP_200_OK)
-    except Template.DoesNotExist:
-        return Response({"error": "Template no encontrado"}, status=status.HTTP_404_NOT_FOUND)
-
+    # Crear o actualizar el template
+    template, created = Template.objects.update_or_create(
+        pk=template_id,
+        defaults={'name': template_name}
+    )
+    
+    # Asignar el template al usuario
+    user.template = template
+    user.save()
+    
+    if created:
+        return Response({
+            "message": f"Template '{template_name}' creado y asignado correctamente",
+            "template_id": template.id,
+            "template_name": template.name
+        }, status=status.HTTP_201_CREATED)
+    else:
+        return Response({
+            "message": f"Template '{template_name}' actualizado y asignado correctamente",
+            "template_id": template.id,
+            "template_name": template.name
+        }, status=status.HTTP_200_OK)
+    
 @extend_schema(
     tags=['templates'],
     description='Obtiene información del template asignado al usuario',
