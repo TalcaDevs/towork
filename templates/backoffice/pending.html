@@ -1,24 +1,19 @@
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/pending.css' %}">
-{% for request in pending %}
-<div class="card pending">
-    {% if request.user.profile_photo %}
-        <img src="{{ request.user.profile_photo }}" alt="Perfil">
+<link rel="stylesheet" href="{% static 'css/nuevos.css' %}">
+
+{% for user in new %}
+<div class="card new">
+    {% if user.profile_photo %}
+        <img src="{{ user.profile_photo }}" alt="Perfil">
     {% else %}
         <img src="{% static 'images/default_profile.png' %}" alt="Perfil">
     {% endif %}
     <div class="card-info">
-        <span class="user-name">{{ request.user.first_name }} {{ request.user.last_name }}</span>
-        {% with first_education=request.user.education.all.first %}
-            {% if first_education %}
-                <p class="education-title">{{ first_education.degree }}</p>
-            {% else %}
-                <p class="education-title">Sin información educativa</p>
-            {% endif %}
-        {% endwith %}
-        <span class="pending-timer">Pendiente desde {{ request.created_date|date:"d/m/Y" }}</span>
+        <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
+        <p class="email-info">{{ user.email }}</p>
+        <span class="new-indicator">Usuario registrado el {{ user.date_joined|date:"d/m/Y" }}</span>
     </div>
-    <a href="?status=card_detail&user_id={{ request.user.pk }}" class="detail-link">
+    <a href="?status=card_detail&user_id={{ user.pk }}" class="detail-link">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M5 12h14"></path>
             <path d="m12 5 7 7-7 7"></path>
@@ -27,7 +22,7 @@
 </div>
 {% empty %}
 <div class="empty-state">
-    <p>No hay perfiles pendientes por el momento</p>
+    <p>No hay usuarios registrados por el momento</p>
 </div>
 {% endfor %}
 
