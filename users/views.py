@@ -323,12 +323,12 @@ def save_complete_profile(request):
             project_image=proj.get("project_image", ""),
         )
 
-    # 6️⃣ Save Skills without duplicates
-    UserSkill.objects.filter(user=user).delete()
-    skills_data = request.data.get("skills", [])
-    for skill_name in skills_data:
-        skill, _ = Skill.objects.get_or_create(name=skill_name)
-        user_skill, created = UserSkill.objects.get_or_create(user=user, skill=skill)
+        # 6️⃣ Save Skills without duplicates
+        UserSkill.objects.filter(user=user).delete()
+        skills_data = request.data.get("skills", [])
+        for skill_name in skills_data:
+            skill, _ = Skill.objects.get_or_create(name=skill_name)
+            _, created = UserSkill.objects.get_or_create(user=user, skill=skill)
 
     # 7️⃣ Save Languages
     UserLanguage.objects.filter(user=user).delete()
