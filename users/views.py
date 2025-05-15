@@ -3,24 +3,24 @@ from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from .models import CustomUser
-from education.models import Educacion
-from experience.models import ExperienciaLaboral
-from projects.models import Proyecto
-from certifications.models import Certificacion
+from education.models import Education
+from experience.models import WorkExperience
+from projects.models import Project
+from certifications.models import Certification
 from skills.models import Skill, UserSkill
 from languages.models import Language, UserLanguage
-from .serializers import UserSerializer, SolicitudSerializer
+from .serializers import UserSerializer, RequestSerializer
 from django.contrib.auth.hashers import make_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-from .models import Solicitud, Template
+from .models import Request, Template
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
 
 @extend_schema(
     tags=['authentication'],
     operation_id='signup',
-    summary='Registrar nuevo usuario',
-    description='Endpoint para registrar nuevos usuarios con nombre, apellido, email y contraseña.',
+    summary='Register new user',
+    description='Endpoint for registering new users with name, last name, email and password.',
     request={
         'application/json': {
             'type': 'object',
@@ -34,7 +34,7 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiRespon
         }
     },
     responses={
-        201: OpenApiResponse(description='Usuario registrado exitosamente',
+        201: OpenApiResponse(description='User registered successfully',
                           examples={
                               'application/json': {
                                   'message': 'Usuario registrado exitosamente',
@@ -42,12 +42,12 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiRespon
                                   'refresh': 'eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...'
                               }
                           }),
-        400: OpenApiResponse(description='Error en los datos proporcionados')
+        400: OpenApiResponse(description='Error in provided data')
     }
 )
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
-def registro_usuario(request):
+def register_user(request):
 
     first_name = request.data.get("first_name")
     last_name = request.data.get("last_name")
@@ -68,11 +68,10 @@ def registro_usuario(request):
         password=make_password(password) 
     )
 
-
-    Solicitud.objects.create(
-        usuario=user,
-        descripcion="Usuario recién registrado",
-        estado="nuevo"
+    Request.objects.create(
+        user=user,
+        description="Usuario recién registrado",
+        status="new"
     )
 
     refresh = RefreshToken.for_user(user)
@@ -86,8 +85,8 @@ def registro_usuario(request):
 @extend_schema(
     tags=['authentication'],
     operation_id='signin',
-    summary='Iniciar sesión de usuario',
-    description='Endpoint para iniciar sesión con email y contraseña y obtener tokens JWT.',
+    summary='User login',
+    description='Endpoint for user login with email and password to obtain JWT tokens.',
     request={
         'application/json': {
             'type': 'object',
@@ -99,7 +98,7 @@ def registro_usuario(request):
         }
     },
     responses={
-        200: OpenApiResponse(description='Inicio de sesión exitoso', 
+        200: OpenApiResponse(description='Login successful', 
                           examples={
                               'application/json': {
                                   'message': 'Inicio de sesión exitoso',
@@ -107,12 +106,12 @@ def registro_usuario(request):
                                   'refresh': 'eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...'
                               }
                           }),
-        401: OpenApiResponse(description='Credenciales inválidas')
+        401: OpenApiResponse(description='Invalid credentials')
     }
 )
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
-def login_usuario(request):
+def login_user(request):
     email = request.data.get("email")
     password = request.data.get("password")
 
@@ -134,16 +133,16 @@ def login_usuario(request):
 @extend_schema(
     tags=['users'],
     operation_id='save-profile',
-    summary='Guardar perfil completo del usuario',
-    description='Recibe toda la información del usuario (perfil, educación, experiencia, etc.) y la guarda en la base de datos.',
+    summary='Save complete user profile',
+    description='Receives all user information (profile, education, experience, etc.) and saves it to the database.',
     responses={
-        201: OpenApiResponse(description='Perfil guardado correctamente, solicitud en estado pendiente',
+        201: OpenApiResponse(description='Profile saved correctly, request in pending status',
                          examples={
                              'application/json': {
                                  'message': 'Perfil guardado correctamente, solicitud en estado pendiente.'
                              }
                          }),
-        400: OpenApiResponse(description='Error en los datos proporcionados')
+        400: OpenApiResponse(description='Error in provided data')
     },
     request={
         'application/json': {
@@ -151,64 +150,64 @@ def login_usuario(request):
             'properties': {
                 'first_name': {'type': 'string', 'example': 'Juan'},
                 'last_name': {'type': 'string', 'example': 'Pérez'},
-                'foto_perfil': {'type': 'string', 'format': 'uri', 'example': 'https://ejemplo.com/foto.jpg'},
-                'descripcion': {'type': 'string', 'example': 'Desarrollador con 5 años de experiencia'},
-                'telefono': {'type': 'string', 'example': '+123456789'},
-                'ubicacion': {'type': 'string', 'example': 'Ciudad de México'},
+                'profile_photo': {'type': 'string', 'format': 'uri', 'example': 'https://ejemplo.com/foto.jpg'},
+                'description': {'type': 'string', 'example': 'Desarrollador con 5 años de experiencia'},
+                'phone': {'type': 'string', 'example': '+123456789'},
+                'location': {'type': 'string', 'example': 'Ciudad de México'},
                 'linkedin': {'type': 'string', 'format': 'uri', 'example': 'https://linkedin.com/in/juanperez'},
-                'id_portafolio_web': {'type': 'string', 'format': 'uri', 'example': 'https://portafolio.dev/juanperez'},
-                'educacion': {
+                'portfolio_url': {'type': 'string', 'format': 'uri', 'example': 'https://portafolio.dev/juanperez'},
+                'education': {
                     'type': 'array',
                     'items': {
                         'type': 'object',
                         'properties': {
-                            'institucion': {'type': 'string', 'example': 'Universidad Ejemplo'},
-                            'titulo': {'type': 'string', 'example': 'Ingeniería en Sistemas'},
-                            'fecha_inicio': {'type': 'string', 'format': 'date', 'example': '2015-09-01'},
-                            'fecha_fin': {'type': 'string', 'format': 'date', 'example': '2020-06-30'}
+                            'institution': {'type': 'string', 'example': 'Universidad Ejemplo'},
+                            'degree': {'type': 'string', 'example': 'Ingeniería en Sistemas'},
+                            'start_date': {'type': 'string', 'format': 'date', 'example': '2015-09-01'},
+                            'end_date': {'type': 'string', 'format': 'date', 'example': '2020-06-30'}
                         },
-                        'required': ['institucion', 'titulo', 'fecha_inicio']
+                        'required': ['institution', 'degree', 'start_date']
                     }
                 },
-                'experiencia': {
+                'experience': {
                     'type': 'array',
                     'items': {
                         'type': 'object',
                         'properties': {
-                            'empresa': {'type': 'string', 'example': 'Empresa Ejemplo'},
-                            'puesto': {'type': 'string', 'example': 'Desarrollador Senior'},
-                            'descripcion': {'type': 'string', 'example': 'Desarrollo de aplicaciones web con Django y React'},
-                            'fecha_inicio': {'type': 'string', 'format': 'date', 'example': '2020-07-01'},
-                            'fecha_fin': {'type': 'string', 'format': 'date', 'example': '2023-01-15', 'nullable': True}
+                            'company': {'type': 'string', 'example': 'Empresa Ejemplo'},
+                            'position': {'type': 'string', 'example': 'Desarrollador Senior'},
+                            'description': {'type': 'string', 'example': 'Desarrollo de aplicaciones web con Django y React'},
+                            'start_date': {'type': 'string', 'format': 'date', 'example': '2020-07-01'},
+                            'end_date': {'type': 'string', 'format': 'date', 'example': '2023-01-15', 'nullable': True}
                         },
-                        'required': ['empresa', 'puesto', 'fecha_inicio']
+                        'required': ['company', 'position', 'start_date']
                     }
                 },
-                'certificaciones': {
+                'certifications': {
                     'type': 'array',
                     'items': {
                         'type': 'object',
                         'properties': {
-                            'nombre': {'type': 'string', 'example': 'Certificación Django'},
-                            'institucion': {'type': 'string', 'example': 'Django Foundation'},
-                            'fecha_obtencion': {'type': 'string', 'format': 'date', 'example': '2021-05-15'},
-                            'url_certificado': {'type': 'string', 'format': 'uri', 'example': 'https://certificaciones.com/cert123'}
+                            'name': {'type': 'string', 'example': 'Certificación Django'},
+                            'institution': {'type': 'string', 'example': 'Django Foundation'},
+                            'date_obtained': {'type': 'string', 'format': 'date', 'example': '2021-05-15'},
+                            'certificate_url': {'type': 'string', 'format': 'uri', 'example': 'https://certificaciones.com/cert123'}
                         },
-                        'required': ['nombre', 'institucion', 'fecha_obtencion']
+                        'required': ['name', 'institution', 'date_obtained']
                     }
                 },
-                'proyectos': {
+                'projects': {
                     'type': 'array',
                     'items': {
                         'type': 'object',
                         'properties': {
-                            'titulo': {'type': 'string', 'example': 'Sistema de Gestión de Inventario'},
-                            'descripcion': {'type': 'string', 'example': 'Aplicación web para gestionar inventario de productos con reportes y alertas'},
-                            'herramientas_usadas': {'type': 'string', 'example': 'Django, React, Docker'},
-                            'url_proyecto': {'type': 'string', 'format': 'uri', 'example': 'https://github.com/usuario/proyecto', 'nullable': True},
-                            'imagen_proyecto': {'type': 'string', 'format': 'uri', 'example': 'https://ejemplo.com/captura.jpg', 'nullable': True}
+                            'title': {'type': 'string', 'example': 'Sistema de Gestión de Inventario'},
+                            'description': {'type': 'string', 'example': 'Aplicación web para gestionar inventario de productos con reportes y alertas'},
+                            'tools_used': {'type': 'string', 'example': 'Django, React, Docker'},
+                            'project_url': {'type': 'string', 'format': 'uri', 'example': 'https://github.com/usuario/proyecto', 'nullable': True},
+                            'project_image': {'type': 'string', 'format': 'uri', 'example': 'https://ejemplo.com/captura.jpg', 'nullable': True}
                         },
-                        'required': ['titulo', 'descripcion', 'herramientas_usadas']
+                        'required': ['title', 'description', 'tools_used']
                     }
                 },
                 'skills': {
@@ -216,7 +215,7 @@ def login_usuario(request):
                     'items': {'type': 'string'},
                     'example': ['Python', 'Django', 'React', 'JavaScript']
                 },
-                'idiomas': {
+                'languages': {
                     'type': 'array',
                     'items': {
                         'type': 'object',
@@ -224,149 +223,148 @@ def login_usuario(request):
                             'language': {
                                 'type': 'object',
                                 'properties': {
-                                    'nombre': {'type': 'string', 'example': 'Inglés'}
+                                    'name': {'type': 'string', 'example': 'Inglés'}
                                 },
-                                'required': ['nombre']
+                                'required': ['name']
                             },
-                            'nivel': {'type': 'string', 'enum': ['Básico', 'Intermedio', 'Avanzado', 'Nativo'], 'example': 'Avanzado'}
+                            'level': {'type': 'string', 'enum': ['Básico', 'Intermedio', 'Avanzado', 'Nativo'], 'example': 'Avanzado'}
                         },
-                        'required': ['language', 'nivel']
+                        'required': ['language', 'level']
                     }
                 },
-                'template': {'type': 'integer', 'example': 1, 'description': 'ID del template a asignar al usuario'
+                'template': {'type': 'integer', 'example': 1, 'description': 'ID of the template to assign to the user'
                 }
-
             }
         }
     }
 )
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
-def guardar_perfil_completo(request):
+def save_complete_profile(request):
 
     user = request.user 
 
-    # 1️⃣ Guardar datos básicos del usuario
+    # 1️⃣ Save basic user data
     user.first_name = request.data.get("first_name", user.first_name)
     user.last_name = request.data.get("last_name", user.last_name)
-    user.foto_perfil = request.data.get("foto_perfil", user.foto_perfil)
-    user.descripcion = request.data.get("descripcion", user.descripcion)
-    user.telefono = request.data.get("telefono", user.telefono)
-    user.ubicacion = request.data.get("ubicacion", user.ubicacion)
+    user.profile_photo = request.data.get("profile_photo", user.profile_photo)
+    user.description = request.data.get("description", user.description)
+    user.phone = request.data.get("phone", user.phone)
+    user.location = request.data.get("location", user.location)
     user.linkedin = request.data.get("linkedin", user.linkedin)
-    user.id_portafolio_web = request.data.get("id_portafolio_web", user.id_portafolio_web)
+    user.portfolio_url = request.data.get("portfolio_url", user.portfolio_url)
     
-    # Añadir procesamiento del template
+    # Add template processing
     template_id = request.data.get("template")
     if template_id is not None:
         try:
-            template_obj = Template.objects.get(pk=template_id)  # Usar pk en vez de id
+            template_obj = Template.objects.get(pk=template_id)
             user.template = template_obj
         except Template.DoesNotExist:
-            # Manejo más específico del error
+            # More specific error handling
             return Response(
-                {"error": f"El template con ID {template_id} no existe"}, 
+                {"error": f"The template with ID {template_id} does not exist"}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
     
     user.save()
 
-    # 2️⃣ Guardar Educación
-    Educacion.objects.filter(usuario=user).delete()
-    educacion_data = request.data.get("educacion", [])
-    for edu in educacion_data:
-        Educacion.objects.create(
-            usuario=user,
-            institucion=edu["institucion"],
-            titulo=edu["titulo"],
-            fecha_inicio=edu["fecha_inicio"],
-            fecha_fin=edu.get("fecha_fin"),
+    # 2️⃣ Save Education
+    Education.objects.filter(user=user).delete()
+    education_data = request.data.get("education", [])
+    for edu in education_data:
+        Education.objects.create(
+            user=user,
+            institution=edu["institution"],
+            degree=edu["degree"],
+            start_date=edu["start_date"],
+            end_date=edu.get("end_date"),
         )
 
-    # 3️⃣ Guardar Experiencia Laboral
-    ExperienciaLaboral.objects.filter(usuario=user).delete()
-    experiencia_data = request.data.get("experiencia", [])
-    for exp in experiencia_data:
-        ExperienciaLaboral.objects.create(
-            usuario=user,
-            empresa=exp["empresa"],
-            puesto=exp["puesto"],
-            descripcion=exp.get("descripcion", ""),
-            fecha_inicio=exp["fecha_inicio"],
-            fecha_fin=exp.get("fecha_fin"),
+    # 3️⃣ Save Work Experience
+    WorkExperience.objects.filter(user=user).delete()
+    experience_data = request.data.get("experience", [])
+    for exp in experience_data:
+        WorkExperience.objects.create(
+            user=user,
+            company=exp["company"],
+            position=exp["position"],
+            description=exp.get("description", ""),
+            start_date=exp["start_date"],
+            end_date=exp.get("end_date"),
         )
 
-    # 4️⃣ Guardar Certificaciones
-    Certificacion.objects.filter(usuario=user).delete()
-    certificaciones_data = request.data.get("certificaciones", [])
-    for cert in certificaciones_data:
-        Certificacion.objects.create(
-            usuario=user,
-            nombre=cert["nombre"],
-            institucion=cert["institucion"],
-            fecha_obtencion=cert["fecha_obtencion"],
-            url_certificado=cert.get("url_certificado", ""),
+    # 4️⃣ Save Certifications
+    Certification.objects.filter(user=user).delete()
+    certifications_data = request.data.get("certifications", [])
+    for cert in certifications_data:
+        Certification.objects.create(
+            user=user,
+            name=cert["name"],
+            institution=cert["institution"],
+            date_obtained=cert["date_obtained"],
+            certificate_url=cert.get("certificate_url", ""),
         )
 
-    # 5️⃣ Guardar Proyectos
-    Proyecto.objects.filter(usuario=user).delete()
-    proyectos_data = request.data.get("proyectos", [])
-    for proy in proyectos_data:
-        Proyecto.objects.create(
-            usuario=user,
-            titulo=proy["titulo"],
-            descripcion=proy["descripcion"],
-            herramientas_usadas=proy["herramientas_usadas"],
-            url_proyecto=proy.get("url_proyecto", ""),
-            imagen_proyecto=proy.get("imagen_proyecto", ""),
+    # 5️⃣ Save Projects
+    Project.objects.filter(user=user).delete()
+    projects_data = request.data.get("projects", [])
+    for proj in projects_data:
+        Project.objects.create(
+            user=user,
+            title=proj["title"],
+            description=proj["description"],
+            tools_used=proj["tools_used"],
+            project_url=proj.get("project_url", ""),
+            project_image=proj.get("project_image", ""),
         )
 
-    # 6️⃣ Guardar Skills sin duplicados
-    UserSkill.objects.filter(usuario=user).delete()
+    # 6️⃣ Save Skills without duplicates
+    UserSkill.objects.filter(user=user).delete()
     skills_data = request.data.get("skills", [])
     for skill_name in skills_data:
-        skill, _ = Skill.objects.get_or_create(nombre=skill_name)
-        user_skill, created = UserSkill.objects.get_or_create(usuario=user, skill=skill)
+        skill, _ = Skill.objects.get_or_create(name=skill_name)
+        user_skill, created = UserSkill.objects.get_or_create(user=user, skill=skill)
 
-    # 7️⃣ Guardar Idiomas
-    UserLanguage.objects.filter(usuario=user).delete()
-    idiomas_data = request.data.get("idiomas", [])
-    for idioma in idiomas_data:
-        nombre_idioma = idioma.get("language", {}).get("nombre")
-        if not nombre_idioma:
+    # 7️⃣ Save Languages
+    UserLanguage.objects.filter(user=user).delete()
+    languages_data = request.data.get("languages", [])
+    for lang in languages_data:
+        language_name = lang.get("language", {}).get("name")
+        if not language_name:
             continue  
 
-        language, _ = Language.objects.get_or_create(nombre=nombre_idioma)
+        language, _ = Language.objects.get_or_create(name=language_name)
         
         user_language, created = UserLanguage.objects.get_or_create(
-            usuario=user,
+            user=user,
             language=language,
-            defaults={"nivel": idioma["nivel"]} 
+            defaults={"level": lang["level"]} 
         )
         if not created:
-            user_language.nivel = idioma["nivel"]  
+            user_language.level = lang["level"]  
             user_language.save()
 
-    solicitud, created = Solicitud.objects.get_or_create(
-        usuario=user,
+    request_obj, created = Request.objects.get_or_create(
+        user=user,
         defaults={
-            "descripcion": "Solicitud de revisión de perfil completa.",
-            "estado": "pendiente"
+            "description": "Solicitud de revisión de perfil completa.",
+            "status": "pending"
         }
     )
 
     if not created:
-        solicitud.descripcion = "Solicitud de revisión de perfil actualizada."
-        solicitud.estado = "pendiente" 
-        solicitud.save()
+        request_obj.description = "Solicitud de revisión de perfil actualizada."
+        request_obj.status = "pending" 
+        request_obj.save()
 
     return Response({"message": "Perfil guardado correctamente, solicitud en estado 'pendiente'."}, status=status.HTTP_201_CREATED)
     
 @extend_schema(
     tags=['users'],
     operation_id='get-profile',
-    summary='Obtener perfil completo del usuario',
-    description='Obtiene toda la información del usuario autenticado (perfil, educación, experiencia, etc.).',
+    summary='Get complete user profile',
+    description='Gets all information of the authenticated user (profile, education, experience, etc.).',
     responses={
         200: UserSerializer
     }
@@ -374,7 +372,7 @@ def guardar_perfil_completo(request):
 
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
-def obtener_perfil_completo(request):
+def get_complete_profile(request):
     user = request.user
     serializer = UserSerializer(user)
     return Response(serializer.data, status=status.HTTP_200_OK)
@@ -382,15 +380,15 @@ def obtener_perfil_completo(request):
 @extend_schema(
     tags=['backoffice'],
     operation_id='list-users',
-    summary='Listar todos los usuarios',
-    description='Obtiene la lista de usuarios con toda su información (educación, experiencia, skills, etc.).',
+    summary='List all users',
+    description='Gets the list of users with all their information (education, experience, skills, etc.).',
     responses={
         200: UserSerializer(many=True)
     }
 )
 @api_view(['GET'])
 @permission_classes([permissions.IsAdminUser])
-def obtener_usuarios(request):
+def get_users(request):
     users = CustomUser.objects.all()
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
@@ -398,24 +396,24 @@ def obtener_usuarios(request):
 @extend_schema(
     tags=['backoffice'],
     operation_id='list-requests',
-    summary='Listar solicitudes',
-    description='Lista todas las solicitudes de usuarios, permitiendo filtrar por estado.',
+    summary='List requests',
+    description='Lists all user requests, allowing filtering by status.',
     parameters=[
-        OpenApiParameter(name='estado', description='Filtrar por estado (pendiente, aceptada, rechazada)', required=False, type=str, enum=['pendiente', 'aceptada', 'rechazada'])
+        OpenApiParameter(name='status', description='Filter by status (pending, accepted, rejected)', required=False, type=str, enum=['pending', 'accepted', 'rejected'])
     ],
     responses={
-        200: SolicitudSerializer(many=True)
+        200: RequestSerializer(many=True)
     }
 )
 @api_view(['GET'])
 @permission_classes([permissions.IsAdminUser])
-def listar_solicitudes(request):
-    estado = request.GET.get('estado')  
+def list_requests(request):
+    status_param = request.GET.get('status')  
 
-    if estado:
-        solicitudes = Solicitud.objects.filter(estado=estado)
+    if status_param:
+        requests = Request.objects.filter(status=status_param)
     else:
-        solicitudes = Solicitud.objects.all()
+        requests = Request.objects.all()
 
-    serializer = SolicitudSerializer(solicitudes, many=True)
+    serializer = RequestSerializer(requests, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)

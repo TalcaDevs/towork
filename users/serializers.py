@@ -1,38 +1,37 @@
 from rest_framework import serializers
-from .models import CustomUser
-from education.models import Educacion
-from experience.models import ExperienciaLaboral
-from certifications.models import Certificacion
-from projects.models import Proyecto
+from .models import CustomUser, Request
+from education.models import Education
+from experience.models import WorkExperience
+from certifications.models import Certification
+from projects.models import Project
 from skills.models import Skill, UserSkill
 from languages.models import Language, UserLanguage
-from .models import Solicitud
 from .models import Template
 
-class EducacionSerializer(serializers.ModelSerializer):
+class EducationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Educacion
-        fields = ['institucion', 'titulo', 'fecha_inicio', 'fecha_fin']
+        model = Education
+        fields = ['institution', 'degree', 'start_date', 'end_date']
 
-class ExperienciaLaboralSerializer(serializers.ModelSerializer):
+class WorkExperienceSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ExperienciaLaboral
-        fields = ['empresa', 'puesto', 'descripcion', 'fecha_inicio', 'fecha_fin']
+        model = WorkExperience
+        fields = ['company', 'position', 'description', 'start_date', 'end_date']
 
-class CertificacionSerializer(serializers.ModelSerializer):
+class CertificationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Certificacion
-        fields = ['nombre', 'institucion', 'fecha_obtencion', 'url_certificado']
+        model = Certification
+        fields = ['name', 'institution', 'date_obtained', 'certificate_url']
 
-class ProyectoSerializer(serializers.ModelSerializer):
+class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Proyecto
-        fields = ['titulo', 'descripcion', 'herramientas_usadas', 'url_proyecto', 'imagen_proyecto']
+        model = Project
+        fields = ['title', 'description', 'tools_used', 'project_url', 'project_image']
 
 class SkillSerializer(serializers.ModelSerializer):
     class Meta:
         model = Skill
-        fields = ['nombre']
+        fields = ['name']
 
 class UserSkillSerializer(serializers.ModelSerializer):
     skill = SkillSerializer()
@@ -44,33 +43,33 @@ class UserSkillSerializer(serializers.ModelSerializer):
 class LanguageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Language
-        fields = ['nombre']
+        fields = ['name']
 
 class UserLanguageSerializer(serializers.ModelSerializer):
     language = LanguageSerializer()
 
     class Meta:
         model = UserLanguage
-        fields = ['language', 'nivel']
+        fields = ['language', 'level']
 
 class UserSerializer(serializers.ModelSerializer):
-    educacion = EducacionSerializer(many=True)
-    experiencia = ExperienciaLaboralSerializer(many=True, source='experiencia_laboral')
-    certificaciones = CertificacionSerializer(many=True)
-    proyectos = ProyectoSerializer(many=True)
+    education = EducationSerializer(many=True)
+    experience = WorkExperienceSerializer(many=True, source='work_experience')
+    certifications = CertificationSerializer(many=True)
+    projects = ProjectSerializer(many=True)
     skills = UserSkillSerializer(many=True)
-    idiomas = UserLanguageSerializer(many=True)
+    languages = UserLanguageSerializer(many=True)
 
     class Meta:
         model = CustomUser
         fields = [
-            'id', 'first_name', 'last_name', 'foto_perfil', 'descripcion', 'telefono', 
-            'ubicacion', 'linkedin', 'id_portafolio_web', 'educacion', 'experiencia', 
-            'certificaciones', 'proyectos', 'skills', 'idiomas', 'template'
+            'id', 'first_name', 'last_name', 'profile_photo', 'description', 'phone', 
+            'location', 'linkedin', 'portfolio_url', 'education', 'experience', 
+            'certifications', 'projects', 'skills', 'languages', 'template'
         ]
 
-class SolicitudSerializer(serializers.ModelSerializer):
-    usuario = UserSerializer()
+class RequestSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
     class Meta:
-        model = Solicitud
-        fields = ['id', 'usuario', 'descripcion', 'estado', 'fecha_creacion']
+        model = Request
+        fields = ['id', 'user', 'description', 'status', 'created_date']
