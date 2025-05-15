@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
+from django.views.decorators.http import require_http_methods, require_GET, require_POST, require_safe
 from .models import CustomUser
 from education.models import Education
 from experience.models import WorkExperience
@@ -45,6 +46,7 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiRespon
         400: OpenApiResponse(description='Error in provided data')
     }
 )
+@require_POST
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def register_user(request):
@@ -109,6 +111,7 @@ def register_user(request):
         401: OpenApiResponse(description='Invalid credentials')
     }
 )
+@require_POST
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def login_user(request):
@@ -238,6 +241,7 @@ def login_user(request):
         }
     }
 )
+@require_POST
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def save_complete_profile(request):
@@ -369,7 +373,7 @@ def save_complete_profile(request):
         200: UserSerializer
     }
 )
-
+@require_GET
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
 def get_complete_profile(request):
@@ -386,6 +390,7 @@ def get_complete_profile(request):
         200: UserSerializer(many=True)
     }
 )
+@require_GET
 @api_view(['GET'])
 @permission_classes([permissions.IsAdminUser])
 def get_users(request):
@@ -405,6 +410,7 @@ def get_users(request):
         200: RequestSerializer(many=True)
     }
 )
+@require_GET
 @api_view(['GET'])
 @permission_classes([permissions.IsAdminUser])
 def list_requests(request):
