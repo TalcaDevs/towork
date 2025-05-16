@@ -1,0 +1,30 @@
+{% load static %}
+<div class="card {{ card_type }}">
+    {% if user.foto_perfil %}
+        <img src="{{ user.foto_perfil }}" alt="Perfil">
+    {% else %}
+        <img src="{% static 'images/default_profile.png' %}" alt="Perfil">
+    {% endif %}
+    <div class="card-info">
+        <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
+        {% if status_type == 'new' %}
+            <p class="email-info">{{ user.email }}</p>
+            <span class="new-indicator">{{ status_text|default:"Usuario registrado el "|add:user.date_joined|date:"d/m/Y" }}</span>
+        {% else %}
+            {% with first_education=user.educacion.all.first %}
+                {% if first_education %}
+                    <p class="education-title">{{ first_education.titulo }}</p>
+                {% else %}
+                    <p class="education-title">Sin información educativa</p>
+                {% endif %}
+            {% endwith %}
+            <span class="{{ status_indicator_class }}">{{ status_text }}</span>
+        {% endif %}
+    </div>
+    <a href="?estado=card_detail&user_id={{ user.pk }}" class="detail-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"></path>
+            <path d="m12 5 7 7-7 7"></path>
+        </svg>
+    </a>
+</div>
