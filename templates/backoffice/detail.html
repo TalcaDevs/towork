@@ -6,37 +6,37 @@
     <div class="profile-sidebar">
         <div class="profile-card">
             <div class="profile-header">
-                <img src="{{ solicitud.usuario.foto_perfil|default:'/static/images/default_profile.png' }}" alt="Perfil de {{ solicitud.usuario.first_name }}">
+                <img src="{{ request.user.profile_photo|default:'/static/images/default_profile.png' }}" alt="Perfil de {{ request.user.first_name }}">
             </div>
             <div class="profile-info">
-                <h1>{{ solicitud.usuario.first_name }} {{ solicitud.usuario.last_name }}</h1>
-                <p class="profile-email">{{ solicitud.usuario.email }}</p>
+                <h1>{{ request.user.first_name }} {{ request.user.last_name }}</h1>
+                <p class="profile-email">{{ request.user.email }}</p>
                 
                 <div class="contact-quick-info">
-                    {% if solicitud.usuario.telefono %}
+                    {% if request.user.phone %}
                     <div class="contact-item">
                         <span class="contact-icon">📱</span>
-                        <span>{{ solicitud.usuario.telefono }}</span>
+                        <span>{{ request.user.phone }}</span>
                     </div>
                     {% endif %}
                     
-                    {% if solicitud.usuario.ubicacion %}
+                    {% if request.user.location %}
                     <div class="contact-item">
                         <span class="contact-icon">📍</span>
-                        <span>{{ solicitud.usuario.ubicacion }}</span>
+                        <span>{{ request.user.location }}</span>
                     </div>
                     {% endif %}
                 </div>
                 
                 <div class="profile-links">
-                    {% if solicitud.usuario.linkedin %}
-                    <a href="{{ solicitud.usuario.linkedin }}" target="_blank" class="social-link linkedin">
+                    {% if request.user.linkedin %}
+                    <a href="{{ request.user.linkedin }}" target="_blank" class="social-link linkedin">
                         <span class="social-icon">LinkedIn</span>
                     </a>
                     {% endif %}
                     
-                    {% if solicitud.usuario.id_portafolio_web %}
-                    <a href="{{ solicitud.usuario.id_portafolio_web }}" target="_blank" class="social-link portfolio">
+                    {% if request.user.portfolio_url %}
+                    <a href="{{ request.user.portfolio_url }}" target="_blank" class="social-link portfolio">
                         <span class="social-icon">Portfolio</span>
                     </a>
                     {% endif %}
@@ -46,15 +46,15 @@
             <div class="request-metadata">
                 <div class="metadata-item">
                     <span class="metadata-label">Fecha de solicitud:</span>
-                    <span class="metadata-value">{{ solicitud.fecha_creacion|date:"d/m/Y H:i" }}</span>
+                    <span class="metadata-value">{{ request.created_date|date:"d/m/Y H:i" }}</span>
                 </div>
                 <div class="metadata-item">
                     <span class="metadata-label">Estado actual:</span>
-                    <span class="metadata-value status-badge {{ solicitud.estado }}">{{ solicitud.estado|title }}</span>
+                    <span class="metadata-value status-badge {{ request.status }}">{{ request.status|title }}</span>
                 </div>
                 <div class="metadata-item">
                     <span class="metadata-label">Template:</span>
-                    <span class="metadata-value">{{ solicitud.usuario.template.name|default:"Sin template asignado" }}</span>
+                    <span class="metadata-value">{{ request.user.template.name|default:"Sin template asignado" }}</span>
                 </div>
             </div>
             
@@ -80,10 +80,10 @@
             <div id="summary" class="tab-content active">
                 <h2>Descripción General</h2>
                 <div class="summary-card">
-                    {% if solicitud.usuario.descripcion %}
+                    {% if request.user.description %}
                     <div class="summary-description">
                         <h3>Sobre el candidato</h3>
-                        <p>{{ solicitud.usuario.descripcion }}</p>
+                        <p>{{ request.user.description }}</p>
                     </div>
                     {% else %}
                     <p class="no-data">No ha proporcionado una descripción.</p>
@@ -91,16 +91,16 @@
                     
                     <div class="summary-section">
                         <h3>Formación Académica</h3>
-                        {% if solicitud.usuario.educacion.all %}
+                        {% if request.user.education.all %}
                             <ul class="summary-list">
-                                {% for educacion in solicitud.usuario.educacion.all|slice:":2" %}
+                                {% for education in request.user.education.all|slice:":2" %}
                                     <li>
-                                        <strong>{{ educacion.titulo }}</strong> - {{ educacion.institucion }}
+                                        <strong>{{ education.degree }}</strong> - {{ education.institution }}
                                     </li>
                                 {% endfor %}
-                                {% if solicitud.usuario.educacion.all|length > 2 %}
+                                {% if request.user.education.all|length > 2 %}
                                     <li class="more-items">
-                                        <a href="#" onclick="switchTab('education'); return false;">+ {{ solicitud.usuario.educacion.all|length|add:"-2" }} más</a>
+                                        <a href="#" onclick="switchTab('education'); return false;">+ {{ request.user.education.all|length|add:"-2" }} más</a>
                                     </li>
                                 {% endif %}
                             </ul>
@@ -111,16 +111,16 @@
                     
                     <div class="summary-section">
                         <h3>Experiencia Laboral</h3>
-                        {% if solicitud.usuario.experiencia_laboral.all %}
+                        {% if request.user.work_experience.all %}
                             <ul class="summary-list">
-                                {% for experiencia in solicitud.usuario.experiencia_laboral.all|slice:":2" %}
+                                {% for experience in request.user.work_experience.all|slice:":2" %}
                                     <li>
-                                        <strong>{{ experiencia.puesto }}</strong> - {{ experiencia.empresa }}
+                                        <strong>{{ experience.position }}</strong> - {{ experience.company }}
                                     </li>
                                 {% endfor %}
-                                {% if solicitud.usuario.experiencia_laboral.all|length > 2 %}
+                                {% if request.user.work_experience.all|length > 2 %}
                                     <li class="more-items">
-                                        <a href="#" onclick="switchTab('experience'); return false;">+ {{ solicitud.usuario.experiencia_laboral.all|length|add:"-2" }} más</a>
+                                        <a href="#" onclick="switchTab('experience'); return false;">+ {{ request.user.work_experience.all|length|add:"-2" }} más</a>
                                     </li>
                                 {% endif %}
                             </ul>
@@ -131,14 +131,14 @@
                     
                     <div class="summary-section">
                         <h3>Habilidades</h3>
-                        {% if solicitud.usuario.skills.all %}
+                        {% if request.user.skills.all %}
                             <div class="skills-tags">
-                                {% for skill in solicitud.usuario.skills.all|slice:":5" %}
-                                    <span class="skill-tag">{{ skill.skill.nombre }}</span>
+                                {% for skill in request.user.skills.all|slice:":5" %}
+                                    <span class="skill-tag">{{ skill.skill.name }}</span>
                                 {% endfor %}
-                                {% if solicitud.usuario.skills.all|length > 5 %}
+                                {% if request.user.skills.all|length > 5 %}
                                     <span class="skill-tag more">
-                                        <a href="#" onclick="switchTab('skills'); return false;">+ {{ solicitud.usuario.skills.all|length|add:"-5" }}</a>
+                                        <a href="#" onclick="switchTab('skills'); return false;">+ {{ request.user.skills.all|length|add:"-5" }}</a>
                                     </span>
                                 {% endif %}
                             </div>
@@ -152,17 +152,17 @@
             <div id="education" class="tab-content">
                 <h2>Educación</h2>
                 <div class="detail-cards-container">
-                    {% if solicitud.usuario.educacion.all %}
-                        {% for educacion in solicitud.usuario.educacion.all %}
+                    {% if request.user.education.all %}
+                        {% for education in request.user.education.all %}
                             <div class="detail-card education-card">
                                 <div class="card-header">
-                                    <h3>{{ educacion.titulo }}</h3>
+                                    <h3>{{ education.degree }}</h3>
                                     <div class="time-period">
-                                        <span class="date">{{ educacion.fecha_inicio|date:"M Y" }} - {{ educacion.fecha_fin|date:"M Y"|default:"Actualidad" }}</span>
+                                        <span class="date">{{ education.start_date|date:"M Y" }} - {{ education.end_date|date:"M Y"|default:"Actualidad" }}</span>
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <p class="institution">{{ educacion.institucion }}</p>
+                                    <p class="institution">{{ education.institution }}</p>
                                 </div>
                             </div>
                         {% endfor %}
@@ -175,23 +175,23 @@
             <div id="experience" class="tab-content">
                 <h2>Experiencia Laboral</h2>
                 <div class="detail-cards-container">
-                    {% if solicitud.usuario.experiencia_laboral.all %}
-                        {% for experiencia in solicitud.usuario.experiencia_laboral.all %}
+                    {% if request.user.work_experience.all %}
+                        {% for experience in request.user.work_experience.all %}
                             <div class="detail-card experience-card">
                                 <div class="card-header">
-                                    <h3>{{ experiencia.puesto }}</h3>
+                                    <h3>{{ experience.position }}</h3>
                                     <div class="time-period">
-                                        <span class="date">{{ experiencia.fecha_inicio|date:"M Y" }} - {{ experiencia.fecha_fin|date:"M Y"|default:"Actualidad" }}</span>
-                                        {% if not experiencia.fecha_fin %}
+                                        <span class="date">{{ experience.start_date|date:"M Y" }} - {{ experience.end_date|date:"M Y"|default:"Actualidad" }}</span>
+                                        {% if not experience.end_date %}
                                             <span class="current-badge">Actual</span>
                                         {% endif %}
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <p class="company">{{ experiencia.empresa }}</p>
-                                    {% if experiencia.descripcion %}
+                                    <p class="company">{{ experience.company }}</p>
+                                    {% if experience.description %}
                                         <div class="description">
-                                            <p>{{ experiencia.descripcion }}</p>
+                                            <p>{{ experience.description }}</p>
                                         </div>
                                     {% endif %}
                                 </div>
@@ -206,19 +206,19 @@
             <div id="certifications" class="tab-content">
                 <h2>Certificaciones</h2>
                 <div class="detail-cards-container">
-                    {% if solicitud.usuario.certificaciones.all %}
-                        {% for certificacion in solicitud.usuario.certificaciones.all %}
+                    {% if request.user.certifications.all %}
+                        {% for certification in request.user.certifications.all %}
                             <div class="detail-card certification-card">
                                 <div class="card-header">
-                                    <h3>{{ certificacion.nombre }}</h3>
+                                    <h3>{{ certification.name }}</h3>
                                     <div class="time-period">
-                                        <span class="date">{{ certificacion.fecha_obtencion|date:"M Y" }}</span>
+                                        <span class="date">{{ certification.date_obtained|date:"M Y" }}</span>
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <p class="institution">{{ certificacion.institucion }}</p>
-                                    {% if certificacion.url_certificado %}
-                                        <a href="{{ certificacion.url_certificado }}" target="_blank" class="certificate-link">
+                                    <p class="institution">{{ certification.institution }}</p>
+                                    {% if certification.certificate_url %}
+                                        <a href="{{ certification.certificate_url }}" target="_blank" class="certificate-link">
                                             Ver Certificado
                                         </a>
                                     {% endif %}
@@ -234,34 +234,34 @@
             <div id="projects" class="tab-content">
                 <h2>Proyectos</h2>
                 <div class="detail-cards-container">
-                    {% if solicitud.usuario.proyectos.all %}
-                        {% for proyecto in solicitud.usuario.proyectos.all %}
+                    {% if request.user.projects.all %}
+                        {% for project in request.user.projects.all %}
                             <div class="detail-card project-card">
                                 <div class="card-header">
-                                    <h3>{{ proyecto.titulo }}</h3>
+                                    <h3>{{ project.title }}</h3>
                                 </div>
                                 <div class="card-body">
                                     <div class="description">
-                                        <p>{{ proyecto.descripcion }}</p>
+                                        <p>{{ project.description }}</p>
                                     </div>
                                     <div class="project-details">
                                         <div class="tools">
                                             <h4>Herramientas</h4>
                                             <div class="tools-list">
-                                                {% for tool in proyecto.herramientas_usadas.split|slice:":4" %}
+                                                {% for tool in project.tools_used.split|slice:":4" %}
                                                     <span class="tool-tag">{{ tool }}</span>
                                                 {% endfor %}
                                             </div>
                                         </div>
-                                        {% if proyecto.url_proyecto %}
-                                            <a href="{{ proyecto.url_proyecto }}" target="_blank" class="project-link">
+                                        {% if project.project_url %}
+                                            <a href="{{ project.project_url }}" target="_blank" class="project-link">
                                                 Ver Proyecto
                                             </a>
                                         {% endif %}
                                     </div>
-                                    {% if proyecto.imagen_proyecto %}
+                                    {% if project.project_image %}
                                         <div class="project-image">
-                                            <img src="{{ proyecto.imagen_proyecto }}" alt="Imagen del proyecto {{ proyecto.titulo }}">
+                                            <img src="{{ project.project_image }}" alt="Imagen del proyecto {{ project.title }}">
                                         </div>
                                     {% endif %}
                                 </div>
@@ -276,12 +276,12 @@
             <div id="skills" class="tab-content">
                 <h2>Habilidades y Competencias</h2>
                 <div class="skills-section">
-                    {% if solicitud.usuario.skills.all %}
+                    {% if request.user.skills.all %}
                         <div class="skills-container">
                             <h3>Habilidades Técnicas</h3>
                             <div class="skills-cloud">
-                                {% for skill in solicitud.usuario.skills.all %}
-                                    <span class="skill-tag">{{ skill.skill.nombre }}</span>
+                                {% for skill in request.user.skills.all %}
+                                    <span class="skill-tag">{{ skill.skill.name }}</span>
                                 {% endfor %}
                             </div>
                         </div>
@@ -289,14 +289,14 @@
                         <p class="no-data-message">No hay habilidades técnicas registradas.</p>
                     {% endif %}
                     
-                    {% if solicitud.usuario.idiomas.all %}
+                    {% if request.user.languages.all %}
                         <div class="languages-container">
                             <h3>Idiomas</h3>
                             <div class="languages-list">
-                                {% for idioma in solicitud.usuario.idiomas.all %}
+                                {% for language in request.user.languages.all %}
                                     <div class="language-item">
-                                        <span class="language-name">{{ idioma.language.nombre }}</span>
-                                        <span class="language-level level-{{ idioma.nivel|lower }}">{{ idioma.nivel }}</span>
+                                        <span class="language-name">{{ language.language.name }}</span>
+                                        <span class="language-level level-{{ language.level|lower }}">{{ language.level }}</span>
                                     </div>
                                 {% endfor %}
                             </div>
@@ -314,14 +314,14 @@
     <div class="popup-content">
         <span class="close" onclick="hidePopup()">&times;</span>
         <h2>Actualizar Estado de Solicitud</h2>
-        <form method="post" action="{% url 'update_status' solicitud.usuario.id %}">
+        <form method="post" action="{% url 'update_status' request.user.id %}">
             {% csrf_token %}
             <div class="form-group">
-                <label for="estado">Nuevo Estado:</label>
-                <select name="estado" id="estado" class="form-control">
-                    <option value="pendiente" {% if solicitud.estado == 'pendiente' %}selected{% endif %}>Pendiente</option>
-                    <option value="aceptada" {% if solicitud.estado == 'aceptada' %}selected{% endif %}>Aceptada</option>
-                    <option value="rechazada" {% if solicitud.estado == 'rechazada' %}selected{% endif %}>Rechazada</option>
+                <label for="status">Nuevo Estado:</label>
+                <select name="status" id="status" class="form-control">
+                    <option value="pending" {% if request.status == 'pending' %}selected{% endif %}>Pendiente</option>
+                    <option value="accepted" {% if request.status == 'accepted' %}selected{% endif %}>Aceptada</option>
+                    <option value="rejected" {% if request.status == 'rejected' %}selected{% endif %}>Rechazada</option>
                 </select>
             </div>
             <div class="form-actions">
@@ -338,10 +338,10 @@
              onclick="hideDeleteConfirmation()" 
              aria-label="Cerrar diálogo">&times;</button>
         <h2>Confirmar Eliminación</h2>
-        <p class="delete-warning">¿Está seguro que desea eliminar al usuario <strong>{{ solicitud.usuario.first_name }} {{ solicitud.usuario.last_name }}</strong>?</p>
+        <p class="delete-warning">¿Está seguro que desea eliminar al usuario <strong>{{ request.user.first_name }} {{ request.user.last_name }}</strong>?</p>
         <p class="delete-warning-details">Esta acción eliminará permanentemente al usuario y todos sus datos asociados.</p>
         <div class="form-actions">
-            <form method="post" action="{% url 'delete_user' solicitud.usuario.id %}">
+            <form method="post" action="{% url 'delete_user' request.user.id %}">
                 {% csrf_token %}
                 <button type="submit" class="btn-danger">Eliminar</button>
                 <br><br>

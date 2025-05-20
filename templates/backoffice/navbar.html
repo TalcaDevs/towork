@@ -3,13 +3,13 @@
     <nav>
         <div class="navbar-section">
             <h2 class="navbar-title">
-                {% if estado == 'pendientes' %}
+                {% if status == 'pending' %}
                     Panel de solicitudes pendientes
-                {% elif estado == 'aprobados' %}
+                {% elif status == 'accepted' %}
                     Panel de solicitudes aprobadas
-                {% elif estado == 'rechazados' %}
+                {% elif status == 'rejected' %}
                     Panel de solicitudes rechazadas
-                {% elif estado == 'card_detail' %}
+                {% elif status == 'card_detail' %}
                     Detalle de solicitud
                 {% else %}
                     Panel de control

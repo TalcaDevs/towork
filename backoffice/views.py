@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from users.models import CustomUser, Solicitud
-from users.serializers import UserSerializer, SolicitudSerializer
+from users.models import CustomUser, Request
+from users.serializers import UserSerializer, RequestSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework import status
-from users.models import SolicitudLog
+from users.models import RequestLog
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.hashers import make_password
@@ -30,97 +30,98 @@ def custom_login(request):
 
 @login_required
 def dashboard(request):
-    estado = request.GET.get('estado', 'pendientes')
+    status_param = request.GET.get('status', 'pending')
     user_id = request.GET.get('user_id')
-    solicitud = None
+    request_obj = None
     
-    if estado in ['card_detail', 'update_status'] and user_id:
-        solicitud = Solicitud.objects.get(usuario__id=user_id)
+    if status_param in ['card_detail', 'update_status'] and user_id:
+        request_obj = Request.objects.get(user__id=user_id)
         return render(request, 'backoffice/dashboard.html', {
-            'estado': estado,
-            'solicitud': solicitud,
+            'status': status_param,
+            'request': request_obj,
         })
     
-    if estado == 'nuevos':
-        solicitudes_list = Solicitud.objects.filter(estado='nuevo').order_by('-fecha_creacion')
-        usuarios_list = CustomUser.objects.filter(
-            id__in=solicitudes_list.values_list('usuario_id', flat=True)
+    if status_param == 'new':
+        requests_list = Request.objects.filter(status='new').order_by('-created_date')
+        users_list = CustomUser.objects.filter(
+            id__in=requests_list.values_list('user_id', flat=True)
         ).order_by('-date_joined')
-    elif estado == 'pendientes':
-        solicitudes_list = Solicitud.objects.filter(estado='pendiente').order_by('-fecha_creacion')
-    elif estado == 'aprobados':
-        solicitudes_list = Solicitud.objects.filter(estado='aceptada').order_by('-fecha_creacion')
-    elif estado == 'rechazados':
-        solicitudes_list = Solicitud.objects.filter(estado='rechazada').order_by('-fecha_creacion')
+    elif status_param == 'pending':
+        requests_list = Request.objects.filter(status='pending').order_by('-created_date')
+    elif status_param == 'accepted':
+        requests_list = Request.objects.filter(status='accepted').order_by('-created_date')
+    elif status_param == 'rejected':
+        requests_list = Request.objects.filter(status='rejected').order_by('-created_date')
     else:
-        solicitudes_list = Solicitud.objects.filter(estado='pendiente').order_by('-fecha_creacion')
+        requests_list = Request.objects.filter(status='pending').order_by('-created_date')
     
     page = request.GET.get('page', 1)
     items_per_page = 5
     
-    if estado == 'nuevos':
-        paginator = Paginator(usuarios_list, items_per_page)
+    if status_param == 'new':
+        paginator = Paginator(users_list, items_per_page)
     else:
-        paginator = Paginator(solicitudes_list, items_per_page)
+        paginator = Paginator(requests_list, items_per_page)
     
     try:
-        if estado == 'nuevos':
-            usuarios_paginados = paginator.page(page)
+        if status_param == 'new':
+            paginated_users = paginator.page(page)
         else:
-            solicitudes = paginator.page(page)
+            requests = paginator.page(page)
     except PageNotAnInteger:
-        if estado == 'nuevos':
-            usuarios_paginados = paginator.page(1)
+        if status_param == 'new':
+            paginated_users = paginator.page(1)
         else:
-            solicitudes = paginator.page(1)
+            requests = paginator.page(1)
     except EmptyPage:
-        if estado == 'nuevos':
-            usuarios_paginados = paginator.page(paginator.num_pages)
+        if status_param == 'new':
+            paginated_users = paginator.page(paginator.num_pages)
         else:
-            solicitudes = paginator.page(paginator.num_pages)
+            requests = paginator.page(paginator.num_pages)
     
-    nuevos_count = Solicitud.objects.filter(estado='nuevo').count()
-    solicitudes_pendientes_count = Solicitud.objects.filter(estado='pendiente').count()
-    solicitudes_aprobadas_count = Solicitud.objects.filter(estado='aceptada').count()
-    solicitudes_rechazadas_count = Solicitud.objects.filter(estado='rechazada').count()
+    new_count = Request.objects.filter(status='new').count()
+    pending_requests_count = Request.objects.filter(status='pending').count()
+    accepted_requests_count = Request.objects.filter(status='accepted').count()
+    rejected_requests_count = Request.objects.filter(status='rejected').count()
     
     return render(request, 'backoffice/dashboard.html', {
-        'nuevos': usuarios_paginados if estado == 'nuevos' else None,
-        'pendientes': solicitudes if estado == 'pendientes' else None,
-        'aprobados': solicitudes if estado == 'aprobados' else None,
-        'rechazados': solicitudes if estado == 'rechazados' else None,
-        'nuevos_count': nuevos_count,
-        'pendientes_count': solicitudes_pendientes_count,
-        'aprobados_count': solicitudes_aprobadas_count,
-        'rechazados_count': solicitudes_rechazadas_count,
-        'estado': estado,
-        'page_obj': usuarios_paginados if estado == 'nuevos' else solicitudes,
+        'new': paginated_users if status_param == 'new' else None,
+        'pending': requests if status_param == 'pending' else None,
+        'accepted': requests if status_param == 'accepted' else None,
+        'rejected': requests if status_param == 'rejected' else None,
+        'new_count': new_count,
+        'pending_count': pending_requests_count,
+        'accepted_count': accepted_requests_count,
+        'rejected_count': rejected_requests_count,
+        'status': status_param,
+        'page_obj': paginated_users if status_param == 'new' else requests,
         'paginator': paginator,
     })
+
 @login_required
 def update_status(request, user_id):
     if request.method == 'POST':
-        nuevo_estado = request.POST.get('estado')
-        solicitud = Solicitud.objects.get(usuario__id=user_id)
-        estado_anterior = solicitud.estado
-        solicitud.estado = nuevo_estado
-        solicitud.save()
+        new_status = request.POST.get('status')
+        request_obj = Request.objects.get(user__id=user_id)
+        previous_status = request_obj.status
+        request_obj.status = new_status
+        request_obj.save()
 
-        SolicitudLog.objects.create(
-            solicitud=solicitud,
-            usuario=request.user,
-            estado_anterior=estado_anterior,
-            nuevo_estado=nuevo_estado
+        RequestLog.objects.create(
+            request=request_obj,
+            user=request.user,
+            previous_status=previous_status,
+            new_status=new_status
         )
 
         return redirect('dashboard')
     else:
-        solicitud = Solicitud.objects.get(usuario__id=user_id)
-        return render(request, 'backoffice/update_status.html', {'solicitud': solicitud})
+        request_obj = Request.objects.get(user__id=user_id)
+        return render(request, 'backoffice/update_status.html', {'request': request_obj})
 
 @extend_schema(
     tags=['backoffice'],
-    description='Obtiene la lista de usuarios con toda su información.',
+    description='Gets the list of users with all their information.',
     responses={
         200: UserSerializer(many=True)
     }
@@ -134,20 +135,20 @@ def user_list(request):
 
 @extend_schema(
     tags=['backoffice'],
-    description='Endpoint para cambiar el estado de la solicitud de un usuario (pendiente, aceptada, rechazada).',
+    description='Endpoint to change the status of a user request (pending, accepted, rejected).',
     request={
         'application/json': {
             'type': 'object',
             'properties': {
-                'estado': {'type': 'string', 'enum': ['pendiente', 'aceptada', 'rechazada']}
+                'status': {'type': 'string', 'enum': ['pending', 'accepted', 'rejected']}
             },
-            'required': ['estado']
+            'required': ['status']
         }
     },
     responses={
-        200: OpenApiResponse(description='Estado de solicitud actualizado correctamente'),
-        400: OpenApiResponse(description='Estado inválido'),
-        404: OpenApiResponse(description='Solicitud no encontrada')
+        200: OpenApiResponse(description='Request status updated successfully'),
+        400: OpenApiResponse(description='Invalid status'),
+        404: OpenApiResponse(description='Request not found')
     }
 )
 
@@ -155,7 +156,7 @@ def user_list(request):
 @login_required
 @require_http_methods(["POST"])
 def delete_user(request, user_id):
-    if not request.user.is_staff and request.user.rol != 'admin':
+    if not request.user.is_staff and request.user.role != 'admin':
         return redirect('dashboard')
         
     try:
@@ -170,45 +171,44 @@ def delete_user(request, user_id):
         )
         
         user_to_delete.delete()
-        return redirect(f"{reverse('dashboard')}?estado=pendientes&message=Usuario {user_name} eliminado correctamente&message_type=success")
+        return redirect(f"{reverse('dashboard')}?status=pending&message=Usuario {user_name} eliminado correctamente&message_type=success")
         
     except CustomUser.DoesNotExist:
-        return redirect(f"{reverse('dashboard')}?estado=pendientes&message=Error: El usuario no existe&message_type=error")
+        return redirect(f"{reverse('dashboard')}?status=pending&message=Error: El usuario no existe&message_type=error")
     except Exception as e:
-        return redirect(f"{reverse('dashboard')}?estado=pendientes&message=Error al eliminar usuario: {str(e)}&message_type=error")
+        return redirect(f"{reverse('dashboard')}?status=pending&message=Error al eliminar usuario: {str(e)}&message_type=error")
 
 @api_view(['PATCH'])
 @permission_classes([permissions.IsAdminUser])
 def change_request_status(request, user_id):
     try:
-        solicitud = Solicitud.objects.get(usuario__id=user_id)
-        nuevo_estado = request.data.get("estado")
+        request_obj = Request.objects.get(user__id=user_id)
+        new_status = request.data.get("status")
 
-        if nuevo_estado not in ["pendiente", "aceptada", "rechazada"]:
+        if new_status not in ["pending", "accepted", "rejected"]:
             return Response({"error": "Estado inválido"}, status=status.HTTP_400_BAD_REQUEST)
 
-        solicitud.estado = nuevo_estado
-        solicitud.save()
+        request_obj.status = new_status
+        request_obj.save()
 
         return Response({"message": "Estado de solicitud actualizado correctamente"}, status=status.HTTP_200_OK)
 
-    except Solicitud.DoesNotExist:
+    except Request.DoesNotExist:
         return Response({"error": "Solicitud no encontrada para este usuario"}, status=status.HTTP_404_NOT_FOUND)
 
 @extend_schema(
     tags=['backoffice'],
-    description='Obtiene el detalle de una solicitud específica.',
+    description='Gets the details of a specific request.',
     responses={
-        200: SolicitudSerializer
+        200: RequestSerializer
     }
 )
 @api_view(['GET'])
 @permission_classes([permissions.IsAdminUser])
 def user_detail(request, user_id):
-    solicitud = Solicitud.objects.get(usuario__id=user_id)
-    serializer = SolicitudSerializer(solicitud)
-    return render(request, 'backoffice/detail.html', {'solicitud': serializer.data})
-
+    request_obj = Request.objects.get(user__id=user_id)
+    serializer = RequestSerializer(request_obj)
+    return render(request, 'backoffice/detail.html', {'request': serializer.data})
 
 
 @login_required
@@ -219,7 +219,7 @@ def add_user(request):
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
         password = request.POST.get('password')
-        rol = request.POST.get('rol')
+        role = request.POST.get('role')
         
         if not first_name or not last_name or not email or not password:
             return redirect('dashboard')
@@ -234,13 +234,13 @@ def add_user(request):
                 email=email,
                 username=email,
                 password=make_password(password),  
-                rol=rol
+                role=role
             )
             
-            Solicitud.objects.create(
-                usuario=user,
-                descripcion="Usuario creado desde el backoffice",
-                estado="nuevo"
+            Request.objects.create(
+                user=user,
+                description="Usuario creado desde el backoffice",
+                status="new"
             )
             
             return redirect('dashboard')
