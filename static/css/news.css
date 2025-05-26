@@ -108,3 +108,11 @@ body {
     bottom: 0;
     width: 100%;
 }
+.clickable-card {
+    text-decoration: none;
+    display: block;
+}
+
+.clickable-card * {
+    text-decoration: none !important;
+}

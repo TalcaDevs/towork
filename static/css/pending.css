@@ -146,3 +146,12 @@ body {
 .search-filter input::placeholder {
     color: #555;
 }
+
+.clickable-card {
+    text-decoration: none;
+    display: block;
+}
+
+.clickable-card * {
+    text-decoration: none !important;
+}
