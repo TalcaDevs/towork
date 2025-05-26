@@ -2,24 +2,20 @@
 <link rel="stylesheet" href="{% static 'css/news.css' %}">
 
 {% for user in new %}
-<div class="card new">
-    {% if user.profile_photo %}
-        <img src="{{ user.profile_photo }}" alt="Perfil">
-    {% else %}
-        <img src="{% static 'images/default_profile.png' %}" alt="Perfil">
-    {% endif %}
-    <div class="card-info">
-        <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
-        <p class="email-info">{{ user.email }}</p>
-        <span class="new-indicator">Usuario registrado el {{ user.date_joined|date:"d/m/Y" }}</span>
+<a href="?status=card_detail&user_id={{ user.pk }}" class="clickable-card">
+    <div class="card new">
+        {% if user.profile_photo %}
+            <img src="{{ user.profile_photo }}" alt="Perfil">
+        {% else %}
+            <img src="{% static 'images/default_profile.png' %}" alt="Perfil">
+        {% endif %}
+        <div class="card-info">
+            <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
+            <p class="email-info">{{ user.email }}</p>
+            <span class="new-indicator">Usuario registrado el {{ user.date_joined|date:"d/m/Y" }}</span>
+        </div>
     </div>
-    <a href="?status=card_detail&user_id={{ user.pk }}" class="detail-link">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 12h14"></path>
-            <path d="m12 5 7 7-7 7"></path>
-        </svg>
-    </a>
-</div>
+</a>
 {% empty %}
 <div class="empty-state">
     <p>No hay usuarios registrados por el momento</p>
