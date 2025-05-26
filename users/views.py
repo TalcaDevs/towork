@@ -124,6 +124,26 @@ def login_user(request):
     user = authenticate(request, username=email, password=password)
 
     if user is not None:
+        # ✅ AGREGAR VALIDACIÓN DEL STATUS
+        try:
+            # Obtener el Request asociado al usuario
+            user_request = Request.objects.get(user=user)
+            
+            # Verificar si el usuario está aprobado
+            if user_request.status != 'accepted':
+                return Response({
+                    "message": "Tu perfil está pendiente de revisión. Te notificaremos cuando sea aprobado.",
+                    "status": user_request.status
+                }, status=status.HTTP_403_FORBIDDEN)
+                
+        except Request.DoesNotExist:
+            # Si no tiene Request, no puede acceder
+            return Response({
+                "message": "Tu perfil está pendiente de procesamiento. Contacta al administrador.",
+                "status": "no_request"
+            }, status=status.HTTP_403_FORBIDDEN)
+        
+        # Si está aprobado, generar tokens
         refresh = RefreshToken.for_user(user)
         return Response({
             "message": "Inicio de sesión exitoso",
