@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const filterTerm = filterInput.value.toLowerCase();
             
             cards.forEach(card => {
+                // Actualizado para usar los nuevos nombres de atributos
                 const userName = card.querySelector('.user-name').textContent.toLowerCase();
                 const educationTitle = card.querySelector('.education-title') ? 
                                       card.querySelector('.education-title').textContent.toLowerCase() : '';

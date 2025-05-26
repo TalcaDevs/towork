@@ -1,29 +1,32 @@
 from django.db import models
 from users.models import CustomUser
 
-# Create your models here.
 class Language(models.Model):
-    """Modelo de idiomas"""
-    nombre = models.CharField(max_length=100, unique=True)
+    """Language model"""
+    name = models.CharField(max_length=100, unique=True)
+    
+    class Meta:
+        db_table = 'languages_language'  # Mantiene el nombre original de la tabla
 
     def __str__(self):
-        return self.nombre
+        return self.name
 
 class UserLanguage(models.Model):
-    """Relación usuario - idioma"""
-    NIVEL_CHOICES = [
+    """User-language relationship"""
+    LEVEL_CHOICES = [
         ('Básico', 'Básico'),
         ('Intermedio', 'Intermedio'),
         ('Avanzado', 'Avanzado'),
         ('Nativo', 'Nativo'),
     ]
 
-    usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="idiomas")
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="languages")
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    nivel = models.CharField(max_length=20, choices=NIVEL_CHOICES)
-
+    level = models.CharField(max_length=20, choices=LEVEL_CHOICES)
+    
     class Meta:
-        unique_together = ('usuario', 'language')
+        db_table = 'languages_userlanguage'  # Mantiene el nombre original de la tabla
+        unique_together = ('user', 'language')
 
     def __str__(self):
-        return f"{self.usuario} - {self.language.nombre} ({self.nivel})"
+        return f"{self.user} - {self.language.name} ({self.level})"

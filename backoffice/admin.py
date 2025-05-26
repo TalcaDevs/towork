@@ -1,4 +1,4 @@
 from django.contrib import admin
-from users.models import SolicitudLog
+from users.models import RequestLog  
 
-admin.site.register(SolicitudLog)
+admin.site.register(RequestLog)

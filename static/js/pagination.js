@@ -4,11 +4,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const searchValue = document.getElementById('search-filter-input')?.value || '';
         const filterValue = document.getElementById('filter-input')?.value || '';
         
-        const estado = searchParams.get('estado') || 'pendientes';
+        const estado = searchParams.get('state') || 'pending';
         
         document.querySelectorAll('.pagination a').forEach(link => {
             const linkParams = new URLSearchParams(link.search);
-            linkParams.set('estado', estado);
+            linkParams.set('state', estado);
             
             if (searchValue) {
                 linkParams.set('search', searchValue);

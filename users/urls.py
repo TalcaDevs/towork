@@ -1,12 +1,12 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
-from .views import guardar_perfil_completo, obtener_usuarios, registro_usuario, login_usuario, obtener_perfil_completo
+from .views import save_complete_profile, get_users, register_user, login_user, get_complete_profile
 
 urlpatterns = [ 
-    path('', obtener_usuarios, name="obtener_usuarios"), 
-    path('signup/', registro_usuario, name="registro_usuario"),
-    path('signin/', login_usuario, name="login_usuario"),
+    path('', get_users, name="get_users"), 
+    path('signup/', register_user, name="register_user"),
+    path('signin/', login_user, name="login_user"),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('get-profile/', obtener_perfil_completo, name="obtener_informacion_usuario"),
-    path('save-profile/', guardar_perfil_completo, name="guardar_perfil"),
+    path('get-profile/', get_complete_profile, name="get_user_info"),
+    path('save-profile/', save_complete_profile, name="save_profile"),
 ]
