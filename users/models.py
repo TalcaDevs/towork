@@ -15,6 +15,8 @@ class CustomUser(AbstractUser):
     linkedin = models.URLField(blank=True, null=True)
     portfolio_url = models.URLField(blank=True, null=True)
     role = models.CharField(max_length=20, choices=ROLES, default='user')
+    terms_accepted = models.BooleanField(default=False)
+    terms_accepted_date = models.DateTimeField(null=True, blank=True)
     
     groups = models.ManyToManyField(Group, related_name='customuser_groups', blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name="customuser_permissions", blank=True)

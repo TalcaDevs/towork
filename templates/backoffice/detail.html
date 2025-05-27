@@ -56,6 +56,19 @@
                     <span class="metadata-label">Template:</span>
                     <span class="metadata-value">{{ request.user.template.name|default:"Sin template asignado" }}</span>
                 </div>
+                <div class="metadata-item">
+                    <span class="metadata-label">Términos y condiciones:</span>
+                    <span class="metadata-value">
+                        {% if request.user.terms_accepted %}
+                            <span style="color: #378b74;">✓ Aceptados</span>
+                            {% if request.user.terms_accepted_date %}
+                                <small>({{ request.user.terms_accepted_date|date:"d/m/Y H:i" }})</small>
+                            {% endif %}
+                        {% else %}
+                            <span style="color: #dc3545;">✗ No aceptados</span>
+                        {% endif %}
+                    </span>
+                </div>
             </div>
             
             <div class="action-buttons">
