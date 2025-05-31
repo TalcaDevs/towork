@@ -145,6 +145,7 @@ def save_template(request):
         404: OpenApiResponse(description='The user does not have an assigned template')
     }
 )
+@require_http_methods(["POST"])
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
 def user_template(request):
