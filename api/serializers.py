@@ -1,14 +1,14 @@
 from rest_framework import serializers
-from users.models import Solicitud, CustomUser
+from users.models import Request, CustomUser
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'first_name', 'last_name', 'email', 'foto_perfil', 'descripcion', 'telefono', 'ubicacion', 'linkedin', 'id_portafolio_web']
+        fields = ['id', 'first_name', 'last_name', 'email', 'profile_photo', 'description', 'phone', 'location', 'linkedin', 'portfolio_url']
 
-class SolicitudSerializer(serializers.ModelSerializer):
-    usuario = CustomUserSerializer()
+class RequestSerializer(serializers.ModelSerializer):
+    user = CustomUserSerializer()
 
     class Meta:
-        model = Solicitud
+        model = Request
         fields = '__all__'

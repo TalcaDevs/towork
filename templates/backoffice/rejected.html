@@ -1,30 +1,27 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/rejected.css' %}">
-{% for solicitud in rechazados %}
-<div class="card rejected">
-    {% if solicitud.usuario.foto_perfil %}
-        <img src="{{ solicitud.usuario.foto_perfil }}" alt="Perfil">
-    {% else %}
-        <img src="{% static 'images/default_profile.png' %}" alt="Perfil">
-    {% endif %}
-    <div class="card-info">
-        <span class="user-name">{{ solicitud.usuario.first_name }} {{ solicitud.usuario.last_name }}</span>
-        {% with first_education=solicitud.usuario.educacion.all.first %}
-            {% if first_education %}
-                <p class="education-title">{{ first_education.titulo }}</p>
-            {% else %}
-                <p class="education-title">Sin información educativa</p>
-            {% endif %}
-        {% endwith %}
-        <span class="status-indicator">Rechazado desde {{ solicitud.fecha_creacion|date:"d/m/Y" }}</span>
+{% for solicitud in rejected %}
+<a href="?status=card_detail&user_id={{ solicitud.user.pk }}" class="clickable-card">
+    <div class="card rejected">
+        {% if solicitud.user.profile_photo %}
+            <img src="{{ solicitud.user.profile_photo }}" alt="Perfil">
+        {% else %}
+            <img src="{% static 'images/default_profile.png' %}" alt="Perfil">
+        {% endif %}
+        <div class="card-info">
+            <span class="user-name">{{ solicitud.user.first_name }} {{ solicitud.user.last_name }}</span>
+            {% with first_education=solicitud.user.educacion.all.first %}
+                {% if first_education %}
+                    <p class="education-title">{{ first_education.degree }}</p>
+                {% else %}
+                    <p class="education-title">Sin información educativa</p>
+                {% endif %}
+            {% endwith %}
+            <span class="status-indicator">Rechazado desde {{ solicitud.created_date|date:"d/m/Y" }}</span>
+        </div>
     </div>
-    <a href="?estado=card_detail&user_id={{ solicitud.usuario.pk }}" class="detail-link">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 12h14"></path>
-            <path d="m12 5 7 7-7 7"></path>
-        </svg>
-    </a>
-</div>
+</a>
+
 {% empty %}
 <div class="empty-state">
     <p>No hay perfiles rechazados por el momento</p>
@@ -35,7 +32,7 @@
     <ul class="pagination">
         {% if page_obj.has_previous %}
             <li>
-                <a href="?estado={{ estado }}&page=1" title="Primera página">
+                <a href="?status={{ status }}&page=1" title="Primera página">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" class="pagination-arrow">
                         <path fill-rule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
                         <path fill-rule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
@@ -43,7 +40,7 @@
                 </a>
             </li>
             <li>
-                <a href="?estado={{ estado }}&page={{ page_obj.previous_page_number }}" title="Página anterior">
+                <a href="?status={{ status }}&page={{ page_obj.previous_page_number }}" title="Página anterior">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" class="pagination-arrow">
                         <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
                     </svg>
@@ -71,9 +68,9 @@
             {% if page_obj.number == i %}
                 <li class="active"><span>{{ i }}</span></li>
             {% elif i >= page_obj.number|add:"-2" and i <= page_obj.number|add:"2" %}
-                <li><a href="?estado={{ estado }}&page={{ i }}">{{ i }}</a></li>
+                <li><a href="?status={{ status }}&page={{ i }}">{{ i }}</a></li>
             {% elif i == 1 or i == paginator.num_pages %}
-                <li><a href="?estado={{ estado }}&page={{ i }}">{{ i }}</a></li>
+                <li><a href="?status={{ status }}&page={{ i }}">{{ i }}</a></li>
             {% elif i == page_obj.number|add:"-3" or i == page_obj.number|add:"3" %}
                 <li class="page-ellipsis"><span>...</span></li>
             {% endif %}
@@ -81,14 +78,14 @@
         
         {% if page_obj.has_next %}
             <li>
-                <a href="?estado={{ estado }}&page={{ page_obj.next_page_number }}" title="Página siguiente">
+                <a href="?status={{ status }}&page={{ page_obj.next_page_number }}" title="Página siguiente">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" class="pagination-arrow">
                         <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
                     </svg>
                 </a>
             </li>
             <li>
-                <a href="?estado={{ estado }}&page={{ paginator.num_pages }}" title="Última página">
+                <a href="?status={{ status }}&page={{ paginator.num_pages }}" title="Última página">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" class="pagination-arrow">
                         <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"/>
                         <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"/>

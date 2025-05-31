@@ -16,7 +16,7 @@
         {% include 'backoffice/sidebar.html' %}
         
         <div class="main-content">
-            {% include 'backoffice/navbar.html' with estado=estado %}
+            {% include 'backoffice/navbar.html' with status=status %}
             
             <div class="components">
                 {% if request.GET.message %}
@@ -27,19 +27,19 @@
                 {% endif %}
                 
                 <div class="card-container" id="card-container">
-                    {% if estado == 'nuevos' %}
-                        {% include 'backoffice/nuevos.html' %}
-                    {% elif estado == 'pendientes' %}
+                    {% if status == 'new' %}
+                        {% include 'backoffice/new.html' %}
+                    {% elif status == 'pending' %}
                         {% include 'backoffice/pending.html' %}
-                    {% elif estado == 'aprobados' %}
+                    {% elif status == 'accepted' %}
                         {% include 'backoffice/approved.html' %}
-                    {% elif estado == 'rechazados' %}
+                    {% elif status == 'rejected' %}
                         {% include 'backoffice/rejected.html' %}
-                    {% elif estado == 'card_detail' %}
-                        {% include 'backoffice/detail.html' with solicitud=solicitud %}
-                    {% elif estado == 'update_status' %}
-                        {% include 'backoffice/update_status.html' with solicitud=solicitud %}
-                    {% elif estado == 'add_user' %}
+                    {% elif status == 'card_detail' %}
+                        {% include 'backoffice/detail.html' with request_obj=request_obj %}
+                    {% elif status == 'update_status' %}
+                        {% include 'backoffice/update_status.html' with request_obj=request_obj %}
+                    {% elif status == 'add_user' %}
                         {% include 'backoffice/add_user.html' with message=message message_type=message_type %}
                     {% endif %}
                 </div>
