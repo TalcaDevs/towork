@@ -6,6 +6,7 @@ from api.serializers import RequestSerializer, CustomUserSerializer  # Cambié S
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiResponse
+from django.views.decorators.http import require_http_methods  
 
 class IsAdmin(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -91,6 +92,7 @@ class RequestViewSet(viewsets.ModelViewSet):  # Cambié SolicitudViewSet a Reque
         )
     }
 )
+@require_http_methods(["POST"])
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def save_template(request):
@@ -143,6 +145,7 @@ def save_template(request):
         404: OpenApiResponse(description='The user does not have an assigned template')
     }
 )
+@require_http_methods(["POST"])
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
 def user_template(request):

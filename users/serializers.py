@@ -63,9 +63,11 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = [
-            'id', 'first_name', 'last_name', 'profile_photo', 'description', 'phone', 
-            'location', 'linkedin', 'portfolio_url', 'education', 'experience', 
-            'certifications', 'projects', 'skills', 'languages', 'template'
+            'id', 'first_name', 'last_name', 'email', 'profile_photo', 
+            'description', 'phone', 'location', 'linkedin', 'portfolio_url', 
+            'education', 'experience', 'certifications', 'projects', 
+            'skills', 'languages', 'template',
+            'terms_accepted', 'terms_accepted_date'
         ]
 
 class RequestSerializer(serializers.ModelSerializer):

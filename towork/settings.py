@@ -222,3 +222,4 @@ SPECTACULAR_SETTINGS = {
         'defaultModelsExpandDepth': -1,
     },
 }
+

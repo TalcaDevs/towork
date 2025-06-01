@@ -16,12 +16,14 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from .models import Request, Template
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
+from django.utils import timezone
+
 
 @extend_schema(
     tags=['authentication'],
     operation_id='signup',
     summary='Register new user',
-    description='Endpoint for registering new users with name, last name, email and password.',
+    description='Endpoint for registering new users with name, last name, email, password and terms acceptance.',
     request={
         'application/json': {
             'type': 'object',
@@ -29,9 +31,10 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiRespon
                 'first_name': {'type': 'string', 'example': 'Juan'},
                 'last_name': {'type': 'string', 'example': 'Pérez'},
                 'email': {'type': 'string', 'format': 'email', 'example': 'usuario@ejemplo.com'},
-                'password': {'type': 'string', 'format': 'password', 'example': '********'}
+                'password': {'type': 'string', 'format': 'password', 'example': '********'},
+                'terms_accepted': {'type': 'boolean', 'example': True, 'description': 'Aceptación de términos y condiciones'}
             },
-            'required': ['first_name', 'last_name', 'email', 'password']
+            'required': ['first_name', 'last_name', 'email', 'password', 'terms_accepted']
         }
     },
     responses={
@@ -55,19 +58,28 @@ def register_user(request):
     last_name = request.data.get("last_name")
     email = request.data.get("email")
     password = request.data.get("password")
+    terms_accepted = request.data.get("terms_accepted", False)
 
     if not first_name or not last_name or not email or not password:
         return Response({"error": "Todos los campos son obligatorios"}, status=status.HTTP_400_BAD_REQUEST)
 
     if CustomUser.objects.filter(email=email).exists():
         return Response({"error": "El correo ya está registrado"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    if not terms_accepted:
+        return Response(
+            {"error": "Debes aceptar los términos y condiciones para registrarte"}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
     user = CustomUser.objects.create(
         first_name=first_name,
         last_name=last_name,
         email=email,
         username=email,  
-        password=make_password(password) 
+        password=make_password(password),
+        terms_accepted=True,
+        terms_accepted_date=timezone.now()
     )
 
     Request.objects.create(
